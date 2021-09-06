@@ -44,7 +44,7 @@ $ ./mvnw spring-boot:build-image
 Then, you can run the app like any other container:
 
 ```
-$ docker run --rm HelloSpringBoot:0.0.1-SNAPSHOT
+$ docker run --rm Hello_Spring_Boot:0.0.1-SNAPSHOT
 ```
 
 ### Executable with Native Build Tools
@@ -63,5 +63,5 @@ $ ./mvnw package -Pnative
 Then, you can run the app as follows:
 
 ```
-$ target/HelloSpringBoot
+$ target/Hello_Spring_Boot
 ```

@@ -1,2 +1,2 @@
-com\example\hellospringboot\HelloSpringBootApplication.class
-com\example\hellospringboot\WelcomeController.class
+com\example\hello_spring_boot\HelloSpringBootApplication.class
+com\example\hello_spring_boot\Controller.class

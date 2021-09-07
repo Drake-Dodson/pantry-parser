@@ -1,0 +1,12 @@
+com/example/androidstudioshelloworld/BuildConfig.java
+ com.example.androidstudioshelloworld.BuildConfig
+com/example/androidstudioshelloworld/Counter.java
+ com.example.androidstudioshelloworld.Counter
+ com.example.androidstudioshelloworld.Counter$1
+ com.example.androidstudioshelloworld.Counter$2
+ com.example.androidstudioshelloworld.Counter$3
+ com.example.androidstudioshelloworld.Counter$4
+ com.example.androidstudioshelloworld.Counter$5
+com/example/androidstudioshelloworld/MainActivity.java
+ com.example.androidstudioshelloworld.MainActivity
+ com.example.androidstudioshelloworld.MainActivity$1

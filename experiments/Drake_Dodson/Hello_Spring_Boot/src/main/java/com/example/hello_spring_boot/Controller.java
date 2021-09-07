@@ -9,7 +9,7 @@ class Controller {
 
     @GetMapping("/")
     public String welcome() {
-        return "Hello there";
+        return "Hello there!";
     }
 
     @GetMapping("/{name}")

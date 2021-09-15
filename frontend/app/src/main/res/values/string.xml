@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Pantry Parser</string>
+
+    <string name="title_activity_home_page">Home Page</string>
+</resources>

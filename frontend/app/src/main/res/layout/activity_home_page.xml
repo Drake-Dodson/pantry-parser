@@ -4,6 +4,88 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/background"
     tools:context=".HomePage">
+
+    <Button
+        android:id="@+id/button4"
+        android:layout_width="360dp"
+        android:layout_height="86dp"
+        android:layout_marginTop="204dp"
+        android:background="@drawable/button"
+        android:drawableStart="@drawable/recipes"
+
+        android:drawableTint="@color/light"
+        android:fontFamily="@font/comforta"
+        android:text="Create Recipe"
+        android:textColor="@color/light"
+        android:textSize="27dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.509"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView" />
+
+    <Button
+        android:id="@+id/button5"
+        android:layout_width="360dp"
+        android:layout_height="86dp"
+        android:layout_marginTop="300dp"
+        android:background="@drawable/button"
+        android:drawableStart="@drawable/recipes"
+
+        android:drawableTint="@color/light"
+        android:fontFamily="@font/comforta"
+        android:text="Settings"
+        android:textColor="@color/light"
+        android:textSize="30dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.509"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView" />
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="383dp"
+        android:layout_height="291dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/logo_modern" />
+
+    <Button
+        android:id="@+id/button"
+        android:layout_width="360dp"
+        android:layout_height="86dp"
+        android:layout_marginTop="4dp"
+        android:background="@drawable/button"
+        android:drawableStart="@drawable/recipes"
+
+        android:drawableTint="@color/light"
+        android:fontFamily="@font/comforta"
+        android:text="Find Recipes"
+        android:textColor="@color/light"
+        android:textSize="30dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.493"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView" />
+
+    <Button
+        android:id="@+id/button3"
+        android:layout_width="360dp"
+        android:layout_height="86dp"
+        android:layout_marginTop="108dp"
+        android:background="@drawable/button"
+        android:drawableStart="@drawable/recipes"
+
+        android:drawableTint="@color/light"
+        android:fontFamily="@font/comforta"
+        android:text="Favorites"
+        android:textColor="@color/light"
+        android:textSize="35dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.509"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -10,7 +10,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class MainActivity extends AppCompatActivity {
+public class Login_Page extends AppCompatActivity {
 
     private EditText eName;
     private EditText ePassword;
@@ -40,20 +40,20 @@ public class MainActivity extends AppCompatActivity {
                 String inputPassword = ePassword.getText().toString();
 
                 if (inputName.isEmpty() || inputPassword.isEmpty()) {
-                    Toast.makeText(MainActivity.this, "Please enter username and password", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(Login_Page.this, "Please enter username and password", Toast.LENGTH_SHORT).show();
                 } else {
                     isValid = validateAdmin(inputName, inputPassword);
                     if (!isValid) {
                         counter--;
-                        Toast.makeText(MainActivity.this, "Incorrect Username or Password", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(Login_Page.this, "Incorrect Username or Password", Toast.LENGTH_SHORT).show();
                         eAttemptsInfo.setText("No. of attempts remaining: " + counter);
 
                         if (counter == 0) {
                             eLogin.setEnabled(false);
                         }
                     } else {
-                        Toast.makeText(MainActivity.this, "Login Successful", Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(MainActivity.this, HomePage.class);
+                        Toast.makeText(Login_Page.this, "Login Successful", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(Login_Page.this, Home_Page.class);
                         startActivity(intent);
                         counter = 5;
                         eAttemptsInfo.setText("No. of attempts remaining: " + counter);

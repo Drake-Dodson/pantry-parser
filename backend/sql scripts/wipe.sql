@@ -1,0 +1,10 @@
+use pantry_parser;
+DROP TABLE favorites;
+DROP TABLE reviews;
+DROP TABLE steps_of_recipes;
+DROP TABLE ingredients_of_recipes;
+DROP TABLE ingredients;
+DROP TABLE recipes;
+DROP TABLE ingredient_categories;
+DROP TABLE recipe_categories;
+DROP TABLE users;

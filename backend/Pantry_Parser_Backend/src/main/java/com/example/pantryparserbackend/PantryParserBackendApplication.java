@@ -27,6 +27,4 @@ public class PantryParserBackendApplication {
             usersRepository.save(user3);
         };
     }
-
-
 }

@@ -6,8 +6,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
 
-@Controller
-@RequestMapping(path="/")
+@RestController
 public class UsersController {
 
     private String success = "{\"message\":\"success\"}";
@@ -21,8 +20,8 @@ public class UsersController {
         return "Pantry Parser Super Cool Homepage";
     }
 
-    @RequestMapping(method = RequestMethod.GET, path = "/users/{id}")
-    public Users getUserById(@PathVariable Integer id)
+    @GetMapping(path = "/users/{id}")
+    public Optional<Users> getUserById(@PathVariable Integer id)
     {
         return usersRepository.findById(id);
     }

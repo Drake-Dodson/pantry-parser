@@ -47,10 +47,11 @@
         android:id="@+id/imageView"
         android:layout_width="383dp"
         android:layout_height="291dp"
+        android:layout_marginTop="12dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/logo_modern" />
+        app:srcCompat="@drawable/main_logo" />
 
     <Button
         android:id="@+id/bt_FindRecipes"

@@ -10,12 +10,14 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class Login_Page extends AppCompatActivity {
+public class Login_Page extends AppCompatActivity implements View.OnClickListener{
 
     private EditText eName;
     private EditText ePassword;
     private Button eLogin;
+    private Button eGuest;
     private TextView eAttemptsInfo;
+    private TextView eSignUp;
 
     private String adminUserName = "Admin";
     private String adminPassword = "2_do_8_comS_309";
@@ -31,38 +33,62 @@ public class Login_Page extends AppCompatActivity {
         eName = findViewById(R.id.text_Username);
         ePassword = findViewById((R.id.text_Password));
         eLogin = findViewById(R.id.button_Login);
+        eLogin.setOnClickListener(this);
         eAttemptsInfo = findViewById(R.id.text_Attempts);
 
-        eLogin.setOnClickListener(new View.OnClickListener() {
+        eSignUp = findViewById(R.id.text_SignUp);
+        eSignUp.setOnClickListener(this);
+
+        eGuest = findViewById(R.id.bt_Guest);
+        eGuest.setOnClickListener(this);
+    }
+
+
+
             @Override
             public void onClick(View view) {
-                String inputName = eName.getText().toString();
-                String inputPassword = ePassword.getText().toString();
+                Intent intentLogin = new Intent(Login_Page.this, Home_Page.class);
 
-                if (inputName.isEmpty() || inputPassword.isEmpty()) {
-                    Toast.makeText(Login_Page.this, "Please enter username and password", Toast.LENGTH_SHORT).show();
-                } else {
-                    isValid = validateAdmin(inputName, inputPassword);
-                    if (!isValid) {
-                        counter--;
-                        Toast.makeText(Login_Page.this, "Incorrect Username or Password", Toast.LENGTH_SHORT).show();
-                        eAttemptsInfo.setText("No. of attempts remaining: " + counter);
+                switch (view.getId()){
+                    case R.id.button_Login:
+                        String inputName = eName.getText().toString();
+                        String inputPassword = ePassword.getText().toString();
 
-                        if (counter == 0) {
-                            eLogin.setEnabled(false);
+                        if (inputName.isEmpty() || inputPassword.isEmpty()) {
+                            Toast.makeText(Login_Page.this, "Please enter username and password", Toast.LENGTH_SHORT).show();
+                        } else {
+                            isValid = validateAdmin(inputName, inputPassword);
+                            if (!isValid) {
+                                counter--;
+                                Toast.makeText(Login_Page.this, "Incorrect Username or Password", Toast.LENGTH_SHORT).show();
+                                eAttemptsInfo.setText("No. of attempts remaining: " + counter);
+
+                                if (counter == 0) {
+                                    eLogin.setEnabled(false);
+                                }
+                            } else {
+                                Toast.makeText(Login_Page.this, "Login Successful", Toast.LENGTH_SHORT).show();
+                                startActivity(intentLogin);
+                                counter = 5;
+                                eAttemptsInfo.setText("No. of attempts remaining: " + counter);
+                            }
+
                         }
-                    } else {
-                        Toast.makeText(Login_Page.this, "Login Successful", Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(Login_Page.this, Home_Page.class);
-                        startActivity(intent);
-                        counter = 5;
-                        eAttemptsInfo.setText("No. of attempts remaining: " + counter);
-                    }
-
+                        break;
+                    case R.id.bt_Guest:
+                        Toast.makeText(Login_Page.this, "logged in as Guest", Toast.LENGTH_SHORT).show();
+                        startActivity(intentLogin);
+                        break;
+                    case R.id.text_SignUp:
+                        startActivity(intentLogin);
                 }
-            }
 
-        });
+
+
+
+
+
+
 
     }
 

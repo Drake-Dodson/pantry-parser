@@ -10,41 +10,31 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "users")
-public class User {
+public class Users {
 
     @Id
-    // Not sure how to do auto increment in Java but I'm pretty sure this is close
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private int userId;
+    @Column(name = "user_id", unique = true)
+    private Integer userId;
 
-    @Column(name = "display_name")
     private String displayName;
 
-    @Column(name = "email")
     private String email;
 
-    @Column(name = "password")
     private String password;
 
-    @Column(name = "role")
     private String role;
 
-    public User(String password, String email) {
-        // Do some sort of encryption here
+    public Users (String password, String email) {
         this.password = password;
         this.email = email;
         this.role = "Main";
     }
 
-    public User() {
+    public Users() {
+
     }
 
-    // Might not need this idk
-    public int getUserId() {
-        return this.userId;
-    }
 
     public String getDisplayName() {
         return this.displayName;
@@ -60,10 +50,6 @@ public class User {
 
     public String getRole() {
         return role;
-    }
-
-    public void setUserId(int userId) {
-        this.userId = userId;
     }
 
     public void setDisplayName(String displayName) {

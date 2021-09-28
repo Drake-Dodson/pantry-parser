@@ -14,8 +14,7 @@ public class Users {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "user_id", unique = true)
-    private Integer userId;
+    private int id;
 
     private String displayName;
 
@@ -34,7 +33,6 @@ public class Users {
     public Users() {
 
     }
-
 
     public String getDisplayName() {
         return this.displayName;

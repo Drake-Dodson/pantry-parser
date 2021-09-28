@@ -18,6 +18,8 @@ public class PantryParserBackendApplication {
 
     @Bean
     CommandLineRunner initUser(UsersRepository usersRepository) {
+        // These will be saved to the database everytime it's started and is only really for testing purposes so it may need
+        // to be taken out.
         return args -> {
             Users user1 = new Users("John", "john@somemail.com");
             Users user2 = new Users("Jane", "jane@somemail.com");
@@ -27,4 +29,5 @@ public class PantryParserBackendApplication {
             usersRepository.save(user3);
         };
     }
+
 }

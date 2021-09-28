@@ -21,7 +21,7 @@ public class UsersController {
     }
 
     @GetMapping(path = "/users/{id}")
-    public Optional<Users> getUserById(@PathVariable Integer id)
+    public Users getUserById(@PathVariable int id)
     {
         return usersRepository.findById(id);
     }

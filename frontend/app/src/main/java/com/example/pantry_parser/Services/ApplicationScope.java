@@ -1,4 +1,4 @@
-package com.example.pantry_parser.services;
+package com.example.pantry_parser.Services;
 
 import android.content.Context;
 

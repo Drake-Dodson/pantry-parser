@@ -1,4 +1,4 @@
-package com.example.pantry_parser;
+package com.example.pantry_parser.Pages;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,8 +11,9 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.android.volley.Request;
-import com.example.pantry_parser.services.RequestListener;
-import com.example.pantry_parser.services.VolleyListener;
+import com.example.pantry_parser.R;
+import com.example.pantry_parser.Services.RequestListener;
+import com.example.pantry_parser.Services.VolleyListener;
 
 import org.json.JSONException;
 import org.json.JSONObject;

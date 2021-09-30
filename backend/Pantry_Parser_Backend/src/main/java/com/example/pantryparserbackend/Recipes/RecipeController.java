@@ -26,7 +26,7 @@ public class RecipeController {
 
     @GetMapping(path = "/recipes/{id}")
     Recipe getRecipeById(@PathVariable int id){
-        return recipeRepository.findByID(id);
+        return recipeRepository.findById(id);
     }
 
     @PostMapping(path = "/recipes")
@@ -39,11 +39,11 @@ public class RecipeController {
 
     @PutMapping(path = "/laptops/{id}")
     Recipe updateRecipe(@PathVariable int id, @RequestBody Recipe request){
-        Recipe recipe = recipeRepository.findByID(id);
+        Recipe recipe = recipeRepository.findById(id);
         if(recipe == null)
             return null;
         recipeRepository.save(request);
-        return recipeRepository.findByID(id);
+        return recipeRepository.findById(id);
     }
 
     @DeleteMapping(path = "/laptops/{id}")

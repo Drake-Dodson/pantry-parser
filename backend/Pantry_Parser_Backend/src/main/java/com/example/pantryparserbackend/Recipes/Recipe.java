@@ -2,8 +2,6 @@ package com.example.pantryparserbackend.Recipes;
 
 import javax.persistence.*;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.sun.istack.internal.NotNull;
 import org.springframework.lang.Nullable;
 
 import java.util.Date;
@@ -13,15 +11,11 @@ public class Recipe {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    @NotNull
     private String name;
-    @NotNull
     private int time;
-    @NotNull
     private String summary;
-    @NotNull
     private String description;
-    @NotNull
+
     @Temporal(TemporalType.DATE)
     private Date created_date;
     @Nullable
@@ -35,15 +29,16 @@ public class Recipe {
 //    @JoinColumn(name = "creator_id")
 //    private User creator;
 
-    public Recipe(String name, int time, String summary, String description, Date created_date)
+    public Recipe(String name, int time, String summary, String description)
     {
         this.name = name;
         this.time = time;
         this.summary = summary;
         this.description = description;
-        this.created_date = created_date;
+        this.created_date = new Date();
         this.rating = 0;
     }
+    public Recipe(){}
 
     public int getId(){ return id; }
     public String getName() { return name; }
@@ -56,7 +51,7 @@ public class Recipe {
 //    public User getCreator() { return creator; }
 
     //not including a set for created_date since this shouldn't be changed
-    public void setInt(int id){ this.id = id; }
+    public void setId(int id){ this.id = id; }
     public void setName(String name){ this.name = name; }
     public void setTime(int time){ this.time = time; }
     public void setSummary(String summary){ this.summary = summary; }

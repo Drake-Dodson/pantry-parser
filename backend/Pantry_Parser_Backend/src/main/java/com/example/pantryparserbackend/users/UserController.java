@@ -36,9 +36,13 @@ public class UserController {
         if (login == null)
             return failure;
         User actual = userRepository.findByEmail(login.email);
+        if (actual == null)
+            // Email not found
+            return failure;
         if(actual.authenticate(login.password)){
             return success;
         }else {
+            // Password incorrect
             return failure;
         }
     }

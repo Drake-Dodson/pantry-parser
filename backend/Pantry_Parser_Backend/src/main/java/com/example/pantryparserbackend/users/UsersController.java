@@ -33,4 +33,17 @@ public class UsersController {
         usersRepository.save(users);
         return success;
     }
+
+    @PostMapping(path = "/login")
+    public String login(@RequestBody Login login){
+        if (login == null)
+            return failure;
+        Users actual = usersRepository.findByEmail(login.email);
+        if(actual.authenticate(login.password)){
+            return success;
+        }else {
+            return failure;
+        }
+
+    }
 }

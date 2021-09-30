@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/background"
-    tools:context=".Settings_Page">
+    tools:context=".Pages.Settings_Page">
 
     <TextView
         android:id="@+id/TextView_settings"

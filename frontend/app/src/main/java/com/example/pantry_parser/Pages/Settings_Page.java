@@ -1,14 +1,16 @@
-package com.example.pantry_parser;
+package com.example.pantry_parser.Pages;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 
-public class PantryParser_Page extends AppCompatActivity {
+import com.example.pantry_parser.R;
+
+public class Settings_Page extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_pantry_parser);
+        setContentView(R.layout.activity_settings);
     }
 }

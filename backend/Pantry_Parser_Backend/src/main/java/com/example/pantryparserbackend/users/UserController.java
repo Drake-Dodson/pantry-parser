@@ -1,36 +1,33 @@
 package com.example.pantryparserbackend.users;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Optional;
-
 @RestController
-public class UsersController {
+public class UserController {
 
     private String success = "{\"message\":\"success\"}";
     private String failure = "{\"message\":\"failure\"}";
 
     @Autowired
-    private UsersRepository usersRepository;
+    private UserRepository userRepository;
 
     @GetMapping("/")
     public String welcome() {
         return "Pantry Parser Super Cool Homepage";
     }
 
-    @GetMapping(path = "/users/{id}")
-    public Users getUserById(@PathVariable int id)
+    @GetMapping(path = "/user/{id}")
+    public User getUserById(@PathVariable int id)
     {
-        return usersRepository.findById(id);
+        return userRepository.findById(id);
     }
 
-    @PostMapping(path = "/users")
-    String createUser(@RequestBody Users users){
+    @PostMapping(path = "/user")
+    String createUser(@RequestBody User users){
         if (users == null)
             return failure;
-        usersRepository.save(users);
+        userRepository.save(users);
         return success;
     }
 
@@ -38,12 +35,11 @@ public class UsersController {
     public String login(@RequestBody Login login){
         if (login == null)
             return failure;
-        Users actual = usersRepository.findByEmail(login.email);
+        User actual = userRepository.findByEmail(login.email);
         if(actual.authenticate(login.password)){
             return success;
         }else {
             return failure;
         }
-
     }
 }

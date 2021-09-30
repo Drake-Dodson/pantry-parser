@@ -1,15 +1,11 @@
 package com.example.pantryparserbackend.users;
 
-import org.springframework.boot.autoconfigure.domain.EntityScan;
-
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.Table;
 import java.math.BigInteger;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
@@ -17,7 +13,7 @@ import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
 
 @Entity
-public class Users {
+public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,13 +23,13 @@ public class Users {
     private String password;
     private String role;
 
-    public Users (String password, String email) {
+    public User(String password, String email) {
         this.password = this.newHash(password);
         this.email = email;
         this.role = "Main";
     }
 
-    public Users() {}
+    public User() {}
 
     public int getId() { return this.id; }
     public String getDisplayName() {

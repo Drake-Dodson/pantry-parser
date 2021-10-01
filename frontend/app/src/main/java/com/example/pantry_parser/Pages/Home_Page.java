@@ -5,11 +5,17 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.LinearInterpolator;
+import android.view.animation.RotateAnimation;
 import android.widget.Button;
+import android.widget.ImageView;
 
 import com.example.pantry_parser.R;
 
 public class Home_Page extends AppCompatActivity implements View.OnClickListener{
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,6 +33,18 @@ public class Home_Page extends AppCompatActivity implements View.OnClickListener
 
         Button btSettings = findViewById(R.id.bt_Settings);
         btSettings.setOnClickListener(this);
+
+        ImageView rotatingDonut = findViewById(R.id.DonutCircle);
+        rotatingDonut.setOnClickListener(this);
+
+        Animation a = new RotateAnimation(0.0f, 360.0f,
+                Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF,
+                0.5f);
+        a.setRepeatCount(-1);
+        a.setDuration(30000);
+        a.setInterpolator(new LinearInterpolator());
+
+        rotatingDonut.startAnimation(a);
     }
 
     @Override
@@ -48,6 +66,9 @@ public class Home_Page extends AppCompatActivity implements View.OnClickListener
                 Intent settingsIntent = new Intent(getApplicationContext(), Settings_Page.class);
                 startActivity(settingsIntent);
                 break;
+            case R.id.DonutCircle:
+                View rotatingDonut = findViewById(R.id.DonutCircle);
+                rotatingDonut.setRotation(rotatingDonut.getRotation()+45);
         }
     }
 }

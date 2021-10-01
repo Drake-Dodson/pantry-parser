@@ -10,6 +10,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Pantry_Parser">
         <activity
+            android:name=".List_View"
+            android:exported="true" />
+        <activity
             android:name=".Pages.Registration_Page"
             android:exported="true" />
         <activity

@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 
 import com.example.pantry_parser.R;
+import com.example.pantry_parser.RecyclerView.ListView;
 
 public class Home_Page extends AppCompatActivity implements View.OnClickListener{
 
@@ -52,7 +53,7 @@ public class Home_Page extends AppCompatActivity implements View.OnClickListener
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.bt_FindRecipes:
-                Intent pantryParserIntent = new Intent(getApplicationContext(), PantryParser_Page.class);
+                Intent pantryParserIntent = new Intent(getApplicationContext(), ListView.class);
                 startActivity(pantryParserIntent);
                 break;
             case R.id.bt_MyRecipes:

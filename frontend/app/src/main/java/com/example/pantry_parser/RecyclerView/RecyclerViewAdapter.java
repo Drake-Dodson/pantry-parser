@@ -1,13 +1,17 @@
 package com.example.pantry_parser.RecyclerView;
 
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.pantry_parser.R;
+
 import java.util.List;
+
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     final int VIEW_TYPE_LOADING = 0;
@@ -24,7 +28,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         if (viewType == VIEW_TYPE_ITEM) {
-            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_row, false);
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_row, parent, false);
             return new ItemViewHolder(view);
         } else {
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_loading, parent, false);
@@ -34,7 +38,9 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int position) {
-        populateItemRows((ItemViewHolder) viewHolder, position);
+        if (viewHolder instanceof ItemViewHolder) {
+            populateItemRows((ItemViewHolder) viewHolder, position);
+        }
     }
 
     @Override
@@ -57,7 +63,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         }
     }
 
-    private class LoadingHolder extends RecyclerView.ViewHolder{
+    private class LoadingHolder extends RecyclerView.ViewHolder {
 
         public LoadingHolder(@NonNull View itemView) {
             super(itemView);

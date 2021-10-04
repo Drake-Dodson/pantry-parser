@@ -1,19 +1,49 @@
 package com.example.pantryparserbackend.users;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class UserController {
+
+    private String success = "{\"message\":\"success\"}";
+    private String failure = "{\"message\":\"failure\"}";
+
+    @Autowired
+    private UserRepository userRepository;
 
     @GetMapping("/")
     public String welcome() {
         return "Pantry Parser Super Cool Homepage";
     }
 
-    @RequestMapping(method = RequestMethod.GET, path = "/user")
-    public String getUsername(@RequestParam(value = "username", defaultValue = "World") String message)
+    @GetMapping(path = "/user/{id}")
+    public User getUserById(@PathVariable int id)
     {
-        return String.format("Hello, %s! You sent a get request with a parameter!", message);
+        return userRepository.findById(id);
     }
 
+    @PostMapping(path = "/user")
+    String createUser(@RequestBody User users){
+        if (users == null)
+            return failure;
+        userRepository.save(users);
+        return success;
+    }
+
+    @PostMapping(path = "/login")
+    public String login(@RequestBody Login login){
+        if (login == null)
+            return failure;
+        User actual = userRepository.findByEmail(login.email);
+        if (actual == null)
+            // Email not found
+            return failure;
+        if(actual.authenticate(login.password)){
+            return success;
+        }else {
+            // Password incorrect
+            return failure;
+        }
+    }
 }

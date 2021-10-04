@@ -10,25 +10,25 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Pantry_Parser">
         <activity
-            android:name=".Registration_Page"
+            android:name=".Pages.Registration_Page"
             android:exported="true" />
         <activity
-            android:name=".Settings_Page"
+            android:name=".Pages.Settings_Page"
             android:exported="true" />
         <activity
-            android:name=".MyRecipes_Page"
+            android:name=".Pages.MyRecipes_Page"
             android:exported="true" />
         <activity
-            android:name=".Favorites_Page"
+            android:name=".Pages.Favorites_Page"
             android:exported="true" />
         <activity
-            android:name=".PantryParser_Page"
+            android:name=".Pages.PantryParser_Page"
             android:exported="true" />
         <activity
-            android:name=".Home_Page"
+            android:name=".Pages.Home_Page"
             android:exported="true" />
         <activity
-            android:name=".Login_Page"
+            android:name=".Pages.Login_Page"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

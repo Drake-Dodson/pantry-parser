@@ -5,7 +5,7 @@
     android:id="@+id/bt_back"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MyRecipes_Page">
+    tools:context=".Pages.MyRecipes_Page">
 
     <TextView
         android:id="@+id/TextView_Pantryparser"

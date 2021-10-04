@@ -1,4 +1,4 @@
-package com.example.pantry_parser;
+package com.example.pantry_parser.Pages;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -16,6 +16,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.pantry_parser.R;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -89,7 +90,9 @@ public class Registration_Page extends AppCompatActivity implements View.OnClick
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-
+                        Toast.makeText(Registration_Page.this,
+                                "Registration Error!" + error.toString(),
+                                Toast.LENGTH_SHORT).show();
                     }
                 })
         {
@@ -103,7 +106,7 @@ public class Registration_Page extends AppCompatActivity implements View.OnClick
             }
         };
 
-        RequestQueue requestQueue = Volley.newRequestQueue((this));
+        RequestQueue requestQueue = Volley.newRequestQueue((getApplicationContext()));
         requestQueue.add(stringRequest);
     }
 }

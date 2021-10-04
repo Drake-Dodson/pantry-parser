@@ -3,8 +3,6 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
-        <entry key="..\:/Users/adang/Com S 309 2_do_8/2_do_8/frontend/app/src/main/res/layout/activity_main.xml" value="0.2644927536231884" />
-        <entry key="..\:/Users/adang/Com S 309 2_do_8/2_do_8/frontend/app/src/main/res/layout/activity_registration_page.xml" value="0.3625" />
         <entry key="app/src/main/res/drawable-40x40/search_icon.xml" value="0.35104166666666664" />
         <entry key="app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.2671875" />
         <entry key="app/src/main/res/drawable/background.xml" value="0.3296296296296296" />
@@ -18,6 +16,7 @@
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.3736413043478261" />
         <entry key="app/src/main/res/layout/activity_my_recipes.xml" value="0.23020833333333332" />
         <entry key="app/src/main/res/layout/activity_pantry_parser.xml" value="0.23020833333333332" />
+        <entry key="app/src/main/res/layout/activity_registration_page.xml" value="0.33695652173913043" />
         <entry key="app/src/main/res/layout/activity_settings.xml" value="0.23020833333333332" />
         <entry key="app/src/main/res/layout/my_row.xml" value="0.40053009466334355" />
       </map>

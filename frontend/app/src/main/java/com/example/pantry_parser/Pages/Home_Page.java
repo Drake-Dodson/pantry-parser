@@ -3,6 +3,7 @@ package com.example.pantry_parser.Pages;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.view.View;
 import android.view.animation.Animation;
@@ -43,8 +44,8 @@ public class Home_Page extends AppCompatActivity implements View.OnClickListener
         a.setRepeatCount(-1);
         a.setDuration(30000);
         a.setInterpolator(new LinearInterpolator());
-
         rotatingDonut.startAnimation(a);
+
     }
 
     @Override
@@ -67,8 +68,8 @@ public class Home_Page extends AppCompatActivity implements View.OnClickListener
                 startActivity(settingsIntent);
                 break;
             case R.id.DonutCircle:
-                View rotatingDonut = findViewById(R.id.DonutCircle);
-                rotatingDonut.setRotation(rotatingDonut.getRotation()+45);
+                final MediaPlayer mp = MediaPlayer.create(this, R.raw.sample);
+                mp.start();
         }
     }
 }

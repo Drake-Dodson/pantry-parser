@@ -10,7 +10,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Pantry_Parser">
         <activity
-            android:name=".List_View"
+            android:name=".RecyclerView.ListView"
             android:exported="true" />
         <activity
             android:name=".Pages.Registration_Page"

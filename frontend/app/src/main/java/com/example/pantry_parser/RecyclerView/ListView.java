@@ -1,14 +1,19 @@
-package com.example.pantry_parser;
+package com.example.pantry_parser.RecyclerView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
 
-public class List_View extends AppCompatActivity {
+public class ListView extends AppCompatActivity {
+    RecyclerView recyclerView;
+    recy
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list_view);
+        recyclerView =
     }
 }

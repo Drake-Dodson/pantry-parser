@@ -14,12 +14,14 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -27,12 +29,15 @@ public class Registration_Page extends AppCompatActivity implements View.OnClick
 
     private EditText userName, userPassword, userConfirmPassword, userEmail;
     private Button  registerButton, alreadyRegbutton;
-    private static String URL_REGIST = "http://";
+    private static final String URL_REGIST = "http://coms-309-032.cs.iastate.edu:8080/user";
+    private RequestQueue Queue;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registration_page);
+
+        Queue = Volley.newRequestQueue(this);
 
         userName = findViewById(R.id.text_registrationUsername);
         userPassword = findViewById((R.id.text_registrationPassword));
@@ -65,18 +70,30 @@ public class Registration_Page extends AppCompatActivity implements View.OnClick
         final String user_Name = userName.getText().toString().trim();
         final String user_Email = userEmail.getText().toString().trim();
         final String user_Password = userPassword.getText().toString().trim();
+        Intent intentLogin = new Intent(getApplicationContext(), Login_Page.class);
 
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, URL_REGIST,
-                new Response.Listener<String>() {
+        JSONObject params = new JSONObject();
+        try {
+            params.put("displayname", user_Name);
+            params.put("email", user_Email);
+            params.put("password", user_Password);
+        } catch (JSONException jsonException) {
+            jsonException.printStackTrace();
+        }
+
+        final String requestBody = params.toString();
+
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, URL_REGIST, new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
                         try{
                             JSONObject jsonObject = new JSONObject(response);
-                            String success = jsonObject.getString("success");
+                            String message = jsonObject.getString("message");
 
-                            if(success.equals("1")){
+                            if(message.equals("success")){
                                 Toast.makeText(Registration_Page.this,
                                         "Registration Successful!", Toast.LENGTH_SHORT).show();
+                                startActivity(intentLogin);
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -93,19 +110,42 @@ public class Registration_Page extends AppCompatActivity implements View.OnClick
                                 "Registration Error!" + error.toString(),
                                 Toast.LENGTH_SHORT).show();
                     }
-                })
-        {
+                }){
             @Override
-            protected Map<String, String> getParams() throws AuthFailureError {
-                Map<String, String> params = new HashMap<>();
-                params.put("name", user_Name);
-                params.put("email", user_Email);
-                params.put("password", user_Password);
-                return params;
+            public String getBodyContentType() {
+                return "application/json; charset=utf-8";
+            }
+
+            @Override
+            public byte[] getBody() {
+                try {
+
+                    return requestBody == null ? null : requestBody.getBytes("utf-8");
+                } catch (UnsupportedEncodingException e) {
+                    VolleyLog.wtf("Unsupported Encoding while trying to get the bytes of %s using %s", requestBody, "utf-8");
+                    return null;
+                }
             }
         };
 
-        RequestQueue requestQueue = Volley.newRequestQueue((getApplicationContext()));
-        requestQueue.add(stringRequest);
+
+
+
+        /*{
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                params.put("displayname", user_Name);
+                params.put("email", user_Email);
+                params.put("password", user_Password);
+
+                return params;
+            }
+        };
+        */
+
+        Queue.add(stringRequest);
+        //RequestQueue requestQueue = Volley.newRequestQueue(this);
+        //requestQueue.add(stringRequest);
     }
 }

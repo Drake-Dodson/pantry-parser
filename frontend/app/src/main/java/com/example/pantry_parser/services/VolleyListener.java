@@ -10,7 +10,7 @@ import com.android.volley.toolbox.StringRequest;
 import org.json.JSONObject;
 
 public class VolleyListener {
-    private static String baseUrl = "";
+    private static String baseUrl = "http://coms-309-032.cs.iastate.edu:8080";
 
     public static void makeRequest(Context context, String path, RequestListener requestListener, JSONObject data, int method){
 

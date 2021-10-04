@@ -112,10 +112,10 @@ public class Login_Page extends AppCompatActivity implements View.OnClickListene
         };
 
         JSONObject data = new JSONObject();
-        data.put("username", eName);
+        data.put("email", eName);
         data.put("password", ePassword);
 
-        VolleyListener.makeRequest(getApplicationContext(), "077e2f47", loginListener, data, Request.Method.POST);
+        VolleyListener.makeRequest(getApplicationContext(), "/login", loginListener, data, Request.Method.POST);
     }
 
     private boolean validateAdmin(String name, String password) {

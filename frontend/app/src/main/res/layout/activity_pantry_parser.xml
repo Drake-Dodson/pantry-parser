@@ -51,13 +51,12 @@
         android:id="@+id/bt_findbyname"
         android:layout_width="350dp"
         android:layout_height="50dp"
+        android:layout_marginBottom="40dp"
         android:background="#FE5F55"
         android:text="Find by name"
         android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.491"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.955" />
+        app:layout_constraintStart_toStartOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

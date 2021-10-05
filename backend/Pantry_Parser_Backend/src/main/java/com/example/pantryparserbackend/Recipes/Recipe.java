@@ -18,7 +18,7 @@ public class Recipe {
     private String summary;
     private String description;
 
-    @Temporal(TemporalType.DATE)
+    @Temporal(TemporalType.TIMESTAMP)
     private Date created_date;
     @Nullable
     private double rating;
@@ -31,7 +31,7 @@ public class Recipe {
     @JsonIgnore
     private User creator;
 
-    public Recipe(String name, int time, String summary, String description, User creator)
+    public Recipe(String name, int time, String summary, String description)
     {
         this.name = name;
         this.time = time;
@@ -39,7 +39,6 @@ public class Recipe {
         this.description = description;
         this.created_date = new Date();
         this.rating = 0;
-        this.creator = creator;
     }
     public Recipe(){}
 
@@ -61,6 +60,9 @@ public class Recipe {
     public void updateRating(){ /* get average of reviews */ }
 //    public void setCategory(Category category) { this.category = category; }
     public void setCreator(User creator) { this.creator = creator; }
+    public void setCreatedDate() {
+        this.created_date = new Date();
+    }
 
     public void update(Recipe request) {
         this.setName(request.getName());

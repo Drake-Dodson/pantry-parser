@@ -27,6 +27,7 @@ public class RecipeController {
     String createRecipe(@RequestBody Recipe recipe){
         if(recipe == null)
             return failure;
+        recipe.setCreatedDate();
         recipeRepository.save(recipe);
         return success;
     }

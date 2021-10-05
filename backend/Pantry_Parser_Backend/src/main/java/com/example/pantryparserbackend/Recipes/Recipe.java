@@ -2,6 +2,7 @@ package com.example.pantryparserbackend.Recipes;
 
 import javax.persistence.*;
 
+import com.example.pantryparserbackend.users.User;
 import org.springframework.lang.Nullable;
 
 import java.util.Date;
@@ -24,12 +25,11 @@ public class Recipe {
 //    @OneToOne(cascade = CascadeType.ALL)
 //    @JoinColumn(name = "category_id")
 //    private Category category;
-//    @Nullable
-//    @OneToOne(cascade = CascadeType.ALL)
-//    @JoinColumn(name = "creator_id")
-//    private User creator;
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "creator_id")
+    private User creator;
 
-    public Recipe(String name, int time, String summary, String description)
+    public Recipe(String name, int time, String summary, String description, User creator)
     {
         this.name = name;
         this.time = time;
@@ -37,6 +37,7 @@ public class Recipe {
         this.description = description;
         this.created_date = new Date();
         this.rating = 0;
+        this.creator = creator;
     }
     public Recipe(){}
 
@@ -48,7 +49,7 @@ public class Recipe {
     public Date getCreated_date() { return created_date; }
     public double getRating() { return rating; }
 //    public Category getCategory() { return category; }
-//    public User getCreator() { return creator; }
+    public User getCreator() { return creator; }
 
     //not including a set for created_date since this shouldn't be changed
     public void setId(int id){ this.id = id; }
@@ -58,5 +59,5 @@ public class Recipe {
     public void setDescription(String description){ this.description = description; }
     public void updateRating(){ /* get average of reviews */ }
 //    public void setCategory(Category category) { this.category = category; }
-//    public void setCreator(User creator) { this.creator = creator; }
+    public void setCreator(User creator) { this.creator = creator; }
 }

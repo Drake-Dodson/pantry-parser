@@ -1,5 +1,7 @@
 package com.example.pantryparserbackend.users;
 
+import com.example.pantryparserbackend.Recipes.Recipe;
+
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 import javax.persistence.*;
@@ -8,6 +10,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
+import java.util.Set;
 
 @Entity
 public class User {
@@ -19,6 +22,8 @@ public class User {
     private String email;
     private String password;
     private String role;
+    @OneToMany(mappedBy = "recipe")
+    private Set<Recipe> recipes;
 
     public User(String password, String email) {
         this.password = this.newHash(password);

@@ -13,6 +13,9 @@
         android:usesCleartextTraffic="true"
         android:theme="@style/Theme.Pantry_Parser">
         <activity
+            android:name=".RecyclerView.ListView"
+            android:exported="true" />
+        <activity
             android:name=".Pages.Registration_Page"
             android:exported="true" />
         <activity

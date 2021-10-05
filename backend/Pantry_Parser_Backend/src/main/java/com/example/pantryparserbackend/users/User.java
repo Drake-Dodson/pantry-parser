@@ -10,6 +10,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -22,8 +23,8 @@ public class User {
     private String email;
     private String password;
     private String role;
-    @OneToMany(mappedBy = "recipe")
-    private Set<Recipe> recipes;
+    @OneToMany
+    private List<Recipe> recipes;
 
     public User(String password, String email) {
         this.password = this.newHash(password);

@@ -3,6 +3,7 @@ package com.example.pantryparserbackend.Recipes;
 import javax.persistence.*;
 
 import com.example.pantryparserbackend.users.User;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.lang.Nullable;
 
 import java.util.Date;
@@ -25,8 +26,9 @@ public class Recipe {
 //    @OneToOne(cascade = CascadeType.ALL)
 //    @JoinColumn(name = "category_id")
 //    private Category category;
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "creator_id")
+    @JsonIgnore
     private User creator;
 
     public Recipe(String name, int time, String summary, String description, User creator)
@@ -52,7 +54,6 @@ public class Recipe {
     public User getCreator() { return creator; }
 
     //not including a set for created_date since this shouldn't be changed
-    public void setId(int id){ this.id = id; }
     public void setName(String name){ this.name = name; }
     public void setTime(int time){ this.time = time; }
     public void setSummary(String summary){ this.summary = summary; }
@@ -60,4 +61,12 @@ public class Recipe {
     public void updateRating(){ /* get average of reviews */ }
 //    public void setCategory(Category category) { this.category = category; }
     public void setCreator(User creator) { this.creator = creator; }
+
+    public void update(Recipe request) {
+        this.setName(request.getName());
+        this.setTime(request.getTime());
+        this.setSummary(request.getSummary());
+        this.setDescription(request.getDescription());
+        this.updateRating();
+    }
 }

@@ -2,13 +2,7 @@ package com.example.pantryparserbackend.Recipes;
 
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class RecipeController {
@@ -37,16 +31,17 @@ public class RecipeController {
         return success;
     }
 
-    @PutMapping(path = "/laptops/{id}")
+    @PatchMapping(path = "/recipes/{id}")
     Recipe updateRecipe(@PathVariable int id, @RequestBody Recipe request){
         Recipe recipe = recipeRepository.findById(id);
         if(recipe == null)
             return null;
-        recipeRepository.save(request);
+        recipe.update(request);
+        recipeRepository.save(recipe);
         return recipeRepository.findById(id);
     }
 
-    @DeleteMapping(path = "/laptops/{id}")
+    @DeleteMapping(path = "/recipes/{id}")
     String deleteRecipe(@PathVariable int id){
         recipeRepository.deleteById(id);
         return success;

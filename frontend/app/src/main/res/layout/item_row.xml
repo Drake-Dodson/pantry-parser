@@ -1,28 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<androidx.cardview.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:paddingTop="10dp"
     android:paddingBottom="10dp"
-
+    android:layout_marginLeft="5dp"
+    android:layout_marginRight="5dp"
+    android:layout_marginTop="1dp"
+    android:layout_marginBottom="5dp"
+    android:elevation="10dp"
+    app:cardUseCompatPadding="true"
+    app:cardBackgroundColor="@color/cardview_light_background"
+    app:cardCornerRadius="10dp"
     >
+    <ImageView
+        android:id="@+id/imageView3"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:layout_marginLeft="325dp"
+        app:srcCompat="@drawable/general_search_icon" />
 
     <TextView
-        android:id="@+id/tvItem"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
+        android:id="@+id/title"
+        android:layout_width="310dp"
+        android:layout_height="25dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="5dp"
+        android:fontFamily="@font/ultra"
+        android:text="Recipe Name"
+        android:textSize="20dp" />
 
-        />
+    <TextView
+        android:id="@+id/subtitle"
+        android:layout_width="90dp"
+        android:layout_height="20dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginLeft="10dp"
+        android:fontFamily="@font/bebas"
+        android:text="Time to make:"
+        android:textSize="20dp" />
 
-    <Button
-        android:id="@+id/message_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingLeft="16dp"
-        android:paddingRight="16dp"
-        android:textSize="10sp"
-        />
-</LinearLayout>
+    <TextView
+        android:id="@+id/time"
+        android:layout_width="25dp"
+        android:layout_height="20dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginLeft="100dp"
+        android:fontFamily="@font/bebas"
+        android:text="100"
+        android:textSize="20dp" />
+
+    <TextView
+        android:id="@+id/minutes"
+        android:layout_width="25dp"
+        android:layout_height="20dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginLeft="125dp"
+        android:fontFamily="@font/bebas"
+        android:text="min"
+        android:textSize="20dp" />
+
+
+
+</androidx.cardview.widget.CardView>

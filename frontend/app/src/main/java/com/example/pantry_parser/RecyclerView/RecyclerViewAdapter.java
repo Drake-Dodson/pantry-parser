@@ -1,15 +1,11 @@
 package com.example.pantry_parser.RecyclerView;
-
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-
 import com.example.pantry_parser.R;
-
 import java.util.List;
 
 
@@ -59,7 +55,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
         public ItemViewHolder(@NonNull View itemView) {
             super(itemView);
-            tvItem = itemView.findViewById(R.id.tvItem);
+            tvItem = itemView.findViewById(R.id.title);
         }
     }
 

@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.example</groupId>
     <artifactId>pantry-parser-backend</artifactId>
-    <version>0.0.3-SNAPSHOT-Recipe_User_relation</version>
+    <version>0.0.4-SNAPSHOT-Ingredients</version>
     <name>pantry-parser-backend</name>
     <description>pantry-parser-backend</description>
     <properties>

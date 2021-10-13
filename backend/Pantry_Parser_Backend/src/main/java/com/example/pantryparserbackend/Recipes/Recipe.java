@@ -24,10 +24,12 @@ public class Recipe {
     private Date created_date;
     @Nullable
     private double rating;
+
     @ManyToOne
     @JoinColumn(name = "creator_id")
     @JsonIgnore
     private User creator;
+
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "favorites",
@@ -36,6 +38,15 @@ public class Recipe {
     )
     @JsonIgnore
     private Set<User> favoritedBy;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "ingredients",
+            joinColumns = @JoinColumn(name = "recipe_id"),
+            inverseJoinColumns = @JoinColumn(name = "ingredient_id")
+    )
+    @JsonIgnore
+    private Set<Ingredient> ingredients;
 
     public Recipe(String name, int time, String summary, String description)
     {
@@ -48,14 +59,15 @@ public class Recipe {
     }
     public Recipe(){}
 
-    public int getId(){ return id; }
-    public String getName() { return name; }
-    public int getTime() { return time; }
-    public String getSummary() { return summary; }
-    public String getDescription() { return description; }
-    public Date getCreated_date() { return created_date; }
-    public double getRating() { return rating; }
-    public String getCreatorName() { return creator.getDisplayName(); }
+    public int getId(){ return this.id; }
+    public String getName() { return this.name; }
+    public int getTime() { return this.time; }
+    public String getSummary() { return this.summary; }
+    public String getDescription() { return this.description; }
+    public Date getCreated_date() { return this.created_date; }
+    public double getRating() { return this.rating; }
+    public String getCreatorName() { return this.creator.getDisplayName(); }
+    public Set<Ingredient> getIngredients() { return this.ingredients; }
 
     //not including a set for created_date since this shouldn't be changed
     public void setName(String name){ this.name = name; }
@@ -66,6 +78,12 @@ public class Recipe {
     public void setCreator(User creator) { this.creator = creator; }
     public void setCreatedDate() {
         this.created_date = new Date();
+    }
+    public void addIngredient(Ingredient i){
+        this.ingredients.add(i);
+    }
+    public void removeIngredient(Ingredient i){
+        this.ingredients.add(i);
     }
 
     public void update(Recipe request) {

@@ -1,6 +1,9 @@
 package com.example.pantryparserbackend.Recipes;
 
 import java.util.List;
+import java.util.Locale;
+import java.util.Set;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import com.example.pantryparserbackend.users.UserRepository;
@@ -14,6 +17,8 @@ public class RecipeController {
 
     @Autowired
     UserRepository userRepository;
+    @Autowired
+    IngredientRepository ingredientRepository;
 
     private final String success = "{\"message\":\"success\"}";
     private final String failure = "{\"message\":\"failure\"}";
@@ -54,6 +59,41 @@ public class RecipeController {
     @DeleteMapping(path = "/recipes/{id}")
     String deleteRecipe(@PathVariable int id){
         recipeRepository.deleteById(id);
+        return success;
+    }
+
+    @GetMapping(path = "/ingredients")
+    List<Ingredient> showIngredients(){
+        return ingredientRepository.findAll();
+    }
+
+    @PostMapping(path = "/ingredients")
+    String createIngredient(@RequestBody Ingredient request){
+        if(request == null){
+            return failure;
+        }
+        request.nameToLower();
+        ingredientRepository.save(request);
+        return success;
+    }
+
+    @PatchMapping(path = "/recipes/{id}/ingredients/{name}")
+    String addIngredient(@PathVariable int id, @PathVariable String name){
+        Recipe r = recipeRepository.findById(id);
+        Ingredient i = ingredientRepository.findByName(name.toLowerCase());
+
+        r.addIngredient(i);
+        recipeRepository.save(r);
+        return success;
+    }
+
+    @DeleteMapping(path = "/recipes/{id}/ingredients/{name}")
+    String removeIngredient(@PathVariable int id, @PathVariable String name){
+        Recipe r = recipeRepository.findById(id);
+        Ingredient i = ingredientRepository.findByName(name.toLowerCase());
+
+        r.removeIngredient(i);
+        recipeRepository.save(r);
         return success;
     }
 }

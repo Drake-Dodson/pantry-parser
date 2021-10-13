@@ -6,6 +6,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import com.example.pantry_parser.R;
+import com.example.pantry_parser.Recipe;
+
 import java.util.List;
 
 
@@ -14,10 +16,10 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     final int VIEW_TYPE_ITEM = 1;
 
 
-    public List<String> mItemList;
+    public List<Recipe> mItemList;
 
-    public RecyclerViewAdapter(List<String> itemList) {
-        mItemList = itemList;
+    public RecyclerViewAdapter(List<Recipe> recipeList) {
+        mItemList = recipeList;
     }
 
     @NonNull
@@ -50,12 +52,13 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     }
 
     private class ItemViewHolder extends RecyclerView.ViewHolder {
-        TextView tvItem;
-
+        TextView recipeName;
+        TextView minutesToMake;
 
         public ItemViewHolder(@NonNull View itemView) {
             super(itemView);
-            tvItem = itemView.findViewById(R.id.title);
+            recipeName = itemView.findViewById(R.id.title);
+            minutesToMake = itemView.findViewById(R.id.time);
         }
     }
 
@@ -67,8 +70,9 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     }
 
     private void populateItemRows(ItemViewHolder viewHolder, int position) {
-        String item = mItemList.get(position);
-        viewHolder.tvItem.setText(item);
+        Recipe item = mItemList.get(position);
+        viewHolder.recipeName.setText(item.recipeName);
+        viewHolder.minutesToMake.setText(Integer.toString(item.timeToMake));
     }
 
 }

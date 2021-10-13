@@ -9,13 +9,14 @@ import android.os.Bundle;
 import android.widget.LinearLayout;
 
 import com.example.pantry_parser.R;
+import com.example.pantry_parser.Recipe;
 
 import java.util.ArrayList;
 
 public class ListView extends AppCompatActivity {
     RecyclerView recyclerView;
     RecyclerViewAdapter recyclerViewAdapter;
-    ArrayList<String> dataset = new ArrayList<>();
+    ArrayList<Recipe> dataset = new ArrayList<>();
     boolean isLoading = false;
 
     @Override
@@ -50,7 +51,9 @@ public class ListView extends AppCompatActivity {
         int currentSize = dataset.size();
         int nextSize = currentSize + 10;
         while (currentSize < nextSize){
-            dataset.add("Recipe " + currentSize);
+            Recipe recipe = new Recipe("recipe " + currentSize);
+            recipe.setTimeToMake(currentSize);
+            dataset.add(recipe);
             currentSize++;
         }
         recyclerViewAdapter.notifyDataSetChanged();
@@ -60,7 +63,9 @@ public class ListView extends AppCompatActivity {
     private void populateData(){
         int i = 0;
         while (i<=10) {
-            dataset.add("Recipe" + i);
+            Recipe recipe = new Recipe("recipe "+i);
+            recipe.setTimeToMake(i);
+            dataset.add(recipe);
             i++;
         }
     }

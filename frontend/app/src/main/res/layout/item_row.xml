@@ -49,9 +49,10 @@
         android:layout_width="25dp"
         android:layout_height="20dp"
         android:layout_marginTop="30dp"
-        android:layout_marginLeft="100dp"
+        android:layout_marginLeft="103dp"
         android:fontFamily="@font/bebas"
         android:text="100"
+        android:textAlignment="center"
         android:textSize="20dp" />
 
     <TextView
@@ -59,7 +60,7 @@
         android:layout_width="25dp"
         android:layout_height="20dp"
         android:layout_marginTop="30dp"
-        android:layout_marginLeft="125dp"
+        android:layout_marginLeft="130dp"
         android:fontFamily="@font/bebas"
         android:text="min"
         android:textSize="20dp" />

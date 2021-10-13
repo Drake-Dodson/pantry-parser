@@ -3,11 +3,14 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="../../../../../../layout/custom_preview.xml" value="0.24322916666666666" />
         <entry key="app/src/main/res/drawable-40x40/search_icon.xml" value="0.35104166666666664" />
         <entry key="app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.2671875" />
         <entry key="app/src/main/res/drawable/background.xml" value="0.3296296296296296" />
+        <entry key="app/src/main/res/drawable/background_gradient.xml" value="0.4197916666666667" />
         <entry key="app/src/main/res/drawable/button.xml" value="0.24635416666666668" />
         <entry key="app/src/main/res/drawable/ic_launcher_background.xml" value="0.2671875" />
+        <entry key="app/src/main/res/drawable/pink_background.xml" value="0.3515625" />
         <entry key="app/src/main/res/drawable/search_icon.xml" value="0.15925925925925927" />
         <entry key="app/src/main/res/layout/activity_favorites.xml" value="0.23020833333333332" />
         <entry key="app/src/main/res/layout/activity_find_recipes.xml" value="0.20260416666666667" />

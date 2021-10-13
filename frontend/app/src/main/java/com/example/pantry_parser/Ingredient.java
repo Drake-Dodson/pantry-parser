@@ -4,9 +4,12 @@ public class Ingredient {
 
     private String name;
     private Double quantity;
+    private Unit unit;
 
-    public Ingredient(String name, Double quantity) {
+    public Ingredient(String name, Double quantity, Unit unit) {
         this.name = name;
+        this.quantity = quantity;
+        this.unit = unit;
     }
 
     public String getName() {

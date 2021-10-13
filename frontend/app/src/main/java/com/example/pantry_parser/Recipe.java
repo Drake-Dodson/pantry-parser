@@ -7,6 +7,8 @@ public class Recipe {
     public ArrayList<Ingredient> ingredients;
     public int timeToMake;
 
+    public float rating;
+
     public Recipe(String recipeName, ArrayList<Ingredient> ingredients) {
         this.recipeName = recipeName;
         this.ingredients = ingredients;
@@ -34,6 +36,14 @@ public class Recipe {
 
     public int getTimeToMake() {
         return timeToMake;
+    }
+
+    public double getRating() {
+        return rating;
+    }
+
+    public void setRating(float rating) {
+        this.rating = rating;
     }
 
     public void setTimeToMake(int timeToMake) {

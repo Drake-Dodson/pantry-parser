@@ -4,6 +4,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RatingBar;
 import android.widget.TextView;
 import com.example.pantry_parser.R;
 import com.example.pantry_parser.Recipe;
@@ -54,11 +55,13 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     private class ItemViewHolder extends RecyclerView.ViewHolder {
         TextView recipeName;
         TextView minutesToMake;
+        RatingBar ratingBar;
 
         public ItemViewHolder(@NonNull View itemView) {
             super(itemView);
             recipeName = itemView.findViewById(R.id.title);
             minutesToMake = itemView.findViewById(R.id.time);
+            ratingBar = itemView.findViewById(R.id.ratingBar);
         }
     }
 
@@ -73,6 +76,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         Recipe item = mItemList.get(position);
         viewHolder.recipeName.setText(item.recipeName);
         viewHolder.minutesToMake.setText(Integer.toString(item.timeToMake));
+        viewHolder.ratingBar.setRating(item.rating);
     }
 
 }

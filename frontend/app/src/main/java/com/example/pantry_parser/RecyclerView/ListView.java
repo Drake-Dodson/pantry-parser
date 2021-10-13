@@ -51,8 +51,9 @@ public class ListView extends AppCompatActivity {
         int currentSize = dataset.size();
         int nextSize = currentSize + 10;
         while (currentSize < nextSize){
-            Recipe recipe = new Recipe("recipe " + currentSize);
+            Recipe recipe = new Recipe("Recipe " + currentSize);
             recipe.setTimeToMake(currentSize);
+            recipe.setRating((float) currentSize/5);
             dataset.add(recipe);
             currentSize++;
         }
@@ -63,8 +64,9 @@ public class ListView extends AppCompatActivity {
     private void populateData(){
         int i = 0;
         while (i<=10) {
-            Recipe recipe = new Recipe("recipe "+i);
+            Recipe recipe = new Recipe("Recipe "+i);
             recipe.setTimeToMake(i);
+            recipe.setRating((float)i/5);
             dataset.add(recipe);
             i++;
         }

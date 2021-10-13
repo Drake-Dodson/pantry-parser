@@ -3,12 +3,17 @@ package com.example.pantryparserbackend.Recipes;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import com.example.pantryparserbackend.users.UserRepository;
+import com.example.pantryparserbackend.users.User;
 
 @RestController
 public class RecipeController {
 
     @Autowired
     RecipeRepository recipeRepository;
+
+    @Autowired
+    UserRepository userRepository;
 
     private final String success = "{\"message\":\"success\"}";
     private final String failure = "{\"message\":\"failure\"}";
@@ -23,12 +28,16 @@ public class RecipeController {
         return recipeRepository.findById(id);
     }
 
-    @PostMapping(path = "/recipes")
-    String createRecipe(@RequestBody Recipe recipe){
+    @PostMapping(path = "/recipes/{user_id}")
+    String createRecipe(@PathVariable int user_id, @RequestBody Recipe recipe){
         if(recipe == null)
             return failure;
         recipe.setCreatedDate();
+        User u = userRepository.findById(user_id);
+        recipe.setCreator(u);
+        u.addRecipe(recipe);
         recipeRepository.save(recipe);
+        userRepository.save(u);
         return success;
     }
 

@@ -1,6 +1,8 @@
 package com.example.pantryparserbackend.users;
 
 import com.example.pantryparserbackend.Recipes.Recipe;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
@@ -24,14 +26,15 @@ public class User {
     private String password;
     private String role;
     @OneToMany
-    private List<Recipe> recipes;
+    private Set<Recipe> recipes;
+    @ManyToMany
+    private Set<Recipe> favorites;
 
     public User(String password, String email) {
         this.password = this.newHash(password);
         this.email = email;
         this.role = "Main";
     }
-
     public User() {}
 
     public int getId() { return this.id; }
@@ -42,7 +45,13 @@ public class User {
         return this.email;
     }
     public String getRole() {
-        return role;
+        return this.role;
+    }
+    public Set<Recipe> getRecipes() {
+        return this.recipes;
+    }
+    public Set<Recipe> getFavorites() {
+        return this.favorites;
     }
 
     public void setDisplayName(String displayName) {
@@ -57,6 +66,15 @@ public class User {
     public void setRole(String role) {
         this.role = role;
     }
+    public void favorite(Recipe favorite) {
+        this.favorites.add(favorite);
+    }
+    public void unfavorite(Recipe favorite) {
+        this.favorites.remove(favorite);
+    }
+    public void addRecipe(Recipe r){
+        this.recipes.add(r);
+    }
 
     public boolean authenticate(String password) {
         String stored = this.password;
@@ -66,7 +84,6 @@ public class User {
         String passwordToTest = hash(password, salt);
         return stored.equals(passwordToTest);
     }
-
     private String newHash(String password) {
         SecureRandom random = new SecureRandom();
         byte[] salt = new byte[16];

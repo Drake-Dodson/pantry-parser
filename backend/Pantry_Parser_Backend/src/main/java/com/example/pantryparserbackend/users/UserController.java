@@ -1,7 +1,11 @@
 package com.example.pantryparserbackend.users;
 
+import com.example.pantryparserbackend.Recipes.Recipe;
+import com.example.pantryparserbackend.Recipes.RecipeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Arrays;
 
 @RestController
 public class UserController {
@@ -11,6 +15,8 @@ public class UserController {
 
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private RecipeRepository recipeRepository;
 
     @GetMapping("/")
     public String welcome() {
@@ -45,5 +51,23 @@ public class UserController {
             // Password incorrect
             return failure;
         }
+    }
+
+    @PatchMapping(path = "/user/{user_id}/favorites/{recipe_id}")
+    public String favorite(@PathVariable int user_id, @PathVariable int recipe_id){
+        User u = userRepository.findById(user_id);
+        Recipe r = recipeRepository.findById(recipe_id);
+        u.favorite(r);
+        userRepository.save(u);
+        return success;
+    }
+
+    @DeleteMapping(path = "/user/{user_id}/favorites/{recipe_id}")
+    public String unfavorite(@PathVariable int user_id, @PathVariable int recipe_id){
+        User u = userRepository.findById(user_id);
+        Recipe r = recipeRepository.findById(recipe_id);
+        u.unfavorite(r);
+        userRepository.save(u);
+        return success;
     }
 }

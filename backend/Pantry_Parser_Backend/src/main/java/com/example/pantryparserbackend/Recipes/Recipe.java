@@ -45,7 +45,6 @@ public class Recipe {
             joinColumns = @JoinColumn(name = "recipe_id"),
             inverseJoinColumns = @JoinColumn(name = "ingredient_id")
     )
-    @JsonIgnore
     private Set<Ingredient> ingredients;
 
     public Recipe(String name, int time, String summary, String description)
@@ -83,7 +82,7 @@ public class Recipe {
         this.ingredients.add(i);
     }
     public void removeIngredient(Ingredient i){
-        this.ingredients.add(i);
+        this.ingredients.remove(i);
     }
 
     public void update(Recipe request) {

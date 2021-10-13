@@ -14,7 +14,6 @@ public class RecipeController {
 
     @Autowired
     RecipeRepository recipeRepository;
-
     @Autowired
     UserRepository userRepository;
     @Autowired
@@ -27,12 +26,10 @@ public class RecipeController {
     List<Recipe> getAllRecipes(){
         return recipeRepository.findAll();
     }
-
     @GetMapping(path = "/recipes/{id}")
     Recipe getRecipeById(@PathVariable int id){
         return recipeRepository.findById(id);
     }
-
     @PostMapping(path = "/recipes/{user_id}")
     String createRecipe(@PathVariable int user_id, @RequestBody Recipe recipe){
         if(recipe == null)
@@ -45,7 +42,6 @@ public class RecipeController {
         userRepository.save(u);
         return success;
     }
-
     @PatchMapping(path = "/recipes/{id}")
     Recipe updateRecipe(@PathVariable int id, @RequestBody Recipe request){
         Recipe recipe = recipeRepository.findById(id);
@@ -55,7 +51,6 @@ public class RecipeController {
         recipeRepository.save(recipe);
         return recipeRepository.findById(id);
     }
-
     @DeleteMapping(path = "/recipes/{id}")
     String deleteRecipe(@PathVariable int id){
         recipeRepository.deleteById(id);
@@ -66,7 +61,6 @@ public class RecipeController {
     List<Ingredient> showIngredients(){
         return ingredientRepository.findAll();
     }
-
     @PostMapping(path = "/ingredients")
     String createIngredient(@RequestBody Ingredient request){
         if(request == null){
@@ -77,6 +71,11 @@ public class RecipeController {
         return success;
     }
 
+    @GetMapping(path = "/recipes/{id}/ingredients")
+    Set<Ingredient> ingredientsByRecipe(@PathVariable int id){
+        Recipe r = recipeRepository.findById(id);
+        return r.getIngredients();
+    }
     @PatchMapping(path = "/recipes/{id}/ingredients/{name}")
     String addIngredient(@PathVariable int id, @PathVariable String name){
         Recipe r = recipeRepository.findById(id);
@@ -86,7 +85,6 @@ public class RecipeController {
         recipeRepository.save(r);
         return success;
     }
-
     @DeleteMapping(path = "/recipes/{id}/ingredients/{name}")
     String removeIngredient(@PathVariable int id, @PathVariable String name){
         Recipe r = recipeRepository.findById(id);

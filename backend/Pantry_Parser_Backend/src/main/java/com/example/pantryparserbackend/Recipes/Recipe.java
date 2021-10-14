@@ -5,8 +5,10 @@ import javax.persistence.*;
 import com.example.pantryparserbackend.users.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.lang.Nullable;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
+import java.util.Set;
 
 @Entity
 public class Recipe {
@@ -22,14 +24,18 @@ public class Recipe {
     private Date created_date;
     @Nullable
     private double rating;
-//    @Nullable
-//    @OneToOne(cascade = CascadeType.ALL)
-//    @JoinColumn(name = "category_id")
-//    private Category category;
     @ManyToOne
     @JoinColumn(name = "creator_id")
     @JsonIgnore
     private User creator;
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "favorites",
+            joinColumns = @JoinColumn(name = "recipe_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
+    @JsonIgnore
+    private Set<User> favoritedBy;
 
     public Recipe(String name, int time, String summary, String description)
     {
@@ -49,8 +55,7 @@ public class Recipe {
     public String getDescription() { return description; }
     public Date getCreated_date() { return created_date; }
     public double getRating() { return rating; }
-//    public Category getCategory() { return category; }
-    public User getCreator() { return creator; }
+    public String getCreatorName() { return creator.getDisplayName(); }
 
     //not including a set for created_date since this shouldn't be changed
     public void setName(String name){ this.name = name; }
@@ -58,7 +63,6 @@ public class Recipe {
     public void setSummary(String summary){ this.summary = summary; }
     public void setDescription(String description){ this.description = description; }
     public void updateRating(){ /* get average of reviews */ }
-//    public void setCategory(Category category) { this.category = category; }
     public void setCreator(User creator) { this.creator = creator; }
     public void setCreatedDate() {
         this.created_date = new Date();

@@ -1,8 +1,6 @@
 package com.example.pantryparserbackend.Recipes;
 
 import java.util.List;
-import java.util.Locale;
-import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -70,9 +68,14 @@ public class RecipeController {
         ingredientRepository.save(request);
         return success;
     }
+    @GetMapping(path="/ingredient/{name}/recipes")
+    List<Recipe> ingredientRecipes(@PathVariable String name){
+        Ingredient i = ingredientRepository.findByName(name);
+        return i.getRecipes();
+    }
 
     @GetMapping(path = "/recipes/{id}/ingredients")
-    Set<Ingredient> ingredientsByRecipe(@PathVariable int id){
+    List<Ingredient> ingredientsByRecipe(@PathVariable int id){
         Recipe r = recipeRepository.findById(id);
         return r.getIngredients();
     }

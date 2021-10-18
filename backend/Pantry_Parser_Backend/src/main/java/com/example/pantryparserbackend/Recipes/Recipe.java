@@ -5,12 +5,12 @@ import javax.persistence.*;
 import com.example.pantryparserbackend.users.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.lang.Nullable;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
-import java.util.Set;
+import java.util.List;
 
 @Entity
+@Table(name = "recipes")
 public class Recipe {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -37,15 +37,15 @@ public class Recipe {
             inverseJoinColumns = @JoinColumn(name = "user_id")
     )
     @JsonIgnore
-    private Set<User> favoritedBy;
+    private List<User> favoritedBy;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
-            name = "ingredients",
+            name = "recipe_ingredient",
             joinColumns = @JoinColumn(name = "recipe_id"),
             inverseJoinColumns = @JoinColumn(name = "ingredient_id")
     )
-    private Set<Ingredient> ingredients;
+    private List<Ingredient> ingredients;
 
     public Recipe(String name, int time, String summary, String description)
     {
@@ -66,7 +66,7 @@ public class Recipe {
     public Date getCreated_date() { return this.created_date; }
     public double getRating() { return this.rating; }
     public String getCreatorName() { return this.creator.getDisplayName(); }
-    public Set<Ingredient> getIngredients() { return this.ingredients; }
+    public List<Ingredient> getIngredients() { return this.ingredients; }
 
     //not including a set for created_date since this shouldn't be changed
     public void setName(String name){ this.name = name; }

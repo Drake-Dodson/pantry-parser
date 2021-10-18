@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Set;
 
 @Entity
+@Table(name = "users")
 public class User {
 
     @Id
@@ -26,9 +27,14 @@ public class User {
     private String password;
     private String role;
     @OneToMany
-    private Set<Recipe> recipes;
+    private List<Recipe> created_recipes;
     @ManyToMany
-    private Set<Recipe> favorites;
+    @JoinTable(
+            name = "favorites",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "recipe_id")
+    )
+    private List<Recipe> favorites;
 
     public User(String password, String email) {
         this.password = this.newHash(password);
@@ -47,10 +53,10 @@ public class User {
     public String getRole() {
         return this.role;
     }
-    public Set<Recipe> getRecipes() {
-        return this.recipes;
+    public List<Recipe> getRecipes() {
+        return this.created_recipes;
     }
-    public Set<Recipe> getFavorites() {
+    public List<Recipe> getFavorites() {
         return this.favorites;
     }
 
@@ -73,7 +79,7 @@ public class User {
         this.favorites.remove(favorite);
     }
     public void addRecipe(Recipe r){
-        this.recipes.add(r);
+        this.created_recipes.add(r);
     }
 
     public boolean authenticate(String password) {

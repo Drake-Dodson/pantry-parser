@@ -73,6 +73,11 @@ public class RecipeController {
         Ingredient i = ingredientRepository.findByName(name);
         return i.getRecipes();
     }
+    @PutMapping(path = "/ingredients/recipes")
+    List<Recipe> recipesByIngrents(@RequestBody List<String> input){
+        return recipeRepository.getByIngredients(input);
+    }
+
 
     @GetMapping(path = "/recipes/{id}/ingredients")
     List<Ingredient> ingredientsByRecipe(@PathVariable int id){

@@ -12,8 +12,9 @@ import java.util.Set;
 @RestController
 public class UserController {
 
-    private String success = "{\"message\":\"success\"}";
-    private String failure = "{\"message\":\"failure\"}";
+    private final String success = "{\"message\":\"success\"}";
+    private final String failure = "{\"message\":\"failure\"}";
+    private final String already_exists = "{\"message\":\"already-exists\"}";
 
     @Autowired
     private UserRepository userRepository;
@@ -70,6 +71,11 @@ public class UserController {
     public String favorite(@PathVariable int user_id, @PathVariable int recipe_id){
         User u = userRepository.findById(user_id);
         Recipe r = recipeRepository.findById(recipe_id);
+
+        if(u.getFavorites().contains(r)) {
+            return already_exists;
+        }
+
         u.favorite(r);
         userRepository.save(u);
         return success;
@@ -78,6 +84,11 @@ public class UserController {
     public String unfavorite(@PathVariable int user_id, @PathVariable int recipe_id){
         User u = userRepository.findById(user_id);
         Recipe r = recipeRepository.findById(recipe_id);
+
+        if(!u.getFavorites().contains(r)) {
+            return failure;
+        }
+
         u.unfavorite(r);
         userRepository.save(u);
         return success;

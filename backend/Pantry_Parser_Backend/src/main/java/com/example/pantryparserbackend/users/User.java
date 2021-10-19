@@ -26,14 +26,9 @@ public class User {
     private String email;
     private String password;
     private String role;
-    @OneToMany
+    @OneToMany(mappedBy = "creator")
     private List<Recipe> created_recipes;
-    @ManyToMany
-    @JoinTable(
-            name = "favorites",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "recipe_id")
-    )
+    @ManyToMany(mappedBy = "favoritedBy")
     private List<Recipe> favorites;
 
     public User(String password, String email) {

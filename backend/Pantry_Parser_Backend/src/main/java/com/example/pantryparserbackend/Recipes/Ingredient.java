@@ -15,12 +15,7 @@ public class Ingredient {
     @Column(unique = true)
     private String name;
 
-    @ManyToMany
-    @JoinTable(
-            name = "recipe_ingredient",
-            joinColumns = @JoinColumn(name = "ingredient_id"),
-            inverseJoinColumns = @JoinColumn(name = "recipe_id")
-    )
+    @ManyToMany(mappedBy = "ingredients")
     @JsonIgnore
     private List<Recipe> recipes;
 

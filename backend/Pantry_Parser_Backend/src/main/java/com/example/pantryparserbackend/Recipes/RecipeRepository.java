@@ -14,10 +14,10 @@ public interface RecipeRepository extends JpaRepository <Recipe, Long> {
     @Query(value = "SELECT DISTINCT r.* FROM recipes r " +
             "JOIN recipe_ingredient ri ON r.id = ri.recipe_id " +
             "JOIN (SELECT * FROM ingredients " +
-                "WHERE name IN ('concrete', 'gluten')) " +
+                "WHERE name IN :ingredients) " +
                 "AS i ON i.id = ri.ingredient_id " +
             "GROUP BY r.id " +
-            "ORDER BY count(*) DESC",
+            "ORDER BY count(*)/r.num_ingredients DESC",
             nativeQuery  = true)
     List<Recipe> getByIngredients(List<String> ingredients);
 

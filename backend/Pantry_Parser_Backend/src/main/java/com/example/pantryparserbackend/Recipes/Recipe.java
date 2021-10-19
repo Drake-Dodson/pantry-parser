@@ -24,6 +24,8 @@ public class Recipe {
     private Date created_date;
     @Nullable
     private double rating;
+    @Nullable
+    private int num_ingredients;
 
     @ManyToOne
     @JoinColumn(name = "creator_id")
@@ -34,7 +36,8 @@ public class Recipe {
     @JoinTable(
             name = "favorites",
             joinColumns = @JoinColumn(name = "recipe_id"),
-            inverseJoinColumns = @JoinColumn(name = "user_id")
+            inverseJoinColumns = @JoinColumn(name = "user_id"),
+            uniqueConstraints = @UniqueConstraint(columnNames = {"recipe_id", "user_id"})
     )
     @JsonIgnore
     private List<User> favoritedBy;
@@ -43,7 +46,8 @@ public class Recipe {
     @JoinTable(
             name = "recipe_ingredient",
             joinColumns = @JoinColumn(name = "recipe_id"),
-            inverseJoinColumns = @JoinColumn(name = "ingredient_id")
+            inverseJoinColumns = @JoinColumn(name = "ingredient_id"),
+            uniqueConstraints = @UniqueConstraint(columnNames = {"recipe_id", "ingredient_id"})
     )
     private List<Ingredient> ingredients;
 
@@ -67,6 +71,7 @@ public class Recipe {
     public double getRating() { return this.rating; }
     public String getCreatorName() { return this.creator.getDisplayName(); }
     public List<Ingredient> getIngredients() { return this.ingredients; }
+    public int getNum_ingredients() { return this.num_ingredients; }
 
     //not including a set for created_date since this shouldn't be changed
     public void setName(String name){ this.name = name; }
@@ -79,9 +84,11 @@ public class Recipe {
         this.created_date = new Date();
     }
     public void addIngredient(Ingredient i){
+        this.num_ingredients++;
         this.ingredients.add(i);
     }
     public void removeIngredient(Ingredient i){
+        this.num_ingredients--;
         this.ingredients.remove(i);
     }
 

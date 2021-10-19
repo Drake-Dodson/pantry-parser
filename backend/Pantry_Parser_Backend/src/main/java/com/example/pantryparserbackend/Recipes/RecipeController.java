@@ -19,6 +19,7 @@ public class RecipeController {
 
     private final String success = "{\"message\":\"success\"}";
     private final String failure = "{\"message\":\"failure\"}";
+    private final String already_exists = "{\"message\":\"already-exists\"}";
 
     @GetMapping(path = "/recipes")
     List<Recipe> getAllRecipes(){
@@ -89,6 +90,10 @@ public class RecipeController {
         Recipe r = recipeRepository.findById(id);
         Ingredient i = ingredientRepository.findByName(name.toLowerCase());
 
+        if(r.getIngredients().contains(i)) {
+            return already_exists;
+        }
+
         r.addIngredient(i);
         recipeRepository.save(r);
         return success;
@@ -97,6 +102,10 @@ public class RecipeController {
     String removeIngredient(@PathVariable int id, @PathVariable String name){
         Recipe r = recipeRepository.findById(id);
         Ingredient i = ingredientRepository.findByName(name.toLowerCase());
+
+        if(!r.getIngredients().contains(i)) {
+            return failure;
+        }
 
         r.removeIngredient(i);
         recipeRepository.save(r);

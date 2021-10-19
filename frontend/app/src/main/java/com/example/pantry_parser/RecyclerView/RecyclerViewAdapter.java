@@ -1,9 +1,12 @@
 package com.example.pantry_parser.RecyclerView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RatingBar;
 import android.widget.TextView;
 import com.example.pantry_parser.R;
 import com.example.pantry_parser.Recipe;
@@ -16,10 +19,13 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     final int VIEW_TYPE_ITEM = 1;
 
 
-    public List<Recipe> mItemList;
 
-    public RecyclerViewAdapter(List<Recipe> recipeList) {
+    public List<Recipe> mItemList;
+    private OnRecipeListener mOnRecipeListener;
+
+    public RecyclerViewAdapter(List<Recipe> recipeList, OnRecipeListener onRecipeListener) {
         mItemList = recipeList;
+        this.mOnRecipeListener = onRecipeListener;
     }
 
     @NonNull
@@ -27,7 +33,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         if (viewType == VIEW_TYPE_ITEM) {
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_row, parent, false);
-            return new ItemViewHolder(view);
+            return new ItemViewHolder(view, mOnRecipeListener);
         } else {
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_loading, parent, false);
             return new LoadingHolder(view);
@@ -51,18 +57,30 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         return mItemList == null ? 0 : mItemList.size();
     }
 
-    private class ItemViewHolder extends RecyclerView.ViewHolder {
+    public class ItemViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         TextView recipeName;
         TextView minutesToMake;
+        RatingBar ratingBar;
+        OnRecipeListener onRecipeListener;
 
-        public ItemViewHolder(@NonNull View itemView) {
+        public ItemViewHolder(@NonNull View itemView, OnRecipeListener onRecipeListener) {
             super(itemView);
             recipeName = itemView.findViewById(R.id.title);
             minutesToMake = itemView.findViewById(R.id.time);
+            ratingBar = itemView.findViewById(R.id.ratingBar);
+            itemView.setOnClickListener(this);
+            this.onRecipeListener = onRecipeListener;
+
+            itemView.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View view) {
+onRecipeListener.onRecipeClick(getAbsoluteAdapterPosition());
         }
     }
 
-    private class LoadingHolder extends RecyclerView.ViewHolder {
+    public class LoadingHolder extends RecyclerView.ViewHolder {
 
         public LoadingHolder(@NonNull View itemView) {
             super(itemView);
@@ -73,6 +91,12 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         Recipe item = mItemList.get(position);
         viewHolder.recipeName.setText(item.recipeName);
         viewHolder.minutesToMake.setText(Integer.toString(item.timeToMake));
+        viewHolder.ratingBar.setRating(item.rating);
+    }
+
+    public interface OnRecipeListener{
+
+        void onRecipeClick(int position);
     }
 
 }

@@ -5,17 +5,20 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.LinearLayout;
 
+import com.example.pantry_parser.Pages.RecipeView;
 import com.example.pantry_parser.R;
+import com.example.pantry_parser.Recipe;
 
 import java.util.ArrayList;
 
-public class ListView extends AppCompatActivity {
+public class ListView extends AppCompatActivity implements RecyclerViewAdapter.OnRecipeListener {
     RecyclerView recyclerView;
     RecyclerViewAdapter recyclerViewAdapter;
-    ArrayList<String> dataset = new ArrayList<>();
+    ArrayList<Recipe> dataset = new ArrayList<>();
     boolean isLoading = false;
 
     @Override
@@ -50,7 +53,10 @@ public class ListView extends AppCompatActivity {
         int currentSize = dataset.size();
         int nextSize = currentSize + 10;
         while (currentSize < nextSize){
-            dataset.add("Recipe " + currentSize);
+            Recipe recipe = new Recipe("Recipe " + currentSize);
+            recipe.setTimeToMake(currentSize);
+            recipe.setRating((float) currentSize/5);
+            dataset.add(recipe);
             currentSize++;
         }
         recyclerViewAdapter.notifyDataSetChanged();
@@ -59,8 +65,11 @@ public class ListView extends AppCompatActivity {
 
     private void populateData(){
         int i = 0;
-        while (i<10) {
-            dataset.add("Recipe" + i);
+        while (i<=10) {
+            Recipe recipe = new Recipe("Recipe "+i);
+            recipe.setTimeToMake(i);
+            recipe.setRating((float)i/5);
+            dataset.add(recipe);
             i++;
         }
     }
@@ -68,7 +77,16 @@ public class ListView extends AppCompatActivity {
 
 
     private void setupAdapter(){
-        recyclerViewAdapter = new RecyclerViewAdapter(dataset);
+        recyclerViewAdapter = new RecyclerViewAdapter(dataset,this);
         recyclerView.setAdapter(recyclerViewAdapter);
+    }
+
+    @Override
+    public void onRecipeClick(int position) {
+        dataset.get(position);
+        Intent intent = new Intent(this, RecipeView.class);
+        intent.putExtra("RecipeID", dataset.get(position).getRecipeID());
+        intent.putExtra("RecipeName", dataset.get(position).getRecipeName());
+        startActivity(intent);
     }
 }

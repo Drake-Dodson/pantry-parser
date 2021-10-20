@@ -129,24 +129,6 @@ public class Registration_Page extends AppCompatActivity implements View.OnClick
             }
         };
 
-
-
-
-        /*{
-            @Override
-            protected Map<String, String> getParams() throws AuthFailureError {
-                Map<String, String> params = new HashMap<>();
-                params.put("displayname", user_Name);
-                params.put("email", user_Email);
-                params.put("password", user_Password);
-
-                return params;
-            }
-        };
-        */
-
         Queue.add(stringRequest);
-        //RequestQueue requestQueue = Volley.newRequestQueue(this);
-        //requestQueue.add(stringRequest);
     }
 }

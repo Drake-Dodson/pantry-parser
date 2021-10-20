@@ -22,9 +22,14 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+
     private String displayName;
+
+    @Column(unique = true)
     private String email;
+
     private String password;
+
     private String role;
     @OneToMany(mappedBy = "creator")
     private List<Recipe> created_recipes;

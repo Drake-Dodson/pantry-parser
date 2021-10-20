@@ -1,5 +1,7 @@
 package com.example.pantryparserbackend.users;
 
+import com.example.pantryparserbackend.Util.MessageUtil;
+
 import com.example.pantryparserbackend.Recipes.Recipe;
 import com.example.pantryparserbackend.Recipes.RecipeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,12 +34,25 @@ public class UserController {
         return userRepository.findById(id);
     }
 
+    @GetMapping(path = "/user/email/{email}")
+    public User getUserByEmail(@PathVariable String email) throws Exception
+    {
+        return userRepository.findByEmail(email);
+    }
+
     @PostMapping(path = "/user")
     String createUser(@RequestBody User users){
         if (users == null)
-            return failure;
-        userRepository.save(users);
-        return success;
+            return MessageUtil.newResponseMessage(false, "User was null");
+
+        try {
+            userRepository.save(users);
+        }
+        catch(Exception ex) {
+            return MessageUtil.newResponseMessage(false, "Email already used");
+        }
+
+        return MessageUtil.newResponseMessage(true, "User created");
     }
 
     @PostMapping(path = "/login")

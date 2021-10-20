@@ -47,7 +47,7 @@ public class UserController {
     }
 
     @PostMapping(path = "/login")
-    public String login(@RequestBody Login login) {
+    public String login(@RequestBody Login login){
         if (login == null)
             return failure;
         User actual = userRepository.findByEmail(login.email);

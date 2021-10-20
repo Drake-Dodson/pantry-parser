@@ -1,5 +1,9 @@
 package com.example.pantryparserbackend.users;
 
+import com.example.pantryparserbackend.Recipes.Recipe;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 import javax.persistence.*;
@@ -8,8 +12,11 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
+import java.util.List;
+import java.util.Set;
 
 @Entity
+@Table(name = "users")
 public class User {
 
     @Id
@@ -24,13 +31,16 @@ public class User {
     private String password;
 
     private String role;
+    @OneToMany(mappedBy = "creator")
+    private List<Recipe> created_recipes;
+    @ManyToMany(mappedBy = "favoritedBy")
+    private List<Recipe> favorites;
 
     public User(String password, String email) {
         this.password = this.newHash(password);
         this.email = email;
         this.role = "Main";
     }
-
     public User() {}
 
     public int getId() { return this.id; }
@@ -41,7 +51,13 @@ public class User {
         return this.email;
     }
     public String getRole() {
-        return role;
+        return this.role;
+    }
+    public List<Recipe> getRecipes() {
+        return this.created_recipes;
+    }
+    public List<Recipe> getFavorites() {
+        return this.favorites;
     }
 
     public void setDisplayName(String displayName) {
@@ -56,6 +72,15 @@ public class User {
     public void setRole(String role) {
         this.role = role;
     }
+    public void favorite(Recipe favorite) {
+        this.favorites.add(favorite);
+    }
+    public void unfavorite(Recipe favorite) {
+        this.favorites.remove(favorite);
+    }
+    public void addRecipe(Recipe r){
+        this.created_recipes.add(r);
+    }
 
     public boolean authenticate(String password) {
         String stored = this.password;
@@ -65,7 +90,6 @@ public class User {
         String passwordToTest = hash(password, salt);
         return stored.equals(passwordToTest);
     }
-
     private String newHash(String password) {
         SecureRandom random = new SecureRandom();
         byte[] salt = new byte[16];

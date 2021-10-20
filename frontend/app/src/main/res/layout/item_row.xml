@@ -1,28 +1,74 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<androidx.cardview.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingTop="10dp"
-    android:paddingBottom="10dp"
-
+    android:paddingTop="1dp"
+    android:paddingBottom="1dp"
+    android:layout_marginLeft="0dp"
+    android:layout_marginRight="0dp"
+    android:layout_marginTop="0dp"
+    android:layout_marginBottom="0dp"
+    android:elevation="10dp"
+    app:cardUseCompatPadding="true"
+    app:cardBackgroundColor="@color/cardview_light_background"
+    app:cardCornerRadius="10dp"
     >
 
-    <TextView
-        android:id="@+id/tvItem"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
+
+    <ImageView
+        android:id="@+id/imageView3"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_weight="1"
+        android:layout_marginLeft="310dp"
+        app:srcCompat="@drawable/general_search_icon" />
 
-        />
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="289dp"
+        android:layout_height="25dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="5dp"
+        android:fontFamily="@font/ultra"
+        android:text="Recipe Name"
+        android:textSize="20dp" />
 
-    <Button
-        android:id="@+id/message_button"
+    <TextView
+        android:id="@+id/subtitle"
+        android:layout_width="wrap_content"
+        android:layout_height="20dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginLeft="10dp"
+        android:fontFamily="@font/bebas"
+        android:text="Minutes to make:"
+        android:textSize="20dp" />
+
+    <TextView
+        android:id="@+id/time"
+        android:layout_width="wrap_content"
+        android:layout_height="20dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginLeft="125dp"
+        android:fontFamily="@font/bebas"
+        android:text="100"
+        android:textAlignment="center"
+        android:textSize="20dp" />
+
+    <RatingBar
+        android:id="@+id/ratingBar"
+        style="@style/Widget.AppCompat.RatingBar.Small"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingLeft="16dp"
-        android:paddingRight="16dp"
-        android:textSize="10sp"
-        />
-</LinearLayout>
+        android:layout_marginTop="51dp"
+        android:layout_marginLeft="10dp"
+        android:isIndicator="true"
+        android:numStars="5"
+        android:rating="0"
+        android:stepSize=".5"
+        android:theme="@style/RatingBar"/>
+
+
+</androidx.cardview.widget.CardView>

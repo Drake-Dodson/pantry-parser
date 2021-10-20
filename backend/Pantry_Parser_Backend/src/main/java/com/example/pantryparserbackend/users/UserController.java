@@ -23,8 +23,15 @@ public class UserController {
         return userRepository.findById(id);
     }
 
+    @GetMapping(path = "/user/email")
+    public User getUserByEmail(@RequestParam String email)
+    {
+        return userRepository.findByEmail(email);
+    }
+
     @PostMapping(path = "/user")
     String createUser(@RequestBody User users){
+
         if (users == null)
             return failure;
         userRepository.save(users);

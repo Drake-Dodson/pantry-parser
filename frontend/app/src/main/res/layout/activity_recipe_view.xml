@@ -24,59 +24,89 @@
             android:scaleType="centerCrop"
             android:src="@drawable/meatballs" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="350dp"
-            android:fontFamily="@font/ultra"
-            android:text="Recipe Title"
-            android:textSize="30dp"
-            android:textColor="@color/red"/>
-
-
 
     </RelativeLayout>
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight=".75"
-        android:background="@color/orange">
+    <TableLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent">
 
-
-
-
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal">
+        <TableRow
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
 
             <TextView
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:text="A cool slider"
-                android:fontFamily="@font/comforta"
-                android:textSize="40dp"
-                android:textColor="@color/black"
-                android:gravity="left|top"
-                android:paddingLeft="10dp"
                 android:id="@+id/slideTitle"
-                android:layout_weight="4"/>
+                android:textSize="30dp"
+                android:textColor="@color/black"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_column="1" />
+
+            <TextClock
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/textClock"
+                android:layout_column="2" />
+
+        </TableRow>
+
+        <TableRow>
+
+            <TextView
+                android:text="First Name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_column="1" />
+
+            <EditText
+                android:width="200px"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </TableRow>
+
+        <TableRow>
+
+            <TextView
+                android:text="Last Name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_column="1" />
+
+            <EditText
+                android:width="100px"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
+
+            <RatingBar
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/ratingBar"
+                android:layout_column="2" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"/>
+
+        <TableRow
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
 
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="like"
-                android:layout_weight="1"/>
+                android:text="Submit"
+                android:id="@+id/button"
+                android:layout_column="2" />
+        </TableRow>
 
-        </LinearLayout>
-
-
-
-
-    </RelativeLayout>
+    </TableLayout>
 
 
 

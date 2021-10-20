@@ -44,7 +44,7 @@ public class ListView extends AppCompatActivity implements RecyclerViewAdapter.O
         setContentView(R.layout.activity_list_view);
         queue = Volley.newRequestQueue(this);
         recyclerView = findViewById(R.id.recyclerView);
-        populateData();
+        popData();
         setupAdapter();
         LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         layoutManager.scrollToPosition(0);
@@ -57,53 +57,59 @@ public class ListView extends AppCompatActivity implements RecyclerViewAdapter.O
                 if (!isLoading) {
                     if (linearLayoutManager != null && linearLayoutManager.findLastCompletelyVisibleItemPosition() == dataset.size() - 1) {
                         isLoading = true;
-                        //getMoreData();
+                        getMoreData();
                     }
                 }
             }
         });
     }
 
-//    private void getMoreData() {
-//        dataset.add(null);
-//        recyclerViewAdapter.notifyItemInserted(dataset.size() - 1);
-//        dataset.remove(dataset.size() - 1);
-//        int currentSize = dataset.size();
-//        int nextSize = currentSize + 10;
-//        while (currentSize < nextSize) {
-//            Recipe recipe = new Recipe("Recipe " + currentSize);
-//            recipe.setTimeToMake(currentSize);
-//            recipe.setRating((float) currentSize / 5);
-//            dataset.add(recipe);
-//            currentSize++;
-//        }
-//        recyclerViewAdapter.notifyDataSetChanged();
-//        isLoading = false;
-//    }
-
-    private void populateData() {
-        int i = 1;
-        while (i <= 6) {
-            JsonObjectRequest recipeRequest = new JsonObjectRequest(Request.Method.GET, URL_RECIPES + i, null,
-                    response -> {
-                        if (response != null) {
-                            try {
-                                Recipe recipe = new Recipe(response.getString("name"));
-                                recipe.setRecipeID(response.getInt("id"));
-                                recipe.setRating((float) response.getDouble("rating"));
-                                recipe.setTimeToMake(response.getInt("time"));
-                                dataset.add(recipe);
-                                recyclerViewAdapter.notifyDataSetChanged();
-                            } catch (JSONException e) {
-                                Toast.makeText(ListView.this, e.toString(), Toast.LENGTH_SHORT).show();
-                            }
-
-                        }
-                    },
-                    error -> Toast.makeText(ListView.this, "Error" + error.toString(), Toast.LENGTH_SHORT).show());
-            i++;
-            queue.add(recipeRequest);
+    private void getMoreData() {
+        dataset.add(null);
+        recyclerViewAdapter.notifyItemInserted(dataset.size() - 1);
+        dataset.remove(dataset.size() - 1);
+        int currentSize = dataset.size();
+        int nextSize = currentSize + 10;
+        while (currentSize < nextSize) {
+            Recipe recipe = new Recipe("Recipe " + currentSize);
+            recipe.setTimeToMake(currentSize);
+            recipe.setRating((float) currentSize / 5);
+            dataset.add(recipe);
+            currentSize++;
         }
+        recyclerViewAdapter.notifyDataSetChanged();
+        isLoading = false;
+    }
+
+    private void popData() {
+        JsonArrayRequest recipeRequest = new JsonArrayRequest(Request.Method.GET, URL_RECIPES, null, new Response.Listener<JSONArray>() {
+            @Override
+            public void onResponse(JSONArray response) {
+                if (response != null) {
+                    int i = 1;
+                    while (!response.isNull(i) && i <=30) {
+                        try {
+                            Recipe recipe = new Recipe(response.getJSONObject(i).getString("name"));
+                            recipe.setRecipeID(response.getJSONObject(i).getInt("id"));
+                            recipe.setRating((float) response.getJSONObject(i).getDouble("rating"));
+                            recipe.setTimeToMake(response.getJSONObject(i).getInt("time"));
+                            dataset.add(recipe);
+                            recyclerViewAdapter.notifyDataSetChanged();
+                        } catch (JSONException e) {
+                            Toast.makeText(ListView.this, e.toString(), Toast.LENGTH_SHORT).show();
+                        }
+                        i++;
+                    }
+
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        });
+        queue.add(recipeRequest);
     }
 
 

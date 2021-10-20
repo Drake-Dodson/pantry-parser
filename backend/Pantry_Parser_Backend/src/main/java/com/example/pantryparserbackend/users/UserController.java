@@ -1,10 +1,21 @@
 package com.example.pantryparserbackend.users;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import com.example.pantryparserbackend.Util.MessageUtil;
+
+// No idea if this is the correct way to do this...
+class UserException extends Exception {
+    public UserException(String exceptionMessage) {
+        super(exceptionMessage);
+    }
+}
+
 @RestController
-public class UserController {
+public class UserController extends Exception {
 
     private String success = "{\"message\":\"success\"}";
     private String failure = "{\"message\":\"failure\"}";
@@ -24,18 +35,34 @@ public class UserController {
     }
 
     @GetMapping(path = "/user/email")
-    public User getUserByEmail(@RequestParam String email)
+    public User getUserByEmail(@RequestParam String email) throws Exception
     {
-        return userRepository.findByEmail(email);
+        User userInfo = userRepository.findByEmail(email);
+
+        if(userInfo == null)
+        {
+            throw new UserException("Email not found");
+        }
+
+        return userInfo;
     }
 
     @PostMapping(path = "/user")
     String createUser(@RequestBody User users){
 
+        // I feel like this doesn't need to be in here because it should
+        // be handled by the frontend
         if (users == null)
-            return failure;
-        userRepository.save(users);
-        return success;
+            return MessageUtil.newResponseMessage(false, "User was null");
+
+        try {
+            userRepository.save(users);
+        }
+        catch(Exception ex) {
+            return MessageUtil.newResponseMessage(false, "Email already used");
+        }
+
+        return MessageUtil.newResponseMessage(true, "User created");
     }
 
     @PostMapping(path = "/login")

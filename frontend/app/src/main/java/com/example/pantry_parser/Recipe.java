@@ -7,7 +7,7 @@ public class Recipe {
     public ArrayList<Ingredient> ingredients;
     public int timeToMake;
     private String author;
-    private String recipeID;
+    private Integer recipeID;
 
     public float rating;
 
@@ -48,7 +48,7 @@ public class Recipe {
 
     public String getAuthor(){return author;}
 
-    public void setRecipeID(String recipeID){this.recipeID = recipeID;}
+    public void setRecipeID(Integer recipeID){this.recipeID = recipeID;}
 
-    public String getRecipeID(){return recipeID;}
+    public Integer getRecipeID(){return recipeID;}
 }

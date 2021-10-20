@@ -4,14 +4,17 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
+import com.example.pantry_parser.Services.AppController;
+import com.example.pantry_parser.Services.IServerRequest;
+import com.example.pantry_parser.Services.IVolleyListener;
 
 import org.json.JSONObject;
 
-public class ServerRequest {
+public class ServerRequest implements IServerRequest {
     private String tag_json_obj = "json_obj_req";
     private IVolleyListener l;
-    @
+
+    @Override
     public void sendToServer(String url, JSONObject newUserObj, String methodType) {
         int method = Request.Method.GET;
         if (methodType.equals("POST")) {
@@ -33,9 +36,9 @@ public class ServerRequest {
                     public void onErrorResponse(VolleyError error) {
                         l.onError(error.getMessage());
                     }
-                }
-        );
-        AppController.getInstance().addToRequestQueue(registerUserRequest, tag_json_obj);
+                });
+
+    AppController.getInstance().addToRequestQueue(registerUserRequest, tag_json_obj);
     }
     public void addVolleyListener(IVolleyListener logic) {
         l = logic;

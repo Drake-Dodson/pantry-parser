@@ -1,21 +1,12 @@
 package com.example.pantryparserbackend.users;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.example.pantryparserbackend.Util.MessageUtil;
 
-// No idea if this is the correct way to do this...
-class UserException extends Exception {
-    public UserException(String exceptionMessage) {
-        super(exceptionMessage);
-    }
-}
-
 @RestController
-public class UserController extends Exception {
+public class UserController {
 
     private String success = "{\"message\":\"success\"}";
     private String failure = "{\"message\":\"failure\"}";
@@ -34,24 +25,14 @@ public class UserController extends Exception {
         return userRepository.findById(id);
     }
 
-    @GetMapping(path = "/user/email")
-    public User getUserByEmail(@RequestParam String email) throws Exception
+    @GetMapping(path = "/user/email/{email}")
+    public User getUserByEmail(@PathVariable String email) throws Exception
     {
-        User userInfo = userRepository.findByEmail(email);
-
-        if(userInfo == null)
-        {
-            throw new UserException("Email not found");
-        }
-
-        return userInfo;
+        return userRepository.findByEmail(email);
     }
 
     @PostMapping(path = "/user")
     String createUser(@RequestBody User users){
-
-        // I feel like this doesn't need to be in here because it should
-        // be handled by the frontend
         if (users == null)
             return MessageUtil.newResponseMessage(false, "User was null");
 
@@ -66,7 +47,7 @@ public class UserController extends Exception {
     }
 
     @PostMapping(path = "/login")
-    public String login(@RequestBody Login login){
+    public String login(@RequestBody Login login) {
         if (login == null)
             return failure;
         User actual = userRepository.findByEmail(login.email);

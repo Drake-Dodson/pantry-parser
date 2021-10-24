@@ -2,6 +2,7 @@
 stages:
   - mavenbuild
   - maventest
+  - mavenDeploy
   - androidbuild
   - androidtest
 
@@ -23,6 +24,16 @@ maven-test:
   artifacts:
     paths:
       - backend/target/*.jar
+
+maven-deploy:
+  tags:
+    - springboot_tag
+  script:
+    - cd backend/Pantry_Parser_Backend
+    - mvn package
+    - sudo mv target/*.jar /target/web-demo.jar
+    - sudo systemctl stop system-web-demo
+    - sudo systemctl start system-web-demo
 
 android-build: #this is another job
   image: alvrme/alpine-android:android-28-jdk11      # this is a directive to DOCKER

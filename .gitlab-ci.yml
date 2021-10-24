@@ -22,7 +22,7 @@ android-build: #this is another job
     - android_tag         #this is LINK to the docker runner on the remote-server
   before_script:
     - export GRADLE_USER_HOME=`pwd`/.gradle
-    - chmod +x ./Frontend/gradlew
+    - chmod +x ./frontend/gradlew
   script:
     - cd Frontend
     - ./gradlew assemble

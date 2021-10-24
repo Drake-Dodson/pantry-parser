@@ -1,10 +1,7 @@
-package com.example.pantry_parser;
+package com.example.pantry_parser.Logic;
 
-import android.view.View;
-
-import com.example.pantry_parser.Services.IServerRequest;
-import com.example.pantry_parser.Services.IView;
-import com.example.pantry_parser.Services.IVolleyListener;
+import com.example.pantry_parser.IView;
+import com.example.pantry_parser.Network.IServerRequest;
 
 import org.json.JSONException;
 import org.json.JSONObject;

@@ -1,4 +1,6 @@
-package com.example.pantry_parser.Services;
+package com.example.pantry_parser.Network;
+
+import com.example.pantry_parser.Logic.IVolleyListener;
 
 import org.json.JSONObject;
 

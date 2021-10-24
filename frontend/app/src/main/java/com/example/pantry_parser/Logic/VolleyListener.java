@@ -1,4 +1,4 @@
-package com.example.pantry_parser.Services;
+package com.example.pantry_parser.Logic;
 
 import android.content.Context;
 
@@ -6,6 +6,8 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
+import com.example.pantry_parser.AppController;
+import com.example.pantry_parser.Network.RequestListener;
 
 import org.json.JSONObject;
 
@@ -27,7 +29,7 @@ public class VolleyListener {
                         requestListener.onFailure(error.getMessage());
                     }
                 });
-        ApplicationScope.getInstance(context).addToRequestQueue(jsonObjectRequest);
+        AppController.getInstance().addToRequestQueue(jsonObjectRequest);
     }
 
     public static void makeRequest(Context context, String path, RequestListener requestListener, int method){
@@ -45,7 +47,7 @@ public class VolleyListener {
                         requestListener.onFailure(error.getMessage());
                     }
                 });
-        ApplicationScope.getInstance(context).addToRequestQueue(stringRequest);
+        AppController.getInstance().addToRequestQueue(stringRequest);
     }
 
 }

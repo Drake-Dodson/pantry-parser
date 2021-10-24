@@ -9,11 +9,11 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.pantry_parser.Services.AppController;
-import com.example.pantry_parser.Services.IView;
+import com.example.pantry_parser.IView;
+import com.example.pantry_parser.AppController;
 import com.example.pantry_parser.R;
-import com.example.pantry_parser.RegistrationLogic;
-import com.example.pantry_parser.ServerRequest;
+import com.example.pantry_parser.Logic.RegistrationLogic;
+import com.example.pantry_parser.Network.ServerRequest;
 
 import org.json.JSONException;
 
@@ -75,80 +75,3 @@ public class Registration_Page extends AppCompatActivity implements IView {
         Toast.makeText(getApplicationContext(), s, Toast.LENGTH_SHORT).show();
     }
 }
-
-
-//@Override
-//public void onClick(View view) {
-//        Intent intentAlreadyReg = new Intent(getApplicationContext(), Login_Page.class);
-//        switch (view.getId()){
-//        case R.id.bt_Register:
-//        registerUser();
-//        break;
-//        case R.id.bt_AlreadyRegistered:
-//        startActivity(intentAlreadyReg);
-//        break;
-//        }
-//        }
-//
-//private void registerUser() {
-//
-//        Intent intentLogin = new Intent(getApplicationContext(), Login_Page.class);
-//
-//        JSONObject newUserObj = new JSONObject();
-//        try {
-//        newUserObj.put("displayname", user_Name);
-//        newUserObj.put("email", user_Email);
-//        newUserObj.put("password", user_Password);
-//        } catch (JSONException jsonException) {
-//        jsonException.printStackTrace();
-//        }
-//
-//final String requestBody = newUserObj.toString();
-//
-//        StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
-//@Override
-//public void onResponse(String response) {
-//        try{
-//        JSONObject jsonObject = new JSONObject(response);
-//        String message = jsonObject.getString("message");
-//
-//        if(message.equals("success")){
-//        Toast.makeText(Registration_Page.this,
-//        "Registration Successful!", Toast.LENGTH_SHORT).show();
-//        startActivity(intentLogin);
-//        }
-//        } catch (JSONException e) {
-//        e.printStackTrace();
-//        Toast.makeText(Registration_Page.this,
-//        "Registration Error!" + e.toString(),
-//        Toast.LENGTH_SHORT).show();
-//        }
-//        }
-//        },
-//        new Response.ErrorListener() {
-//@Override
-//public void onErrorResponse(VolleyError error) {
-//        Toast.makeText(Registration_Page.this,
-//        "Registration Error!" + error.toString(),
-//        Toast.LENGTH_SHORT).show();
-//        }
-//        }){
-//@Override
-//public String getBodyContentType() {
-//        return "application/json; charset=utf-8";
-//        }
-//
-//@Override
-//public byte[] getBody() {
-//        try {
-//
-//        return requestBody == null ? null : requestBody.getBytes("utf-8");
-//        } catch (UnsupportedEncodingException e) {
-//        VolleyLog.wtf("Unsupported Encoding while trying to get the bytes of %s using %s", requestBody, "utf-8");
-//        return null;
-//        }
-//        }
-//        };
-//
-//        Queue.add(stringRequest);
-//        }

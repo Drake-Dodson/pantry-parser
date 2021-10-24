@@ -1,4 +1,4 @@
-package com.example.pantry_parser.Services;
+package com.example.pantry_parser.Logic;
 
 public interface IVolleyListener {
     public void onSuccess(String s);

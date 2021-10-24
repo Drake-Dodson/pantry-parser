@@ -25,7 +25,7 @@ maven-test:
       - backend/target/*.jar
 
 android-build: #this is another job
-  image: javiersantos/android-ci:latest      # this is a directive to DOCKER
+  image: alvrme/alpine-android:android-28-jdk11      # this is a directive to DOCKER
   stage: androidbuild
   tags:
     - android_tag         #this is LINK to the docker runner on the remote-server
@@ -40,7 +40,7 @@ android-build: #this is another job
       - Android_test/app/build/outputs/
 
 android-test: #this is another job
-  image: javiersantos/android-ci:latest      # this is a directive to DOCKER
+  image: alvrme/alpine-android:android-28-jdk11      # this is a directive to DOCKER
   stage: androidtest
   before_script:
     - export GRADLE_USER_HOME=`pwd`/.gradle

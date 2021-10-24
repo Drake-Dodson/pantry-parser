@@ -22,7 +22,7 @@
             android:layout_height="350dp"
             android:cropToPadding="true"
             android:scaleType="centerCrop"
-            android:src="@drawable/meatballs" />
+            android:src="@drawable/ic_launcher_background" />
 
 
     </RelativeLayout>

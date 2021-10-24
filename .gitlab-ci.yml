@@ -1,23 +1,32 @@
 # Example  .gitlab-ci.yml file
 stages:
-  - maventry
-  - androidtry
+  - mavenbuild
+  - maventest
+  - androidbuild
+  - androidtest
 
 maven-build:   #this is a JOB
-  stage: maventry
+  stage: mavenbuild
   tags:
     - springboot_tag  # this is LINK to the shell runner on the remote-server
   script:
     - cd backend/Pantry_Parser_Backend
-    - mvn test
     - mvn package -B
+
+maven-test:
+  stage: maventest
+  tags:
+    - springboot_tag
+  script:
+    - cd backend/Pantry_Parser_Backend
+    - mvn test
   artifacts:
     paths:
-      - backend/Pantry_Parser_Backend/target/*.jar
+      - backend/target/*.jar
 
 android-build: #this is another job
   image: javiersantos/android-ci:latest      # this is a directive to DOCKER
-  stage: androidtry
+  stage: androidbuild
   tags:
     - android_tag         #this is LINK to the docker runner on the remote-server
   before_script:
@@ -25,4 +34,20 @@ android-build: #this is another job
     - chmod +x ./frontend/gradlew
   script:
     - cd frontend
-    - ./gradlew assemble
+    - ./gradlew build
+  artifacts:
+    paths:
+      - Android_test/app/build/outputs/
+
+android-test: #this is another job
+  image: javiersantos/android-ci:latest      # this is a directive to DOCKER
+  stage: androidtest
+  before_script:
+    - export GRADLE_USER_HOME=`pwd`/.gradle
+    - chmod +x ./frontend/gradlew
+  tags:
+    - android_tag         #this is LINK to the docker runner on the remote-server
+  script:
+    - cd frontend
+    - ./gradlew test
+

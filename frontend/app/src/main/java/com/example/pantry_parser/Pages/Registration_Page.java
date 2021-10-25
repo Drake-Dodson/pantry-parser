@@ -7,73 +7,78 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.pantry_parser.Utilities.IView;
 import com.example.pantry_parser.AppController;
-import com.example.pantry_parser.R;
 import com.example.pantry_parser.Logic.RegistrationLogic;
 import com.example.pantry_parser.Network.ServerRequest;
+import com.example.pantry_parser.R;
+import com.example.pantry_parser.IView;
 
 import org.json.JSONException;
 
-public class Registration_Page extends AppCompatActivity implements IView {
 
-    EditText nameEditText, emailEditText, passwordEditText, confirmPasswordEditText;
-    public TextView registerErrorTextView;
-    Button registerSubmitButton, alreadyRegisteredButton;
+public class Registration_Page extends AppCompatActivity implements IView, View.OnClickListener {
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        new AppController();
-        setContentView(R.layout.activity_registration_page);
+        private EditText nameEditText, emailEditText, passwordEditText, confirmPasswordEditText;
+        private Button registerSubmitButton, alreadyRegisteredButton;
 
-        nameEditText = findViewById(R.id.text_registrationUsername);
-        emailEditText = findViewById(R.id.text_registrationEmail);
-        passwordEditText = findViewById((R.id.text_registrationPassword));
-        confirmPasswordEditText = findViewById(R.id.text_registrationConfirmPassword);
-        registerErrorTextView = findViewById(R.id.text_registerError);
-        registerSubmitButton = findViewById(R.id.bt_Register);
-        alreadyRegisteredButton = findViewById(R.id.bt_AlreadyRegistered);
+        @Override
+        protected void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+            setContentView(R.layout.activity_registration_page);
+            new AppController(this);
+
+            nameEditText = findViewById(R.id.text_registrationUsername);
+            emailEditText = findViewById(R.id.text_registrationEmail);
+            passwordEditText = findViewById((R.id.text_registrationPassword));
+            confirmPasswordEditText = findViewById(R.id.text_registrationConfirmPassword);
+            registerSubmitButton = findViewById(R.id.bt_Register);
+            alreadyRegisteredButton = findViewById(R.id.bt_AlreadyRegistered);
+
+            Button registerButton = findViewById(R.id.bt_Register);
+            registerButton.setOnClickListener(this);
+
+            Button alreadyRegButton = findViewById(R.id.bt_AlreadyRegistered);
+            alreadyRegButton.setOnClickListener(this);
+        }
 
         ServerRequest serverRequest = new ServerRequest();
-        final RegistrationLogic logic = new RegistrationLogic(this,serverRequest);
+        final RegistrationLogic logic = new RegistrationLogic(this, serverRequest);
 
-        registerSubmitButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                try {
-                    String name = nameEditText.getText().toString().trim();
-                    String email = emailEditText.getText().toString().trim();
-                    String password = passwordEditText.getText().toString().trim();
-
-                    logic.registerUser(name, email, password);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+        @Override
+        public void onClick(View view) {
+            Intent intentAlreadyReg = new Intent(getApplicationContext(), Login_Page.class);
+            switch (view.getId()) {
+                case R.id.bt_Register:
+                    try{
+                        String name = nameEditText.getText().toString().trim();
+                        String email = emailEditText.getText().toString().trim();
+                        String password = passwordEditText.getText().toString().trim();
+                        logic.registerUser(name, email, password);
+                    } catch (JSONException e){
+                        e.printStackTrace();
+                    }
+                    break;
+                case R.id.bt_AlreadyRegistered:
+                    startActivity(intentAlreadyReg);
+                    break;
             }
-        });
+        }
 
-        alreadyRegisteredButton.setOnClickListener((new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //route to start login_page activity
-                startActivity(new Intent(getApplicationContext(), Login_Page.class));
-            }
-        }));
+    @Override
+    public void onPointerCaptureChanged(boolean hasCapture) {
+
     }
-
 
     @Override
     public void showText(String s) {
-        registerErrorTextView.setText(s);
-        registerErrorTextView.setVisibility(View.VISIBLE);
+
     }
 
     @Override
     public void toastText(String s) {
-        Toast.makeText(getApplicationContext(), s, Toast.LENGTH_SHORT).show();
+        Toast.makeText(getApplicationContext(),s,Toast.LENGTH_SHORT).show();
     }
 }
+

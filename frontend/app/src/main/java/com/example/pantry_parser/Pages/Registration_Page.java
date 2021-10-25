@@ -9,7 +9,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.pantry_parser.IView;
+import com.example.pantry_parser.Utilities.IView;
 import com.example.pantry_parser.AppController;
 import com.example.pantry_parser.R;
 import com.example.pantry_parser.Logic.RegistrationLogic;

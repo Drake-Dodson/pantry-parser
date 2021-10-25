@@ -1,6 +1,11 @@
 package com.example.pantry_parser.Logic;
 
-import com.example.pantry_parser.IView;
+import static androidx.core.content.ContextCompat.startActivity;
+
+import android.content.Intent;
+
+import com.example.pantry_parser.Pages.Login_Page;
+import com.example.pantry_parser.Utilities.IView;
 import com.example.pantry_parser.Network.IServerRequest;
 
 import org.json.JSONException;

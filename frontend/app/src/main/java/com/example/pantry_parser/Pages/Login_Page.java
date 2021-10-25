@@ -14,7 +14,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.android.volley.Request;
 import com.example.pantry_parser.R;
 import com.example.pantry_parser.Network.RequestListener;
-import com.example.pantry_parser.Logic.VolleyListener;
 
 import org.json.JSONException;
 import org.json.JSONObject;

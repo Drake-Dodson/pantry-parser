@@ -37,7 +37,7 @@ public class ServerRequest implements IServerRequest {
                     }
                 });
 
-    AppController.getInstance().addToRequestQueue(registerUserRequest, tag_json_obj);
+    AppController.getInstance(context).addToRequestQueue(registerUserRequest, tag_json_obj);
     }
 
     public void addVolleyListener(IVolleyListener logic) {

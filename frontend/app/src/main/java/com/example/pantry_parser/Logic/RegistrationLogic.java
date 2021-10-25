@@ -1,20 +1,28 @@
 package com.example.pantry_parser.Logic;
 
 import static androidx.core.content.ContextCompat.startActivity;
-
-import android.content.Intent;
-
-import com.example.pantry_parser.Pages.Login_Page;
-import com.example.pantry_parser.Utilities.IView;
-import com.example.pantry_parser.Network.IServerRequest;
+import static com.example.pantry_parser.Utilities.URLs.URL_REGISTER;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class RegistrationLogic implements IVolleyListener {
+import android.content.Intent;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.pantry_parser.Pages.Login_Page;
+import com.example.pantry_parser.Utilities.IView;
+import com.example.pantry_parser.Network.IServerRequest;
+import com.example.pantry_parser.Network.ServerRequest;
+import com.example.pantry_parser.Pages.Registration_Page;
+
+
+
+public class RegistrationLogic extends AppCompatActivity implements IVolleyListener {
 
     IView r;
     IServerRequest serverRequest;
+    final String url = URL_REGISTER;
 
     public RegistrationLogic(IView r, IServerRequest serverRequest) {
         this.r = r;
@@ -23,7 +31,6 @@ public class RegistrationLogic implements IVolleyListener {
     }
 
     public void registerUser(String name, String email, String password) throws JSONException {
-        final String url = "http://coms-309-032.cs.iastate.edu:8080/user";
         JSONObject newUserObj = new JSONObject();
 
         try{
@@ -38,9 +45,9 @@ public class RegistrationLogic implements IVolleyListener {
     }
 
     @Override
-    public void onSuccess(String email) {
-        if (email.length() > 0) {
-            //startActivity(new Intent(getApplicationContext(), Login_Page.class));
+    public void onSuccess(String message) {
+        if (message.equals("success")) {
+            startActivity(new Intent(getApplicationContext(), Login_Page.class));
             r.showText("You are logged in!");
         } else {
            r.showText("Error with request, please try again");

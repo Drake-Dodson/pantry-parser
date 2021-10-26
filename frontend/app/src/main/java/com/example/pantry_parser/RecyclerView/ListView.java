@@ -7,7 +7,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -15,21 +14,15 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.example.pantry_parser.Pages.RecipeView;
 import com.example.pantry_parser.R;
 import com.example.pantry_parser.Recipe;
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.example.pantry_parser.View_Recipe;
+import com.example.pantry_parser.Pages.Recipe_Page;
 
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Queue;
 
 public class ListView extends AppCompatActivity implements RecyclerViewAdapter.OnRecipeListener {
     RecyclerView recyclerView;
@@ -92,8 +85,17 @@ public class ListView extends AppCompatActivity implements RecyclerViewAdapter.O
                         try {
                             Recipe recipe = new Recipe(response.getJSONObject(i).getString("name"));
                             recipe.setRecipeID(response.getJSONObject(i).getInt("id"));
-                            recipe.setRating((float) response.getJSONObject(i).getDouble("rating"));
                             recipe.setTimeToMake(response.getJSONObject(i).getInt("time"));
+                            recipe.setSummary(response.getJSONObject(i).getString("summary"));
+                            recipe.setAuthor(response.getJSONObject(i).getString("creatorName"));
+                            recipe.setRating((float) response.getJSONObject(i).getDouble("rating"));
+
+                            ArrayList<String> ingredients = new ArrayList<>();
+                            JSONArray jsonIngredients = response.getJSONObject(i).getJSONArray("ingredients");
+                            for (int j = 0; j< jsonIngredients.length();j++){
+                                ingredients.add(jsonIngredients.getString(j));
+                            }
+
                             dataset.add(recipe);
                             recyclerViewAdapter.notifyDataSetChanged();
                         } catch (JSONException e) {
@@ -122,9 +124,8 @@ public class ListView extends AppCompatActivity implements RecyclerViewAdapter.O
     @Override
     public void onRecipeClick(int position) {
         dataset.get(position);
-        Intent intent = new Intent(this, View_Recipe.class);
-        intent.putExtra("Recipe", dataset.get(position).getRecipeID());
-        intent.putExtra("RecipeName", dataset.get(position).getRecipeName());
+        Intent intent = new Intent(this, Recipe_Page.class);
+        intent.putExtra("Recipe", dataset.get(position));
         startActivity(intent);
     }
 }

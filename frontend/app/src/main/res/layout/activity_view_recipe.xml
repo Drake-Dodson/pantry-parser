@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".View_Recipe">
+    tools:context=".Pages.Recipe_Page">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -17,7 +17,7 @@
 
 
         <ImageView
-            android:id="@+id/imageView2"
+            android:id="@+id/RecipeImage"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight=".75"
@@ -31,7 +31,7 @@
             android:orientation="horizontal">
 
             <TextView
-                android:id="@+id/textView"
+                android:id="@+id/RecipeName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -54,13 +54,13 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/textView2"
+                android:id="@+id/RecipeAuthor"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="By Drake Dodson" />
 
             <RatingBar
-                android:id="@+id/ratingBar2"
+                android:id="@+id/Reciperating"
                 style="@style/Widget.AppCompat.RatingBar.Small"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="bottom"
+    android:background="@color/light_blue"
     android:id="@+id/slidingUp"
     tools:context=".Pages.RecipeView">
 
@@ -15,96 +16,53 @@
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:src="@color/red" />
+            android:src="@color/white" />
 
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="350dp"
             android:cropToPadding="true"
             android:scaleType="centerCrop"
-            android:src="@drawable/meatballs" />
+            android:src="@drawable/ic_launcher_background" />
 
 
     </RelativeLayout>
 
     <TableLayout
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent">
+        android:layout_height="fill_parent"
+        android:paddingTop="10dp">
 
         <TableRow
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent">
+            android:layout_height="fill_parent"
+            android:paddingTop="5dp"
+            android:gravity="center_horizontal">
 
             <TextView
+                android:layout_gravity="center_horizontal"
+                android:layout_weight=".8"
                 android:id="@+id/slideTitle"
                 android:textSize="30dp"
+                android:fontFamily="@font/bebas"
                 android:textColor="@color/black"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_column="1" />
 
-            <TextClock
+            <TextView
+                android:layout_gravity="start"
+                android:layout_weight=".2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textSize="30dp"
+                android:text="Save"
                 android:id="@+id/textClock"
                 android:layout_column="2" />
 
         </TableRow>
 
-        <TableRow>
 
-            <TextView
-                android:text="First Name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_column="1" />
-
-            <EditText
-                android:width="200px"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-        </TableRow>
-
-        <TableRow>
-
-            <TextView
-                android:text="Last Name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_column="1" />
-
-            <EditText
-                android:width="100px"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-        </TableRow>
-
-        <TableRow
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent">
-
-            <RatingBar
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/ratingBar"
-                android:layout_column="2" />
-        </TableRow>
-
-        <TableRow
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"/>
-
-        <TableRow
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent">
-
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Submit"
-                android:id="@+id/button"
-                android:layout_column="2" />
-        </TableRow>
 
     </TableLayout>
 

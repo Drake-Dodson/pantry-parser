@@ -1,4 +1,4 @@
-package com.example.pantry_parser.Services;
+package com.example.pantry_parser.Network;
 
 public interface RequestListener {
     public void onSuccess(Object response);

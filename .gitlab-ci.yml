@@ -1,0 +1,65 @@
+# Example  .gitlab-ci.yml file
+stages:
+  - mavenbuild
+  - maventest
+  - mavenDeploy
+  - androidbuild
+  - androidtest
+
+maven-build:   #this is a JOB
+  stage: mavenbuild
+  tags:
+    - springboot_tag  # this is LINK to the shell runner on the remote-server
+  script:
+    - cd backend/Pantry_Parser_Backend
+    - mvn package -B
+
+maven-test:
+  stage: maventest
+  tags:
+    - springboot_tag
+  script:
+    - cd backend/Pantry_Parser_Backend
+    - mvn test
+  artifacts:
+    paths:
+      - backend/target/*.jar
+
+maven-deploy:
+  stage: mavenDeploy
+  tags:
+    - springboot_tag
+  script:
+    - cd backend/Pantry_Parser_Backend
+    - mvn package
+    - sudo mv target/*.jar /target/web-demo.jar
+    - sudo systemctl stop system-web-demo
+    - sudo systemctl start system-web-demo
+
+android-build: #this is another job
+  image: alvrme/alpine-android:android-28-jdk11      # this is a directive to DOCKER
+  stage: androidbuild
+  tags:
+    - android_tag         #this is LINK to the docker runner on the remote-server
+  before_script:
+    - export GRADLE_USER_HOME=`pwd`/.gradle
+    - chmod +x ./frontend/gradlew
+  script:
+    - cd frontend
+    - ./gradlew build
+  artifacts:
+    paths:
+      - Android_test/app/build/outputs/
+
+android-test: #this is another job
+  image: alvrme/alpine-android:android-28-jdk11      # this is a directive to DOCKER
+  stage: androidtest
+  before_script:
+    - export GRADLE_USER_HOME=`pwd`/.gradle
+    - chmod +x ./frontend/gradlew
+  tags:
+    - android_tag         #this is LINK to the docker runner on the remote-server
+  script:
+    - cd frontend
+    - ./gradlew test
+

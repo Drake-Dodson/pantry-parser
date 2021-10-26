@@ -13,8 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.android.volley.Request;
 import com.example.pantry_parser.R;
-import com.example.pantry_parser.Services.RequestListener;
-import com.example.pantry_parser.Services.VolleyListener;
+import com.example.pantry_parser.Network.RequestListener;
 
 import org.json.JSONException;
 import org.json.JSONObject;

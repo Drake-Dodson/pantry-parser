@@ -1,5 +1,7 @@
 package com.example.pantry_parser.Pages;
 
+import static com.example.pantry_parser.Utilities.URLs.URL_LOGIN;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -12,6 +14,8 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.android.volley.Request;
+import com.example.pantry_parser.Network.IServerRequest;
+import com.example.pantry_parser.Network.ServerRequest;
 import com.example.pantry_parser.R;
 import com.example.pantry_parser.Network.RequestListener;
 
@@ -29,9 +33,12 @@ public class Login_Page extends AppCompatActivity implements View.OnClickListene
 
     private String adminUserName = "Admin";
     private String adminPassword = "2_do_8_comS_309";
+    private String url = URL_LOGIN;
 
     boolean isAdmin = false;
     private int counter = 5;
+
+    IServerRequest serverRequest;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -116,7 +123,8 @@ public class Login_Page extends AppCompatActivity implements View.OnClickListene
         data.put("email", eName);
         data.put("password", ePassword);
 
-        VolleyListener.makeRequest(getApplicationContext(), "/login", loginListener, data, Request.Method.POST);
+        ServerRequest serverRequest = new ServerRequest(this);
+        serverRequest.sendToServer(url, data, Request.Method.POST, new Intent(getApplicationContext(), Home_Page.class));
     }
 
     private boolean validateAdmin(String name, String password) {

@@ -42,20 +42,20 @@ public class Registration_Page extends AppCompatActivity implements IView, View.
             Button alreadyRegButton = findViewById(R.id.bt_AlreadyRegistered);
             alreadyRegButton.setOnClickListener(this);
         }
-
-        ServerRequest serverRequest = new ServerRequest();
-        final RegistrationLogic logic = new RegistrationLogic(this, serverRequest);
+        ServerRequest serverRequest = new ServerRequest(this);
+        final RegistrationLogic logic = new RegistrationLogic(this, serverRequest, this);
 
         @Override
         public void onClick(View view) {
             Intent intentAlreadyReg = new Intent(getApplicationContext(), Login_Page.class);
+            Intent intentRegister = new Intent(getApplicationContext(), Home_Page.class);
             switch (view.getId()) {
                 case R.id.bt_Register:
                     try{
                         String name = nameEditText.getText().toString().trim();
                         String email = emailEditText.getText().toString().trim();
                         String password = passwordEditText.getText().toString().trim();
-                        logic.registerUser(name, email, password);
+                        logic.registerUser(name, email, password, intentRegister);
                     } catch (JSONException e){
                         e.printStackTrace();
                     }
@@ -65,11 +65,6 @@ public class Registration_Page extends AppCompatActivity implements IView, View.
                     break;
             }
         }
-
-    @Override
-    public void onPointerCaptureChanged(boolean hasCapture) {
-
-    }
 
     @Override
     public void showText(String s) {

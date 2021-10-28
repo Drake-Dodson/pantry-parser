@@ -2,11 +2,14 @@ package com.example.pantry_parser.Logic;
 
 import static com.example.pantry_parser.Utilities.URLs.URL_REGISTER;
 
+import android.content.Context;
 import android.content.Intent;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.android.volley.Request;
 import com.example.pantry_parser.Network.IServerRequest;
+import com.example.pantry_parser.Pages.Home_Page;
 import com.example.pantry_parser.Pages.Login_Page;
 import com.example.pantry_parser.IView;
 
@@ -15,16 +18,19 @@ import org.json.JSONObject;
 
 public class RegistrationLogic extends AppCompatActivity implements IVolleyListener{
 
-    IView r;
-    IServerRequest serverRequest;
+    private IView r;
+    private IServerRequest serverRequest;
+    private Context context;
+    private Intent intentRegister;
 
-    public RegistrationLogic (IView r, IServerRequest serverRequest) {
+    public RegistrationLogic(IView r, IServerRequest serverRequest, Context context) {
         this.r = r;
+        this.context = context;
         this.serverRequest = serverRequest;
         serverRequest.addVolleyListener(this);
     }
 
-    public void registerUser(String name, String email, String password) throws JSONException {
+    public void registerUser(String name, String email, String password, Intent applicationContext) throws JSONException {
         final String url = URL_REGISTER;
 
         JSONObject newUserObj = new JSONObject();
@@ -36,15 +42,13 @@ public class RegistrationLogic extends AppCompatActivity implements IVolleyListe
             jsonException.printStackTrace();
         }
 
-        serverRequest.sendToServer(url, newUserObj, "POST");
+        serverRequest.sendToServer(url, newUserObj, Request.Method.POST, applicationContext);
     }
 
     @Override
-    public void onSuccess(String email) {
-        if (email.length() > 0) {
-            startActivity(new Intent(getApplicationContext(), Login_Page.class));
+    public void onSuccess(String message, Intent intent) {
+            startActivity(intent);
             r.toastText("Login Successful!");
-        }
     }
 
     @Override

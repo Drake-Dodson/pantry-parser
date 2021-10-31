@@ -20,17 +20,19 @@ public class RegistrationLogic extends AppCompatActivity implements IVolleyListe
 
     private IView r;
     private IServerRequest serverRequest;
-    private Context context;
-    private Intent intentRegister;
+//    private Context context;
+//    private Intent intentRegister;
 
-    public RegistrationLogic(IView r, IServerRequest serverRequest, Context context) {
+//    public RegistrationLogic(IView r, IServerRequest serverRequest, Context context) {
+    public RegistrationLogic(IView r, IServerRequest serverRequest) {
         this.r = r;
-        this.context = context;
+//        this.context = context;
         this.serverRequest = serverRequest;
         serverRequest.addVolleyListener(this);
     }
 
-    public void registerUser(String name, String email, String password, Intent applicationContext) throws JSONException {
+//    public void registerUser(String name, String email, String password, Intent applicationContext) throws JSONException {
+    public void registerUser(String name, String email, String password) throws JSONException {
         final String url = URL_REGISTER;
 
         JSONObject newUserObj = new JSONObject();
@@ -42,12 +44,16 @@ public class RegistrationLogic extends AppCompatActivity implements IVolleyListe
             jsonException.printStackTrace();
         }
 
-        serverRequest.sendToServer(url, newUserObj, Request.Method.POST, applicationContext);
+//        serverRequest.sendToServer(url, newUserObj, Request.Method.POST, applicationContext);
+        serverRequest.sendToServer(url, newUserObj, "POST");
     }
 
     @Override
-    public void onSuccess(String message, Intent intent) {
-            startActivity(intent);
+    public void onSuccess(String message) {
+//            startActivity(intent);
+        if(message.equals("success")) {
+            startActivity(new Intent(getApplicationContext(), Login_Page.class));
+        }
             r.toastText("Login Successful!");
     }
 

@@ -123,8 +123,8 @@ public class Login_Page extends AppCompatActivity implements View.OnClickListene
         data.put("email", eName);
         data.put("password", ePassword);
 
-        ServerRequest serverRequest = new ServerRequest(this);
-        serverRequest.sendToServer(url, data, Request.Method.POST, new Intent(getApplicationContext(), Home_Page.class));
+        ServerRequest serverRequest = new ServerRequest();
+        serverRequest.sendToServer(url, data, "POST");
     }
 
     private boolean validateAdmin(String name, String password) {

@@ -17,24 +17,25 @@ public class AppController extends Application {
     private static final String KEY_USERNAME = "keyusername";
     private static final String KEY_EMAIL = "keyemail";
     private static final String KEY_ID = "keyid";
-    private static AppController mInstance;
-    private static RequestQueue requestQueue;
-    private static Context ctx;
 
-    public AppController(Context context) {
-        ctx = context;
+    private static AppController mInstance;
+    private static RequestQueue mRequestQueue;
+//    private static Context ctx;
+
+    @Override
+    public void onCreate(){
+        super.onCreate();
+        mInstance = this;
     }
-    public static synchronized AppController getInstance(Context context) {
-        if (mInstance == null) {
-            mInstance = new AppController(context);
-        }
+
+    public static synchronized AppController getInstance(){
         return mInstance;
     }
-
-    public RequestQueue getRequestQueue(){
-        if (this.requestQueue == null)
-            return Volley.newRequestQueue(this.ctx);
-        return requestQueue;
+    public RequestQueue getRequestQueue() {
+        if (mRequestQueue == null) {
+            mRequestQueue = Volley.newRequestQueue(getApplicationContext());
+        }
+        return mRequestQueue;
     }
 
     public <Obj> void addToRequestQueue(Request<Obj> req){

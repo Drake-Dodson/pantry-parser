@@ -26,8 +26,8 @@ public class Registration_Page extends AppCompatActivity implements IView, View.
         @Override
         protected void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
+            new AppController();
             setContentView(R.layout.activity_registration_page);
-            new AppController(this);
 
             nameEditText = findViewById(R.id.text_registrationUsername);
             emailEditText = findViewById(R.id.text_registrationEmail);
@@ -42,20 +42,22 @@ public class Registration_Page extends AppCompatActivity implements IView, View.
             Button alreadyRegButton = findViewById(R.id.bt_AlreadyRegistered);
             alreadyRegButton.setOnClickListener(this);
         }
-        ServerRequest serverRequest = new ServerRequest(this);
-        final RegistrationLogic logic = new RegistrationLogic(this, serverRequest, this);
+//        ServerRequest serverRequest = new ServerRequest(this);
+//        final RegistrationLogic logic = new RegistrationLogic(this, serverRequest, this);
+
+        ServerRequest serverRequest = new ServerRequest();
+        final RegistrationLogic logic = new RegistrationLogic(this, serverRequest);
 
         @Override
         public void onClick(View view) {
             Intent intentAlreadyReg = new Intent(getApplicationContext(), Login_Page.class);
-            Intent intentRegister = new Intent(getApplicationContext(), Home_Page.class);
             switch (view.getId()) {
                 case R.id.bt_Register:
                     try{
                         String name = nameEditText.getText().toString().trim();
                         String email = emailEditText.getText().toString().trim();
                         String password = passwordEditText.getText().toString().trim();
-                        logic.registerUser(name, email, password, intentRegister);
+                        logic.registerUser(name, email, password);
                     } catch (JSONException e){
                         e.printStackTrace();
                     }

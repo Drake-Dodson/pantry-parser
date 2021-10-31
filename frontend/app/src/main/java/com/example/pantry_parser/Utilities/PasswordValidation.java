@@ -27,6 +27,7 @@ public class PasswordValidation {
         if(!(password == confirmPassword)){
             return false;
         }
+
         // Pattern class contains matcher() method
         // to find matching between given password
         // and regular expression.

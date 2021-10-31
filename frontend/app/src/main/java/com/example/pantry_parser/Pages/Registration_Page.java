@@ -54,12 +54,26 @@ public class Registration_Page extends AppCompatActivity implements IView, View.
             Intent intentAlreadyReg = new Intent(getApplicationContext(), Login_Page.class);
             switch (view.getId()) {
                 case R.id.bt_Register:
+                    String name = nameEditText.getText().toString().trim();
+                    String email = emailEditText.getText().toString().trim();
+                    String password = passwordEditText.getText().toString().trim();
+                    String confirmPassword = confirmPasswordEditText.getText().toString().trim();
+
+                    if(email.isEmpty() == true){
+                        Toast.makeText(Registration_Page.this,"Please enter your email!",Toast.LENGTH_SHORT).show();
+                    }
+                    if(name.isEmpty() == true){
+                        Toast.makeText(Registration_Page.this,"Please enter your name!",Toast.LENGTH_SHORT).show();
+                    }
+                    if(password.isEmpty() == true){
+                        Toast.makeText(Registration_Page.this,"Please enter your password!",Toast.LENGTH_SHORT).show();
+                    }
+                    if(!(password == confirmPassword)){
+                        Toast.makeText(Registration_Page.this,"Passwords do not match!",Toast.LENGTH_SHORT).show();
+                    }
+
                     try{
-                        String name = nameEditText.getText().toString().trim();
-                        String email = emailEditText.getText().toString().trim();
-                        String password = passwordEditText.getText().toString().trim();
-                        String confirmPassword = confirmPasswordEditText.getText().toString().trim();
-                        if (!isEmpty(nameEditText) && !isEmpty(emailEditText) && isValidPassword(password, confirmPassword) == true){
+                        if (!email.isEmpty() && !name.isEmpty() && isValidPassword(password, confirmPassword) == true){
                             logic.registerUser(name, email, password);
                         }
                     } catch (JSONException e){
@@ -71,11 +85,6 @@ public class Registration_Page extends AppCompatActivity implements IView, View.
                     break;
             }
         }
-
-    private boolean isEmpty(EditText text) {
-            CharSequence str = text.getText().toString();
-            return TextUtils.isEmpty(str);
-    }
 
     @Override
     public void showText(String s) {

@@ -13,7 +13,6 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.android.volley.Request;
 import com.example.pantry_parser.Network.IServerRequest;
 import com.example.pantry_parser.Network.ServerRequest;
 import com.example.pantry_parser.R;

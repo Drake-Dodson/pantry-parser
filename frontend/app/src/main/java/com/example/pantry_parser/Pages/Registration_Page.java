@@ -1,9 +1,12 @@
 package com.example.pantry_parser.Pages;
 
+import static com.example.pantry_parser.Utilities.PasswordValidation.isValidPassword;
+
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -12,11 +15,11 @@ import android.widget.Toast;
 import com.example.pantry_parser.AppController;
 import com.example.pantry_parser.Logic.RegistrationLogic;
 import com.example.pantry_parser.Network.ServerRequest;
+import com.example.pantry_parser.Pages.Login_Page;
 import com.example.pantry_parser.R;
 import com.example.pantry_parser.IView;
 
 import org.json.JSONException;
-
 
 public class Registration_Page extends AppCompatActivity implements IView, View.OnClickListener {
 
@@ -42,8 +45,6 @@ public class Registration_Page extends AppCompatActivity implements IView, View.
             Button alreadyRegButton = findViewById(R.id.bt_AlreadyRegistered);
             alreadyRegButton.setOnClickListener(this);
         }
-//        ServerRequest serverRequest = new ServerRequest(this);
-//        final RegistrationLogic logic = new RegistrationLogic(this, serverRequest, this);
 
         ServerRequest serverRequest = new ServerRequest();
         final RegistrationLogic logic = new RegistrationLogic(this, serverRequest);
@@ -57,7 +58,10 @@ public class Registration_Page extends AppCompatActivity implements IView, View.
                         String name = nameEditText.getText().toString().trim();
                         String email = emailEditText.getText().toString().trim();
                         String password = passwordEditText.getText().toString().trim();
-                        logic.registerUser(name, email, password);
+                        String confirmPassword = confirmPasswordEditText.getText().toString().trim();
+                        if (!isEmpty(nameEditText) && !isEmpty(emailEditText) && isValidPassword(password, confirmPassword) == true){
+                            logic.registerUser(name, email, password);
+                        }
                     } catch (JSONException e){
                         e.printStackTrace();
                     }
@@ -67,6 +71,11 @@ public class Registration_Page extends AppCompatActivity implements IView, View.
                     break;
             }
         }
+
+    private boolean isEmpty(EditText text) {
+            CharSequence str = text.getText().toString();
+            return TextUtils.isEmpty(str);
+    }
 
     @Override
     public void showText(String s) {

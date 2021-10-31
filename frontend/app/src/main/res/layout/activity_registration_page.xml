@@ -61,14 +61,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/text_registrationPassword" />
 
-    <TextView
-        android:id="@+id/text_registerError"
-        android:layout_width="284dp"
-        android:layout_height="97dp"
-        android:text="TextView"
-        tools:layout_editor_absoluteX="56dp"
-        tools:layout_editor_absoluteY="519dp" />
-
     <Button
         android:id="@+id/bt_Register"
         android:layout_width="100dp"

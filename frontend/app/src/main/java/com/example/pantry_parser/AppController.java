@@ -1,15 +1,12 @@
 package com.example.pantry_parser;
 
 import android.app.Application;
-import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.text.TextUtils;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
-import com.example.pantry_parser.Pages.Login_Page;
 import com.example.pantry_parser.Utilities.User;
 
 public class AppController extends Application {
@@ -20,7 +17,6 @@ public class AppController extends Application {
 
     private static AppController mInstance;
     private static RequestQueue mRequestQueue;
-//    private static Context ctx;
 
     @Override
     public void onCreate(){

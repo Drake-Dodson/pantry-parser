@@ -16,11 +16,14 @@ public class RecipeController {
     UserRepository userRepository;
     @Autowired
     IngredientRepository ingredientRepository;
+    @Autowired
+    StepsRepository stepRepository;
 
     private final String success = "{\"message\":\"success\"}";
     private final String failure = "{\"message\":\"failure\"}";
     private final String already_exists = "{\"message\":\"already-exists\"}";
 
+    //generic recipe stuff
     @GetMapping(path = "/recipes")
     List<Recipe> getAllRecipes(){
         return recipeRepository.findAll();
@@ -56,6 +59,65 @@ public class RecipeController {
         return success;
     }
 
+    //recipe steps stuff
+    @GetMapping(path = "/recipe/{id}/steps")
+    List<Step> showStepsByRecipe(@PathVariable int id){
+        return recipeRepository.findById(id).getSteps();
+    }
+    @GetMapping(path = "/recipe/{recipe_id}/steps/{step_id}")
+    Step getStep(@PathVariable int recipe_id, @PathVariable int step_id) { return stepRepository.findById(step_id); }
+    @PostMapping(path = "/recipe/{recipe_id}/steps")
+    String createStep(@PathVariable int recipe_id, @RequestBody Step step) {
+        Recipe recipe = recipeRepository.findById(recipe_id);
+        step.setOrder(recipe.getSteps().size() + 1);
+        recipe.addStep(step);
+        recipeRepository.save(recipe);
+        stepRepository.save(step);
+        return success;
+    }
+    @PatchMapping(path = "/recipe/{recipe_id}/steps/{step_id}")
+    String updateStep(@PathVariable int recipe_id, @PathVariable int step_id, @RequestBody Step newStep) {
+        Step step = stepRepository.findById(step_id);
+        step.setStep(newStep.getStep());
+        stepRepository.save(step);
+        if(step.getOrder() != newStep.getOrder()){
+            Recipe recipe = recipeRepository.findById(recipe_id);
+            recipe.shiftStep(step, newStep.getOrder());
+            recipeRepository.save(recipe);
+            stepRepository.saveAll(recipe.getSteps());
+        }
+        return success;
+    }
+    @DeleteMapping(path = "/recipe/{recipe_id}/steps/{step_id}")
+    String deleteStep(@PathVariable int recipe_id, @PathVariable int step_id){
+        Step s = stepRepository.findById(step_id);
+        Recipe r = recipeRepository.findById(recipe_id);
+        r.removeStep(s);
+        stepRepository.deleteById(step_id);
+        recipeRepository.save(r);
+        stepRepository.saveAll(r.getSteps());
+        return success;
+    }
+
+    //steps by order
+    @GetMapping(path = "/recipe/{recipe_id}/step/{pos}")
+    Step getOrderedStep(@PathVariable int recipe_id, @PathVariable int pos) {
+        int step_id = recipeRepository.findById(recipe_id).getStepByOrder(pos).getId();
+        return this.getStep(recipe_id, step_id);
+    }
+    @PatchMapping(path = "/recipe/{recipe_id}/step/{pos}")
+    String updateOrderedStep(@PathVariable int recipe_id, @PathVariable int pos, @RequestBody Step newStep) {
+        int step_id = recipeRepository.findById(recipe_id).getStepByOrder(pos).getId();
+        return this.updateStep(recipe_id, step_id, newStep);
+    }
+    @DeleteMapping(path = "/recipe/{recipe_id}/step/{pos}")
+    String deleteOrderedStep(@PathVariable int recipe_id, @PathVariable int pos){
+        int step_id = recipeRepository.findById(recipe_id).getStepByOrder(pos).getId();
+        return this.deleteStep(recipe_id, step_id);
+    }
+
+
+    //recipe ingredient stuff
     @GetMapping(path = "/ingredients")
     List<Ingredient> showIngredients(){
         return ingredientRepository.findAll();
@@ -79,7 +141,7 @@ public class RecipeController {
         return recipeRepository.getByIngredients(input);
     }
 
-
+    //adding and removing ingredients
     @GetMapping(path = "/recipes/{id}/ingredients")
     List<Ingredient> ingredientsByRecipe(@PathVariable int id){
         Recipe r = recipeRepository.findById(id);

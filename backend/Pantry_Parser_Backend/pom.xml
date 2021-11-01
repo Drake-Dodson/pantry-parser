@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.example</groupId>
     <artifactId>pantry-parser-backend</artifactId>
-    <version>0.0.6-UserController_Upgrade</version>
+    <version>0.0.7-Steps</version>
     <name>pantry-parser-backend</name>
     <description>pantry-parser-backend</description>
     <properties>

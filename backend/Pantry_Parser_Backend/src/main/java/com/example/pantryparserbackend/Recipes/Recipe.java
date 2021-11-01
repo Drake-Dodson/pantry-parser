@@ -4,6 +4,7 @@ import javax.persistence.*;
 
 import com.example.pantryparserbackend.users.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.springframework.core.annotation.Order;
 import org.springframework.lang.Nullable;
 
 import java.util.Date;
@@ -51,7 +52,11 @@ public class Recipe {
     )
     private List<Ingredient> ingredients;
 
-    public Recipe(String name, int time, String summary, String description)
+    @OneToMany(mappedBy = "recipe")
+    @OrderBy("order")
+    private List<Step> steps;
+
+    public Recipe(String name, int time, String summary, String description, List<Step> steps)
     {
         this.name = name;
         this.time = time;
@@ -59,6 +64,7 @@ public class Recipe {
         this.description = description;
         this.created_date = new Date();
         this.rating = 0;
+        this.steps = steps;
     }
     public Recipe(){}
 
@@ -72,6 +78,8 @@ public class Recipe {
     public String getCreatorName() { return this.creator.getDisplayName(); }
     public List<Ingredient> getIngredients() { return this.ingredients; }
     public int getNum_ingredients() { return this.num_ingredients; }
+    public List<Step> getSteps() { return this.steps; }
+    public Step getStepByOrder(int pos) { return this.steps.get(pos); }
 
     //not including a set for created_date since this shouldn't be changed
     public void setName(String name){ this.name = name; }
@@ -90,6 +98,15 @@ public class Recipe {
     public void removeIngredient(Ingredient i){
         this.num_ingredients--;
         this.ingredients.remove(i);
+    }
+    public void addStep(Step s){
+        this.steps.add(s);
+    }
+    public void removeStep(Step s){
+        this.steps.remove(s);
+    }
+    public void shiftStep(Step s, int pos) {
+        this.steps.set(pos, s);
     }
 
     public void update(Recipe request) {

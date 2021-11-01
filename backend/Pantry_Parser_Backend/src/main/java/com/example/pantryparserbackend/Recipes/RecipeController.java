@@ -100,17 +100,17 @@ public class RecipeController {
     }
 
     //steps by order
-    @GetMapping(path = "/recipe/{recipe_id}/step/{pos}")
+    @GetMapping(path = "/recipe/{recipe_id}/order_step/{pos}")
     Step getOrderedStep(@PathVariable int recipe_id, @PathVariable int pos) {
         int step_id = recipeRepository.findById(recipe_id).getStepByOrder(pos).getId();
         return this.getStep(recipe_id, step_id);
     }
-    @PatchMapping(path = "/recipe/{recipe_id}/step/{pos}")
+    @PatchMapping(path = "/recipe/{recipe_id}/order_step/{pos}")
     String updateOrderedStep(@PathVariable int recipe_id, @PathVariable int pos, @RequestBody Step newStep) {
         int step_id = recipeRepository.findById(recipe_id).getStepByOrder(pos).getId();
         return this.updateStep(recipe_id, step_id, newStep);
     }
-    @DeleteMapping(path = "/recipe/{recipe_id}/step/{pos}")
+    @DeleteMapping(path = "/recipe/{recipe_id}/order_step/{pos}")
     String deleteOrderedStep(@PathVariable int recipe_id, @PathVariable int pos){
         int step_id = recipeRepository.findById(recipe_id).getStepByOrder(pos).getId();
         return this.deleteStep(recipe_id, step_id);

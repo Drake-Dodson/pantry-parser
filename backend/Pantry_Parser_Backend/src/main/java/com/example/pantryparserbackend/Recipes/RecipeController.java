@@ -2,6 +2,7 @@ package com.example.pantryparserbackend.Recipes;
 
 import java.util.List;
 
+import com.example.pantryparserbackend.Util.MessageUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import com.example.pantryparserbackend.users.UserRepository;
@@ -69,6 +70,12 @@ public class RecipeController {
     @PostMapping(path = "/recipe/{recipe_id}/steps")
     String createStep(@PathVariable int recipe_id, @RequestBody Step step) {
         Recipe recipe = recipeRepository.findById(recipe_id);
+        if(recipe == null){
+            return MessageUtil.newResponseMessage(false, "recipe does not exist");
+        }
+        if(step == null){
+            return MessageUtil.newResponseMessage(false, "step cannot be null");
+        }
         step.setOrder(recipe.getSteps().size() + 1);
         recipe.addStep(step);
         recipeRepository.save(recipe);
@@ -78,10 +85,19 @@ public class RecipeController {
     @PatchMapping(path = "/recipe/{recipe_id}/steps/{step_id}")
     String updateStep(@PathVariable int recipe_id, @PathVariable int step_id, @RequestBody Step newStep) {
         Step step = stepRepository.findById(step_id);
+        if(step == null){
+            return MessageUtil.newResponseMessage(false, "step does not exist");
+        }
+        if(newStep == null){
+            return MessageUtil.newResponseMessage(false, "step cannot be null");
+        }
         step.setStep(newStep.getStep());
         stepRepository.save(step);
         if(step.getOrder() != newStep.getOrder()){
             Recipe recipe = recipeRepository.findById(recipe_id);
+            if(recipe == null){
+                return MessageUtil.newResponseMessage(false, "recipe does not exist");
+            }
             recipe.shiftStep(step, newStep.getOrder());
             recipeRepository.save(recipe);
             stepRepository.saveAll(recipe.getSteps());
@@ -92,6 +108,12 @@ public class RecipeController {
     String deleteStep(@PathVariable int recipe_id, @PathVariable int step_id){
         Step s = stepRepository.findById(step_id);
         Recipe r = recipeRepository.findById(recipe_id);
+        if(r == null){
+            return MessageUtil.newResponseMessage(false, "recipe does not exist");
+        }
+        if(s == null){
+            return MessageUtil.newResponseMessage(false, "step does not exist");
+        }
         r.removeStep(s);
         stepRepository.deleteById(step_id);
         recipeRepository.save(r);
@@ -107,12 +129,26 @@ public class RecipeController {
     }
     @PatchMapping(path = "/recipe/{recipe_id}/order_step/{pos}")
     String updateOrderedStep(@PathVariable int recipe_id, @PathVariable int pos, @RequestBody Step newStep) {
-        int step_id = recipeRepository.findById(recipe_id).getStepByOrder(pos).getId();
+        Recipe r = recipeRepository.findById(recipe_id);
+        if(r == null){
+            return MessageUtil.newResponseMessage(false, "recipe does not exist");
+        }
+        if(r.getSteps().size() < pos){
+            return MessageUtil.newResponseMessage(false, "that is not a step on this recipe");
+        }
+        int step_id = r.getStepByOrder(pos).getId();
         return this.updateStep(recipe_id, step_id, newStep);
     }
     @DeleteMapping(path = "/recipe/{recipe_id}/order_step/{pos}")
     String deleteOrderedStep(@PathVariable int recipe_id, @PathVariable int pos){
-        int step_id = recipeRepository.findById(recipe_id).getStepByOrder(pos).getId();
+        Recipe r = recipeRepository.findById(recipe_id);
+        if(r == null){
+            return MessageUtil.newResponseMessage(false, "recipe does not exist");
+        }
+        if(r.getSteps().size() < pos){
+            return MessageUtil.newResponseMessage(false, "that is not a step on this recipe");
+        }
+        int step_id = r.getStepByOrder(pos).getId();
         return this.deleteStep(recipe_id, step_id);
     }
 

@@ -70,6 +70,7 @@ public class Recipe {
     public Recipe(){}
 
     public int getId(){ return this.id; }
+    public int getCreatorId(){ return creator.getId(); }
     public String getName() { return this.name; }
     public int getTime() { return this.time; }
     public String getSummary() { return this.summary; }
@@ -97,6 +98,9 @@ public class Recipe {
             total += recipes_review.getStarNumber();
         }
         this.rating = total / recipes_reviews.size();
+
+        // Round to the tenths place
+        this.rating = (double) Math.round(this.rating * 10) / 10;
     }
 
     public void addIngredient(Ingredient i){
@@ -115,6 +119,5 @@ public class Recipe {
         this.setDescription(request.getDescription());
         this.updateRating();
     }
-
 
 }

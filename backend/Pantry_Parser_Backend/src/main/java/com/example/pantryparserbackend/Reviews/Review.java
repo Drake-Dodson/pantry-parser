@@ -16,6 +16,7 @@ public class Review {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Getter
     private int id;
 
     @Getter
@@ -26,7 +27,6 @@ public class Review {
     @Setter
     private String reviewBody;
 
-    // Number of stars
     @Getter
     @Setter
     private int starNumber;

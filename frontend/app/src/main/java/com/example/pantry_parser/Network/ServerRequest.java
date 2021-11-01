@@ -8,7 +8,6 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.pantry_parser.AppController;
-import com.example.pantry_parser.Logic.IVolleyListener;
 
 import org.json.JSONObject;
 

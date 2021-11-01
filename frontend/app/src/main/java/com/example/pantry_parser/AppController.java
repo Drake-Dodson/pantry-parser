@@ -16,7 +16,7 @@ public class AppController extends Application {
     private static final String KEY_ID = "keyid";
 
     private static AppController mInstance;
-    private static RequestQueue mRequestQueue;
+    private static RequestQueue requestQueue;
 
     @Override
     public void onCreate(){
@@ -28,13 +28,13 @@ public class AppController extends Application {
         return mInstance;
     }
     public RequestQueue getRequestQueue() {
-        if (mRequestQueue == null) {
+        if (this.requestQueue == null) {
             mRequestQueue = Volley.newRequestQueue(getApplicationContext());
         }
-        return mRequestQueue;
+        return requestQueue;
     }
 
-    public <Obj> void addToRequestQueue(Request<Obj> req){
+    public <Obj> void addToRequestQueue(Request<Obj> request){
         getRequestQueue().add(req);
     }
 

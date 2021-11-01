@@ -7,7 +7,7 @@ import android.content.Intent;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.pantry_parser.Network.IServerRequest;
-import com.example.pantry_parser.Pages.Login_Page;
+import com.example.pantry_parser.Pages.Home_Page;
 import com.example.pantry_parser.IView;
 
 import org.json.JSONException;
@@ -15,10 +15,10 @@ import org.json.JSONObject;
 
 public class RegistrationLogic extends AppCompatActivity implements IVolleyListener{
 
-    IView r;
-    IServerRequest serverRequest;
+    private IView r;
+    private IServerRequest serverRequest;
 
-    public RegistrationLogic (IView r, IServerRequest serverRequest) {
+    public RegistrationLogic(IView r, IServerRequest serverRequest) {
         this.r = r;
         this.serverRequest = serverRequest;
         serverRequest.addVolleyListener(this);
@@ -40,11 +40,11 @@ public class RegistrationLogic extends AppCompatActivity implements IVolleyListe
     }
 
     @Override
-    public void onSuccess(String email) {
-        if (email.length() > 0) {
-            startActivity(new Intent(getApplicationContext(), Login_Page.class));
-            r.toastText("Login Successful!");
+    public void onSuccess(String message) {
+        if(message.equals("success")) {
+            startActivity(new Intent(getApplicationContext(), Home_Page.class));
         }
+            r.toastText("Login Successful!");
     }
 
     @Override

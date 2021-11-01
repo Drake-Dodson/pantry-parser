@@ -13,11 +13,9 @@ import com.example.pantry_parser.Logic.IVolleyListener;
 import org.json.JSONObject;
 
 public class ServerRequest extends AppCompatActivity implements IServerRequest{
-
-    private String tag_json_obj = "json_obj_req";
     private IVolleyListener l;
 
-    public void sendToServer(String url, JSONObject newUserObj, String methodType) {
+    public void sendToServer(String url, JSONObject obj, String methodType) {
 
         int method = Request.Method.GET;
 
@@ -25,7 +23,7 @@ public class ServerRequest extends AppCompatActivity implements IServerRequest{
             method = Request.Method.POST;
         }
 
-        JsonObjectRequest registerUserRequest = new JsonObjectRequest(method, url, newUserObj,
+        JsonObjectRequest request = new JsonObjectRequest(method, url, obj,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
@@ -41,11 +39,10 @@ public class ServerRequest extends AppCompatActivity implements IServerRequest{
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         l.onError(error.getMessage());
-                        //Toast.makeText(r, "Registration Error!" + error.toString(), Toast.LENGTH_SHORT).show();
                     }
                 }
         );
-        AppController.getInstance(this).addToRequestQueue(registerUserRequest, tag_json_obj);
+        AppController.getInstance().addToRequestQueue(request);
     }
 
     public void addVolleyListener(IVolleyListener logic){

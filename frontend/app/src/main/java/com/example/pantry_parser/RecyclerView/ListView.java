@@ -22,6 +22,7 @@ import com.example.pantry_parser.R;
 import com.example.pantry_parser.Recipe;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
+import com.example.pantry_parser.View_Recipe;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -121,8 +122,8 @@ public class ListView extends AppCompatActivity implements RecyclerViewAdapter.O
     @Override
     public void onRecipeClick(int position) {
         dataset.get(position);
-        Intent intent = new Intent(this, RecipeView.class);
-        intent.putExtra("RecipeID", dataset.get(position).getRecipeID());
+        Intent intent = new Intent(this, View_Recipe.class);
+        intent.putExtra("Recipe", dataset.get(position).getRecipeID());
         intent.putExtra("RecipeName", dataset.get(position).getRecipeName());
         startActivity(intent);
     }

@@ -13,6 +13,9 @@
         android:theme="@style/Theme.Pantry_Parser"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".View_Recipe"
+            android:exported="true" />
+        <activity
             android:name=".Pages.RecipeView"
             android:exported="true" />
         <activity

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".FragmentDetails"
+    android:id="@+id/detailsContainer">
+
+    <!-- TODO: Update blank fragment layout -->
+
+    <ScrollView
+        android:id="@+id/ScrollView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/recipeDetails"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:fontFamily="@font/comforta"
+                android:lineSpacingExtra="1sp"
+                android:text="These not-your-average chocolate chunk cookies boast big caramel flavor—but there’s no caramel in the ingredient list. Instead, the sugar and butter in these slice-and-bake one-bowl cookies brown in the oven for a deeply sweet, nutty, caramelly flavor, and the cookies are baked in muffin tins for extra toasty, crisp edges. If walnuts aren’t your thing, feel free to substitute with more chopped chocolate.wiss chard is the cook’s companion and the gardener’s constant friend. In an autumn wild with wind, sun and rain, of no petrol, no drivers and, sometimes, no ingredients, chard is there, easy and quick to grow in beds, pots and window boxes and, as soon as you cut it, it comes back, giving you leaf upon leaf, stalk upon stalk. Rainbow chard adds exuberant colour to your plate, while white chard has that subtle, sweet flavour. It is all around right now, and adds real depth to this thoroughly delicious lasagne."
+                android:textAlignment="center"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+    </ScrollView>
+
+</FrameLayout>

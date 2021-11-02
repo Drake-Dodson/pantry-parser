@@ -14,10 +14,6 @@ import java.util.Set;
 @RestController
 public class UserController {
 
-    private final String success = "{\"message\":\"success\"}";
-    private final String failure = "{\"message\":\"failure\"}";
-    private final String already_exists = "{\"message\":\"already-exists\"}";
-
     @Autowired
     private UserRepository userRepository;
     @Autowired
@@ -41,8 +37,7 @@ public class UserController {
     }
 
     @GetMapping(path = "/user/email/{email}")
-    public User getUserByEmail(@PathVariable String email) throws Exception
-    {
+    public User getUserByEmail(@PathVariable String email) throws Exception {
         return userRepository.findByEmail(email);
     }
 
@@ -80,12 +75,18 @@ public class UserController {
     @GetMapping(path = "/user/{user_id}/recipes")
     public List<Recipe> allRecipes(@PathVariable int user_id){
         User u = userRepository.findById(user_id);
+        if(u == null){
+            return null;
+        }
         return u.getRecipes();
     }
 
     @GetMapping(path = "/user/{user_id}/favorites")
     public List<Recipe> allFavorites(@PathVariable int user_id){
         User u = userRepository.findById(user_id);
+        if(u == null){
+            return null;
+        }
         return u.getFavorites();
     }
     @PatchMapping(path = "/user/{user_id}/favorites/{recipe_id}")
@@ -93,25 +94,30 @@ public class UserController {
         User u = userRepository.findById(user_id);
         Recipe r = recipeRepository.findById(recipe_id);
 
+        if(u == null || r == null){
+            return MessageUtil.newResponseMessage(false, (u == null ? "user " : "recipe ") + "does not exist");
+        }
         if(u.getFavorites().contains(r)) {
-            return already_exists;
+            return MessageUtil.newResponseMessage(false, "releationship already exists");
         }
 
         u.favorite(r);
         userRepository.save(u);
-        return success;
+        return MessageUtil.newResponseMessage(true, "favorited");
     }
     @DeleteMapping(path = "/user/{user_id}/favorites/{recipe_id}")
     public String unfavorite(@PathVariable int user_id, @PathVariable int recipe_id){
         User u = userRepository.findById(user_id);
         Recipe r = recipeRepository.findById(recipe_id);
-
+        if(u == null || r == null){
+            return MessageUtil.newResponseMessage(false, (u == null ? "user " : "recipe ") + "does not exist");
+        }
         if(!u.getFavorites().contains(r)) {
-            return failure;
+            return MessageUtil.newResponseMessage(false, "relationship does not exist");
         }
 
         u.unfavorite(r);
         userRepository.save(u);
-        return success;
+        return MessageUtil.newResponseMessage(true, "successfully unfavorited");
     }
 }

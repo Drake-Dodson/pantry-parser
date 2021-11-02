@@ -61,12 +61,73 @@ public class RecipeController {
     }
 
     //recipe steps stuff
+    @GetMapping(path = "/step/{step_id}")
+    Step getStep(@PathVariable int step_id) { return stepRepository.findById(step_id); }
+    @PatchMapping(path = "/step/{step_id}")
+    String updateStep(@PathVariable int step_id, @RequestBody Step newStep) {
+        Step step = stepRepository.findById(step_id);
+        if(step == null){
+            return MessageUtil.newResponseMessage(false, "step does not exist");
+        }
+        if(newStep == null){
+            return MessageUtil.newResponseMessage(false, "step cannot be null");
+        }
+        step.setName(newStep.getName());
+        stepRepository.save(step);
+
+        if(step.getNum() != newStep.getNum() && newStep.getNum() > 0){
+            Recipe recipe = recipeRepository.findById(step.getRecipe().getId());
+            if(recipe == null){
+                return MessageUtil.newResponseMessage(false, "recipe does not exist");
+            }
+            if(newStep.getNum() >= recipe.getSteps().size())
+            {
+                //caps out possible order positions to the bottom of the array
+                newStep.setNum(recipe.getSteps().size());
+            }
+            recipe.shiftStep(step, newStep.getNum() - 1);
+            recipeRepository.save(recipe);
+
+            for(Step s : recipe.getSteps()){
+                s.setNum(recipe.getSteps().indexOf(s) + 1);
+            }
+            stepRepository.saveAll(recipe.getSteps());
+        }
+        return MessageUtil.newResponseMessage(true, "successfully modified");
+    }
+    @DeleteMapping(path = "/step/{step_id}")
+    String deleteStep(@PathVariable int step_id){
+        Step step = stepRepository.findById(step_id);
+        if(step == null){
+            return MessageUtil.newResponseMessage(false, "step does not exist");
+        }
+
+        Recipe recipe = recipeRepository.findById(step.getRecipe().getId());
+        if(recipe == null){
+            return MessageUtil.newResponseMessage(false, "recipe does not exist");
+        }
+
+        recipe.removeStep(step);
+        stepRepository.delete(step);
+        recipeRepository.save(recipe);
+
+        for(Step s : recipe.getSteps()){
+            s.setNum(recipe.getSteps().indexOf(s) + 1);
+        }
+        stepRepository.saveAll(recipe.getSteps());
+        return MessageUtil.newResponseMessage(true, "successfully deleted");
+    }
+
+    //steps by recipe
     @GetMapping(path = "/recipe/{id}/steps")
     List<Step> showStepsByRecipe(@PathVariable int id){
         return recipeRepository.findById(id).getSteps();
     }
-    @GetMapping(path = "/recipe/{recipe_id}/steps/{step_id}")
-    Step getStep(@PathVariable int recipe_id, @PathVariable int step_id) { return stepRepository.findById(step_id); }
+    @GetMapping(path = "/recipe/{recipe_id}/step/{pos}")
+    Step getOrderedStep(@PathVariable int recipe_id, @PathVariable int pos) {
+        int step_id = recipeRepository.findById(recipe_id).getStepByOrder(pos - 1).getId();
+        return this.getStep(step_id);
+    }
     @PostMapping(path = "/recipe/{recipe_id}/steps")
     String createStep(@PathVariable int recipe_id, @RequestBody Step step) {
         Recipe recipe = recipeRepository.findById(recipe_id);
@@ -76,82 +137,37 @@ public class RecipeController {
         if(step == null){
             return MessageUtil.newResponseMessage(false, "step cannot be null");
         }
-        step.setOrder(recipe.getSteps().size() + 1);
+        step.setNum(recipe.getSteps().size() + 1);
         recipe.addStep(step);
+        step.setRecipe(recipe);
         recipeRepository.save(recipe);
         stepRepository.save(step);
         return MessageUtil.newResponseMessage(true, "successfully created");
     }
-    @PatchMapping(path = "/recipe/{recipe_id}/steps/{step_id}")
-    String updateStep(@PathVariable int recipe_id, @PathVariable int step_id, @RequestBody Step newStep) {
-        Step step = stepRepository.findById(step_id);
-        if(step == null){
-            return MessageUtil.newResponseMessage(false, "step does not exist");
-        }
-        if(newStep == null){
-            return MessageUtil.newResponseMessage(false, "step cannot be null");
-        }
-        step.setStep(newStep.getStep());
-        stepRepository.save(step);
-        if(step.getOrder() != newStep.getOrder()){
-            Recipe recipe = recipeRepository.findById(recipe_id);
-            if(recipe == null){
-                return MessageUtil.newResponseMessage(false, "recipe does not exist");
-            }
-            recipe.shiftStep(step, newStep.getOrder());
-            recipeRepository.save(recipe);
-            stepRepository.saveAll(recipe.getSteps());
-        }
-        return MessageUtil.newResponseMessage(true, "successfully modified");
-    }
-    @DeleteMapping(path = "/recipe/{recipe_id}/steps/{step_id}")
-    String deleteStep(@PathVariable int recipe_id, @PathVariable int step_id){
-        Step s = stepRepository.findById(step_id);
-        Recipe r = recipeRepository.findById(recipe_id);
-        if(r == null){
-            return MessageUtil.newResponseMessage(false, "recipe does not exist");
-        }
-        if(s == null){
-            return MessageUtil.newResponseMessage(false, "step does not exist");
-        }
-        r.removeStep(s);
-        stepRepository.deleteById(step_id);
-        recipeRepository.save(r);
-        stepRepository.saveAll(r.getSteps());
-        return MessageUtil.newResponseMessage(true, "successfully deleted");
-    }
-
-    //steps by order
-    @GetMapping(path = "/recipe/{recipe_id}/order_step/{pos}")
-    Step getOrderedStep(@PathVariable int recipe_id, @PathVariable int pos) {
-        int step_id = recipeRepository.findById(recipe_id).getStepByOrder(pos).getId();
-        return this.getStep(recipe_id, step_id);
-    }
-    @PatchMapping(path = "/recipe/{recipe_id}/order_step/{pos}")
+    @PatchMapping(path = "/recipe/{recipe_id}/step/{pos}")
     String updateOrderedStep(@PathVariable int recipe_id, @PathVariable int pos, @RequestBody Step newStep) {
-        Recipe r = recipeRepository.findById(recipe_id);
-        if(r == null){
+        Recipe recipe = recipeRepository.findById(recipe_id);
+        if(recipe == null){
             return MessageUtil.newResponseMessage(false, "recipe does not exist");
         }
-        if(r.getSteps().size() < pos){
+        if(recipe.getSteps().size() > pos || pos <= 0){
             return MessageUtil.newResponseMessage(false, "that is not a step on this recipe");
         }
-        int step_id = r.getStepByOrder(pos).getId();
-        return this.updateStep(recipe_id, step_id, newStep);
+        int step_id = recipe.getStepByOrder(pos - 1).getId();
+        return this.updateStep(step_id, newStep);
     }
-    @DeleteMapping(path = "/recipe/{recipe_id}/order_step/{pos}")
+    @DeleteMapping(path = "/recipe/{recipe_id}/step/{pos}")
     String deleteOrderedStep(@PathVariable int recipe_id, @PathVariable int pos){
-        Recipe r = recipeRepository.findById(recipe_id);
-        if(r == null){
+        Recipe recipe = recipeRepository.findById(recipe_id);
+        if(recipe == null){
             return MessageUtil.newResponseMessage(false, "recipe does not exist");
         }
-        if(r.getSteps().size() < pos){
+        if(recipe.getSteps().size() > pos || pos <= 0){
             return MessageUtil.newResponseMessage(false, "that is not a step on this recipe");
         }
-        int step_id = r.getStepByOrder(pos).getId();
-        return this.deleteStep(recipe_id, step_id);
+        int step_id = recipe.getStepByOrder(pos - 1).getId();
+        return this.deleteStep(step_id);
     }
-
 
     //recipe ingredient stuff
     @GetMapping(path = "/ingredients")

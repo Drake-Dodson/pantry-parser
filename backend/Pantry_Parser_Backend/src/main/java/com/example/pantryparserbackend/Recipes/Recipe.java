@@ -53,7 +53,7 @@ public class Recipe {
     private List<Ingredient> ingredients;
 
     @OneToMany(mappedBy = "recipe")
-    @OrderBy("order")
+    @OrderBy("num")
     private List<Step> steps;
 
     public Recipe(String name, int time, String summary, String description, List<Step> steps)

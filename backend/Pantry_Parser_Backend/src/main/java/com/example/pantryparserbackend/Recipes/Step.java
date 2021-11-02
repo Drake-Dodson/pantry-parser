@@ -16,10 +16,10 @@ public class Step {
 
     @Getter
     @Setter
-    private String step;
+    private String name;
     @Getter
     @Setter
-    private int order;
+    private int num;
 
     @ManyToOne
     @JoinColumn(name = "recipe_id")
@@ -29,8 +29,8 @@ public class Step {
     private Recipe recipe;
 
     public Step (String step, int order, Recipe recipe){
-        this.step = step;
-        this.order = order;
+        this.name = step;
+        this.num = order;
         this.recipe = recipe;
     }
 

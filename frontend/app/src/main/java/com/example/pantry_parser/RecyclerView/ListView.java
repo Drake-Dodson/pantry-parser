@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -15,9 +16,11 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.pantry_parser.Pages.Settings_Page;
 import com.example.pantry_parser.R;
 import com.example.pantry_parser.Recipe;
 import com.example.pantry_parser.Pages.Recipe_Page;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -34,10 +37,23 @@ public class ListView extends AppCompatActivity implements RecyclerViewAdapter.O
     private static final String URL_FAV = "http://coms-309-032.cs.iastate.edu:8080/user/13/favorites/";
     String URL_TO_USE;
     private RequestQueue queue;
+    FloatingActionButton newRecipe;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_list_view);
+
         String viewType = (String) getIntent().getSerializableExtra("SwitchView");
+        newRecipe = findViewById(R.id.addRecipeButton);
+        newRecipe.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(), Settings_Page.class);
+                startActivity(intent);
+            }
+        });
+        newRecipe.hide();
 
         switch (viewType){
             case ("ALL_RECIPES"):
@@ -46,15 +62,14 @@ public class ListView extends AppCompatActivity implements RecyclerViewAdapter.O
 
             case ("MY_RECIPES"):
             URL_TO_USE = URL_USER;
-            break;
+                newRecipe.show();
+                break;
 
             case ("FAV_RECIPES"):
                 URL_TO_USE = URL_FAV;
                 break;
         }
-        
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_list_view);
+
         queue = Volley.newRequestQueue(this);
         recyclerView = findViewById(R.id.recyclerView);
         popData();

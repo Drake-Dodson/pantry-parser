@@ -30,10 +30,29 @@ public class ListView extends AppCompatActivity implements RecyclerViewAdapter.O
     ArrayList<Recipe> dataset = new ArrayList<>();
     boolean isLoading = false;
     private static final String URL_RECIPES = "http://coms-309-032.cs.iastate.edu:8080/recipes/";
+    private static final String URL_USER = "http://coms-309-032.cs.iastate.edu:8080/user/1/recipes/";
+    private static final String URL_FAV = "http://coms-309-032.cs.iastate.edu:8080/user/13/favorites/";
+    String URL_TO_USE;
     private RequestQueue queue;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        String viewType = (String) getIntent().getSerializableExtra("SwitchView");
+
+        switch (viewType){
+            case ("ALL_RECIPES"):
+                URL_TO_USE = URL_RECIPES;
+                break;
+
+            case ("MY_RECIPES"):
+            URL_TO_USE = URL_USER;
+            break;
+
+            case ("FAV_RECIPES"):
+                URL_TO_USE = URL_FAV;
+                break;
+        }
+        
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list_view);
         queue = Volley.newRequestQueue(this);
@@ -59,28 +78,30 @@ public class ListView extends AppCompatActivity implements RecyclerViewAdapter.O
     }
 
     private void getMoreData() {
-        dataset.add(null);
-        recyclerViewAdapter.notifyItemInserted(dataset.size() - 1);
-        dataset.remove(dataset.size() - 1);
-        int currentSize = dataset.size();
-        int nextSize = currentSize + 10;
-        while (currentSize < nextSize) {
-            Recipe recipe = new Recipe("Recipe " + currentSize);
-            recipe.setTimeToMake(currentSize);
-            recipe.setRating((float) currentSize / 5);
-            dataset.add(recipe);
-            currentSize++;
+        if (URL_TO_USE == URL_RECIPES) {
+            dataset.add(null);
+            recyclerViewAdapter.notifyItemInserted(dataset.size() - 1);
+            dataset.remove(dataset.size() - 1);
+            int currentSize = dataset.size();
+            int nextSize = currentSize + 10;
+            while (currentSize < nextSize) {
+                Recipe recipe = new Recipe("Recipe " + currentSize);
+                recipe.setTimeToMake(currentSize);
+                recipe.setRating((float) currentSize / 5);
+                dataset.add(recipe);
+                currentSize++;
+            }
+            recyclerViewAdapter.notifyDataSetChanged();
+            isLoading = false;
         }
-        recyclerViewAdapter.notifyDataSetChanged();
-        isLoading = false;
     }
 
     private void popData() {
-        JsonArrayRequest recipeRequest = new JsonArrayRequest(Request.Method.GET, URL_RECIPES, null, new Response.Listener<JSONArray>() {
+        JsonArrayRequest recipeRequest = new JsonArrayRequest(Request.Method.GET, URL_TO_USE, null, new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {
                 if (response != null) {
-                    int i = 1;
+                    int i = 0;
                     while (!response.isNull(i) && i <=30) {
                         try {
                             Recipe recipe = new Recipe(response.getJSONObject(i).getString("name"));
@@ -93,8 +114,16 @@ public class ListView extends AppCompatActivity implements RecyclerViewAdapter.O
                             ArrayList<String> ingredients = new ArrayList<>();
                             JSONArray jsonIngredients = response.getJSONObject(i).getJSONArray("ingredients");
                             for (int j = 0; j< jsonIngredients.length();j++){
-                                ingredients.add(jsonIngredients.getString(j));
+                                ingredients.add(jsonIngredients.getJSONObject(j).getString("name"));
                             }
+                            recipe.setIngredients(ingredients);
+
+//                            ArrayList<String> steps = new ArrayList<>();
+//                            JSONArray jsonSteps = response.getJSONObject(i).getJSONArray("steps");
+//                            for (int j = 0; j< jsonSteps.length();j++){
+//                                ingredients.add(jsonSteps.getJSONObject(j).getString("name"));
+//                            }
+//                            recipe.setSteps(steps);
 
                             dataset.add(recipe);
                             recyclerViewAdapter.notifyDataSetChanged();

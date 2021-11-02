@@ -82,7 +82,7 @@ public class ReviewController {
         }
 
         // Update rating total
-        recipeReviewed.updateRating();
+        recipeReviewed.addRating(review.getStarNumber());
         recipeRepository.save(recipeReviewed);
 
         return MessageUtil.newResponseMessage(true, "Review created");
@@ -109,6 +109,9 @@ public class ReviewController {
         catch(Exception ex) {
             return MessageUtil.newResponseMessage(false, "Error saving to the repository");
         }
+
+        // TODO
+        //reviewChanges.addRating(review.getStarNumber());
 
         return MessageUtil.newResponseMessage(true, "Review updated");
     }

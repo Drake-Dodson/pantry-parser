@@ -101,7 +101,7 @@ public class Recipe {
         this.created_date = new Date();
     }
 
-    public void updateRating(){
+    public void updateRating0N(){
         double total = 0;
         for (Review recipes_review : recipes_reviews) {
             total += recipes_review.getStarNumber();
@@ -110,6 +110,25 @@ public class Recipe {
 
         // Round to the tenths place
         this.rating = (double) Math.round(this.rating * 10) / 10;
+    }
+
+    public void updateRating(int oldRating, int newRating){
+        double total = this.rating * recipes_reviews.size();
+        total -= oldRating;
+        total += newRating;
+        this.rating = total / recipes_reviews.size();
+    }
+
+    public void addRating(int newRating){
+        double total = this.rating * (recipes_reviews.size() - 1);
+        total += newRating;
+        this.rating = total / recipes_reviews.size();
+    }
+
+    public void removeRating(int newRating){
+        double total = this.rating * recipes_reviews.size() + 1;
+        total -= newRating;
+        this.rating = total / (recipes_reviews.size());
     }
 
     public void addIngredient(Ingredient i){
@@ -126,7 +145,5 @@ public class Recipe {
         this.setTime(request.getTime());
         this.setSummary(request.getSummary());
         this.setDescription(request.getDescription());
-        this.updateRating();
     }
-
 }

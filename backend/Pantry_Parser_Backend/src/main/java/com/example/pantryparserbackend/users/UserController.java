@@ -51,12 +51,12 @@ public class UserController {
         if (users == null)
             return MessageUtil.newResponseMessage(false, "User was null");
 
-        try {
+      //  try {
             userRepository.save(users);
-        }
-        catch(Exception ex) {
-            return MessageUtil.newResponseMessage(false, "Email already used");
-        }
+    //    }
+    //    catch(Exception ex) {
+    //        return MessageUtil.newResponseMessage(false, "Email already used");
+     //   }
 
         return MessageUtil.newResponseMessage(true, "User created");
     }

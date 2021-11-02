@@ -44,13 +44,7 @@ public class Recipe {
     @OneToMany(mappedBy = "recipe_reviewed")
     private List<Review> recipes_reviews;
 
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(
-            name = "favorites",
-            joinColumns = @JoinColumn(name = "recipe_id"),
-            inverseJoinColumns = @JoinColumn(name = "user_id"),
-            uniqueConstraints = @UniqueConstraint(columnNames = {"recipe_id", "user_id"})
-    )
+    @ManyToMany(mappedBy = "favorites")
     @JsonIgnore
     private List<User> favoritedBy;
 

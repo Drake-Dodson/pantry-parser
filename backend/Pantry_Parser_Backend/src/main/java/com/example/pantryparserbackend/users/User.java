@@ -4,6 +4,8 @@ import com.example.pantryparserbackend.Recipes.Recipe;
 import com.example.pantryparserbackend.Reviews.Review;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
@@ -22,23 +24,38 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Getter
     private int id;
 
+    @Getter
+    @Setter
     private String displayName;
 
     @Column(unique = true)
+    @Getter
+    @Setter
     private String email;
 
     private String password;
 
+    @Getter
+    @Setter
     private String role;
 
     @OneToMany(mappedBy = "creator")
     private List<Recipe> created_recipes;
 
-    @ManyToMany(mappedBy = "favoritedBy")
+    @Getter
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "favorites",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "recipe_id"),
+            uniqueConstraints = @UniqueConstraint(columnNames = {"recipe_id", "user_id"})
+    )
     private List<Recipe> favorites;
 
+    @Getter
     @OneToMany(mappedBy = "reviewer")
     private List<Review> userReviews;
 
@@ -50,37 +67,12 @@ public class User {
 
     public User() {}
 
-    public int getId() { return this.id; }
-    public String getDisplayName() {
-        return this.displayName;
-    }
-    public String getEmail() {
-        return this.email;
-    }
-    public String getRole() {
-        return this.role;
-    }
     public List<Recipe> getRecipes() {
         return this.created_recipes;
     }
-    public List<Recipe> getFavorites() {
-        return this.favorites;
-    }
-    public List<Review> getUserReviews() {
-        return this.userReviews;
-    }
 
-    public void setDisplayName(String displayName) {
-        this.displayName = displayName;
-    }
-    public void setEmail(String email) {
-        this.email = email;
-    }
     public void setPassword(String password) {
         this.password = this.newHash(password);
-    }
-    public void setRole(String role) {
-        this.role = role;
     }
     public void favorite(Recipe favorite) {
         this.favorites.add(favorite);

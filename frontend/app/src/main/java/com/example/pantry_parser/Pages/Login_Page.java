@@ -97,8 +97,8 @@ public class Login_Page extends AppCompatActivity implements View.OnClickListene
                     Intent intentLogin = new Intent(Login_Page.this, Home_Page.class);
                     try{
 //                        intentLogin.putExtra("message", object.get("message").toString());
-                        String message = object.get("message").toString();
-                        if(message.equals("success")) {
+                        String message = object.get("success").toString();
+                        if(message.equals("true")) {
                             startActivity(intentLogin);
                             counter = 5;
                             eAttemptsInfo.setText("No. of attempts remaining: " + counter);
@@ -125,7 +125,7 @@ public class Login_Page extends AppCompatActivity implements View.OnClickListene
             VolleyListener.makeRequest(getApplicationContext(), "/login", loginListener, data, Request.Method.POST);
         }
 
-        private boolean validateAdmin(String name, String password) {
+        protected boolean validateAdmin(String name, String password) {
             if (name.equalsIgnoreCase(adminUserName) && password.equals(adminPassword)) {
                 return true;
             }

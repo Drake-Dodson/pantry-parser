@@ -47,5 +47,5 @@ public class VolleyListener {
                     });
             AppController.getInstance(context).addToRequestQueue(stringRequest);
         }
-    }
 }
+

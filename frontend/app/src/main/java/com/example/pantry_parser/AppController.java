@@ -1,13 +1,11 @@
 package com.example.pantry_parser;
 
 import android.app.Application;
-import android.content.SharedPreferences;
-import android.text.TextUtils;
+import android.content.Context;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
-import com.example.pantry_parser.Utilities.User;
 
 public class AppController extends Application {
     private static final String SHARED_PREF_NAME = "volleyregisterlogin";
@@ -17,25 +15,27 @@ public class AppController extends Application {
 
     private static AppController mInstance;
     private static RequestQueue requestQueue;
+    private final Context context;
 
-    @Override
-    public void onCreate(){
-        super.onCreate();
-        mInstance = this;
+    private AppController(Context context){
+        this.context = context;
+        this.requestQueue = getRequestQueue();
     }
-
-    public static synchronized AppController getInstance(){
+    public static synchronized AppController getInstance(Context context){
+        if(mInstance == null){
+            mInstance = new AppController(context);
+        }
         return mInstance;
     }
     public RequestQueue getRequestQueue() {
         if (this.requestQueue == null) {
-            mRequestQueue = Volley.newRequestQueue(getApplicationContext());
+            return Volley.newRequestQueue(this.context);
         }
         return requestQueue;
     }
 
     public <Obj> void addToRequestQueue(Request<Obj> request){
-        getRequestQueue().add(req);
+        getRequestQueue().add(request);
     }
 
 

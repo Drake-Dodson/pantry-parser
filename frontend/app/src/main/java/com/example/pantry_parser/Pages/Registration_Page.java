@@ -24,7 +24,7 @@ import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
 
-public class Registration_Page extends AppCompatActivity implements IView, View.OnClickListener {
+public class Registration_Page extends AppCompatActivity implements View.OnClickListener {
 
     private EditText userName, userPassword, userConfirmPassword, userEmail;
     private Button  registerButton, alreadyRegbutton;
@@ -69,7 +69,7 @@ public class Registration_Page extends AppCompatActivity implements IView, View.
         final String user_Name = userName.getText().toString().trim();
         final String user_Email = userEmail.getText().toString().trim();
         final String user_Password = userPassword.getText().toString().trim();
-        Intent intentLogin = new Intent(getApplicationContext(), Login_Page.class);
+        Intent intentLogin = new Intent(getApplicationContext(), Home_Page.class);
 
         JSONObject params = new JSONObject();
         try {
@@ -87,12 +87,14 @@ public class Registration_Page extends AppCompatActivity implements IView, View.
             public void onResponse(String response) {
                 try{
                     JSONObject jsonObject = new JSONObject(response);
-                    String message = jsonObject.getString("message");
+                    String message = jsonObject.getString("success");
 
-                    if(message.equals("success")){
+                    if(message.equals("true")){
                         Toast.makeText(Registration_Page.this,
                                 "Registration Successful!", Toast.LENGTH_SHORT).show();
                         startActivity(intentLogin);
+                    } else{
+                        Toast.makeText(Registration_Page.this, "Error, " + jsonObject.getString("message"), Toast.LENGTH_SHORT).show();
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();

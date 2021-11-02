@@ -70,7 +70,7 @@ public class Login_Page extends AppCompatActivity implements View.OnClickListene
                         Toast.makeText(Login_Page.this, "Please enter username and password", Toast.LENGTH_SHORT).show();
                     } else {
                         try{
-                            sendLoginInfo(eName.getText().toString(), ePassword.getText().toString());
+                            this.sendLoginInfo(eName.getText().toString(), ePassword.getText().toString());
                         } catch (JSONException jsonException) {
                             jsonException.printStackTrace();
                         }
@@ -96,10 +96,15 @@ public class Login_Page extends AppCompatActivity implements View.OnClickListene
                     JSONObject object = (JSONObject)jsonObject;
                     Intent intentLogin = new Intent(Login_Page.this, Home_Page.class);
                     try{
-                        intentLogin.putExtra("message", object.get("message").toString());
-                        startActivity(intentLogin);
-                        counter = 5;
-                        eAttemptsInfo.setText("No. of attempts remaining: " + counter);
+//                        intentLogin.putExtra("message", object.get("message").toString());
+                        String message = object.get("message").toString();
+                        if(message.equals("success")) {
+                            startActivity(intentLogin);
+                            counter = 5;
+                            eAttemptsInfo.setText("No. of attempts remaining: " + counter);
+                        } else{
+                            Toast.makeText(Login_Page.this, "login error", Toast.LENGTH_SHORT).show();
+                        }
                     }
                     catch(JSONException jsonException){
                         System.out.println("connection issues");

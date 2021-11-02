@@ -97,10 +97,14 @@ public class ReviewController {
             return MessageUtil.newResponseMessage(false, "Review not found");
         }
 
+        int oldRating = review.getStarNumber();
+        Recipe recipeStore = review.getRecipe_reviewed();
+
         // This might be redundant. I'm not sure
         review.setStarNumber(reviewChanges.getStarNumber());
         review.setTitle(reviewChanges.getTitle());
         review.setReviewBody(reviewChanges.getReviewBody());
+
 
         // Attempt to add the review
         try {
@@ -110,9 +114,36 @@ public class ReviewController {
             return MessageUtil.newResponseMessage(false, "Error saving to the repository");
         }
 
-        // TODO
-        //reviewChanges.addRating(review.getStarNumber());
+        //review.getRecipe_reviewed().updateRating(oldRating, review.getStarNumber());
+        review.getRecipe_reviewed().updateRating0N();
+        recipeRepository.save(recipeStore);
 
         return MessageUtil.newResponseMessage(true, "Review updated");
+    }
+
+    @DeleteMapping(path = "review/{review_id}")
+    public String updateReview(@PathVariable int review_id)
+    {
+        Review review = reviewRepository.findById(review_id);
+
+        if(review == null) {
+            return MessageUtil.newResponseMessage(false, "Review not found");
+        }
+
+        Recipe recipeStore = review.getRecipe_reviewed();
+
+        // Attempt to add the review
+        try {
+            reviewRepository.delete(review);
+        }
+        catch(Exception ex) {
+            return MessageUtil.newResponseMessage(false, "Error deleting entry from the repository");
+        }
+
+        //recipeStore.removeRating(review.getStarNumber());
+        recipeStore.updateRating0N();
+        recipeRepository.save(recipeStore);
+
+        return MessageUtil.newResponseMessage(true, "Review deleted");
     }
 }

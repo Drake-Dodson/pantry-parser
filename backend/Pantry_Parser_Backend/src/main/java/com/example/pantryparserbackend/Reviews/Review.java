@@ -33,10 +33,13 @@ public class Review {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
+    @JsonIgnore
     private User reviewer;
 
+    @Getter
     @ManyToOne
     @JoinColumn(name = "recipe_id")
+    @JsonIgnore
     private Recipe recipe_reviewed;
 
     public Review(int starNumber, String title, String reviewBody, User reviewer, Recipe recipe_reviewed) {
@@ -62,5 +65,4 @@ public class Review {
     }
 
     public int getRecipeId() { return recipe_reviewed.getId(); }
-
 }

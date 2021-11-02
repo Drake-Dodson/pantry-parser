@@ -107,28 +107,41 @@ public class Recipe {
             total += recipes_review.getStarNumber();
         }
         this.rating = total / recipes_reviews.size();
-
-        // Round to the tenths place
-        this.rating = (double) Math.round(this.rating * 10) / 10;
     }
 
+    // Not currently implemented
     public void updateRating(int oldRating, int newRating){
-        double total = this.rating * recipes_reviews.size();
-        total -= oldRating;
-        total += newRating;
-        this.rating = total / recipes_reviews.size();
+        if(recipes_reviews.size() <= 1){
+            this.rating = newRating;
+        }
+        else{
+            double total = this.rating * recipes_reviews.size();
+            total -= oldRating;
+            total += newRating;
+            this.rating = total / recipes_reviews.size();
+        }
     }
 
     public void addRating(int newRating){
-        double total = this.rating * (recipes_reviews.size() - 1);
-        total += newRating;
-        this.rating = total / recipes_reviews.size();
+        if(recipes_reviews.size() == 0){
+            this.rating = newRating;
+        }
+        else{
+            double total = this.rating * (recipes_reviews.size());
+            total += newRating;
+            this.rating = total / (recipes_reviews.size() + 1);
+        }
     }
 
     public void removeRating(int newRating){
-        double total = this.rating * recipes_reviews.size() + 1;
-        total -= newRating;
-        this.rating = total / (recipes_reviews.size());
+        if(recipes_reviews.size() == 0){
+            this.rating = 0;
+        }
+        else {
+            double total = this.rating * recipes_reviews.size();
+            total -= newRating;
+            this.rating = total / (recipes_reviews.size() - 1);
+        }
     }
 
     public void addIngredient(Ingredient i){

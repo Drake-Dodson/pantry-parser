@@ -80,7 +80,7 @@ public class RecipeController {
         recipe.addStep(step);
         recipeRepository.save(recipe);
         stepRepository.save(step);
-        return success;
+        return MessageUtil.newResponseMessage(true, "successfully created");
     }
     @PatchMapping(path = "/recipe/{recipe_id}/steps/{step_id}")
     String updateStep(@PathVariable int recipe_id, @PathVariable int step_id, @RequestBody Step newStep) {
@@ -102,7 +102,7 @@ public class RecipeController {
             recipeRepository.save(recipe);
             stepRepository.saveAll(recipe.getSteps());
         }
-        return success;
+        return MessageUtil.newResponseMessage(true, "successfully modified");
     }
     @DeleteMapping(path = "/recipe/{recipe_id}/steps/{step_id}")
     String deleteStep(@PathVariable int recipe_id, @PathVariable int step_id){
@@ -118,7 +118,7 @@ public class RecipeController {
         stepRepository.deleteById(step_id);
         recipeRepository.save(r);
         stepRepository.saveAll(r.getSteps());
-        return success;
+        return MessageUtil.newResponseMessage(true, "successfully deleted");
     }
 
     //steps by order

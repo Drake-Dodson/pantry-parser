@@ -43,14 +43,41 @@ public class ListView extends AppCompatActivity implements RecyclerViewAdapter.O
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list_view);
-
         String viewType = (String) getIntent().getSerializableExtra("SwitchView");
+
+        initializeElements(viewType);
+        setupRecycler();
+        popData();
+        setupAdapter();
+    }
+
+    private void setupRecycler() {
+        recyclerView = findViewById(R.id.recyclerView);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+        layoutManager.scrollToPosition(0);
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                LinearLayoutManager linearLayoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
+                if (!isLoading) {
+                    if (linearLayoutManager != null && linearLayoutManager.findLastCompletelyVisibleItemPosition() == dataset.size() - 1) {
+                        isLoading = true;
+                        getMoreData();
+                    }
+                }
+            }
+        });
+    }
+
+    private void initializeElements(String viewType) {
+        queue = Volley.newRequestQueue(this);
         newRecipe = findViewById(R.id.addRecipeButton);
         newRecipe.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getApplicationContext(), Settings_Page.class);
-                startActivity(intent);
             }
         });
         newRecipe.hide();
@@ -69,27 +96,6 @@ public class ListView extends AppCompatActivity implements RecyclerViewAdapter.O
                 URL_TO_USE = URL_FAV;
                 break;
         }
-
-        queue = Volley.newRequestQueue(this);
-        recyclerView = findViewById(R.id.recyclerView);
-        popData();
-        setupAdapter();
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
-        layoutManager.scrollToPosition(0);
-        recyclerView.setLayoutManager(layoutManager);
-        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                LinearLayoutManager linearLayoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
-                if (!isLoading) {
-                    if (linearLayoutManager != null && linearLayoutManager.findLastCompletelyVisibleItemPosition() == dataset.size() - 1) {
-                        isLoading = true;
-                        getMoreData();
-                    }
-                }
-            }
-        });
     }
 
     private void getMoreData() {

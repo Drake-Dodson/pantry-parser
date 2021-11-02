@@ -45,5 +45,11 @@ dependencies {
     implementation 'com.android.volley:volley:1.2.0'
     def paging_version = "3.0.0-alpha07"
     implementation "androidx.paging:paging-runtime:$paging_version"
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
+    androidTestImplementation 'androidx.test:runner:1.4.0'
+    androidTestImplementation 'androidx.test:rules:1.4.0'
+    testImplementation "org.mockito:mockito-core:3.+"
+    testImplementation "org.robolectric:robolectric:3.3.2"
+
 
 }

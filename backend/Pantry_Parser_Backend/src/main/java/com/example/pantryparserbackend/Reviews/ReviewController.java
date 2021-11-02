@@ -122,7 +122,7 @@ public class ReviewController {
     }
 
     @DeleteMapping(path = "review/{review_id}")
-    public String updateReview(@PathVariable int review_id)
+    public String deleteReview(@PathVariable int review_id)
     {
         Review review = reviewRepository.findById(review_id);
 

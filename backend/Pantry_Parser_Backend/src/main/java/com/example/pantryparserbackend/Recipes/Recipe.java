@@ -6,6 +6,7 @@ import com.example.pantryparserbackend.Reviews.Review;
 import com.example.pantryparserbackend.users.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.core.annotation.Order;
+import lombok.Setter;
 import org.springframework.lang.Nullable;
 
 import java.util.Date;
@@ -40,6 +41,7 @@ public class Recipe {
     @JsonIgnore
     private User creator;
 
+    @Setter
     @OneToMany(mappedBy = "recipe_reviewed")
     private List<Review> recipes_reviews;
 
@@ -134,9 +136,9 @@ public class Recipe {
             this.rating = newRating;
         }
         else{
-            double total = this.rating * (recipes_reviews.size());
+            double total = this.rating * (recipes_reviews.size() - 1);
             total += newRating;
-            this.rating = total / (recipes_reviews.size() + 1);
+            this.rating = total / (recipes_reviews.size());
         }
     }
 

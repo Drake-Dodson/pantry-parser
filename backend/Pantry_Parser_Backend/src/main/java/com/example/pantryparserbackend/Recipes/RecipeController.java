@@ -150,7 +150,7 @@ public class RecipeController {
         if(recipe == null){
             return MessageUtil.newResponseMessage(false, "recipe does not exist");
         }
-        if(recipe.getSteps().size() > pos || pos <= 0){
+        if(recipe.getSteps().size() <= pos || pos <= 0){
             return MessageUtil.newResponseMessage(false, "that is not a step on this recipe");
         }
         int step_id = recipe.getStepByOrder(pos - 1).getId();
@@ -162,8 +162,8 @@ public class RecipeController {
         if(recipe == null){
             return MessageUtil.newResponseMessage(false, "recipe does not exist");
         }
-        if(recipe.getSteps().size() > pos || pos <= 0){
-            return MessageUtil.newResponseMessage(false, "that is not a step on this recipe");
+        if(recipe.getSteps().size() <= pos || pos <= 0){
+            return MessageUtil.newResponseMessage(false, pos + " is not a valid step, this recipe only has " + recipe.getSteps().size());
         }
         int step_id = recipe.getStepByOrder(pos - 1).getId();
         return this.deleteStep(step_id);

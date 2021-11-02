@@ -75,7 +75,7 @@ public class Recipe {
         this.description = description;
         this.created_date = new Date();
         this.rating = 0;
-        
+
         // Used for recipe score
         this.numberOfReviews = 0;
         this.totalStars = 0;

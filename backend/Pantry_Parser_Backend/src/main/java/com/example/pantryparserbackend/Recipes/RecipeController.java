@@ -3,6 +3,7 @@ package com.example.pantryparserbackend.Recipes;
 import java.util.List;
 
 import com.example.pantryparserbackend.Util.MessageUtil;
+import org.aspectj.bridge.Message;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import com.example.pantryparserbackend.users.UserRepository;
@@ -20,10 +21,6 @@ public class RecipeController {
     @Autowired
     StepsRepository stepRepository;
 
-    private final String success = "{\"message\":\"success\"}";
-    private final String failure = "{\"message\":\"failure\"}";
-    private final String already_exists = "{\"message\":\"already-exists\"}";
-
     //generic recipe stuff
     @GetMapping(path = "/recipes")
     List<Recipe> getAllRecipes(){
@@ -36,28 +33,35 @@ public class RecipeController {
     @PostMapping(path = "/recipes/{user_id}")
     String createRecipe(@PathVariable int user_id, @RequestBody Recipe recipe){
         if(recipe == null)
-            return failure;
+            return MessageUtil.newResponseMessage(false, "invalid input");
         recipe.setCreatedDate();
         User u = userRepository.findById(user_id);
+        if(u == null){
+            return MessageUtil.newResponseMessage(false, "invalid user");
+        }
         recipe.setCreator(u);
         u.addRecipe(recipe);
         recipeRepository.save(recipe);
         userRepository.save(u);
-        return success;
+        return MessageUtil.newResponseMessage(true, "successfully created recipe");
     }
-    @PatchMapping(path = "/recipes/{id}")
-    Recipe updateRecipe(@PathVariable int id, @RequestBody Recipe request){
-        Recipe recipe = recipeRepository.findById(id);
+    @PatchMapping(path = "/recipes/{recipe_id}")
+    Recipe updateRecipe(@PathVariable int recipe_id, @RequestBody Recipe request){
+        Recipe recipe = recipeRepository.findById(recipe_id);
         if(recipe == null)
             return null;
         recipe.update(request);
         recipeRepository.save(recipe);
-        return recipeRepository.findById(id);
+        return recipeRepository.findById(recipe_id);
     }
-    @DeleteMapping(path = "/recipes/{id}")
-    String deleteRecipe(@PathVariable int id){
-        recipeRepository.deleteById(id);
-        return success;
+    @DeleteMapping(path = "/recipes/{recipe_id}")
+    String deleteRecipe(@PathVariable int recipe_id){
+        Recipe recipe = recipeRepository.findById(recipe_id);
+        if (recipe == null){
+            return MessageUtil.newResponseMessage(false, "recipe does not exist");
+        }
+        recipeRepository.delete(recipe);
+        return MessageUtil.newResponseMessage(true, "successfully deleted");
     }
 
     //recipe steps stuff
@@ -119,13 +123,21 @@ public class RecipeController {
     }
 
     //steps by recipe
-    @GetMapping(path = "/recipe/{id}/steps")
-    List<Step> showStepsByRecipe(@PathVariable int id){
-        return recipeRepository.findById(id).getSteps();
+    @GetMapping(path = "/recipe/{recipe_id}/steps")
+    List<Step> showStepsByRecipe(@PathVariable int recipe_id){
+        Recipe r = recipeRepository.findById(recipe_id);
+        if(r == null) {
+            return null;
+        }
+        return r.getSteps();
     }
     @GetMapping(path = "/recipe/{recipe_id}/step/{pos}")
     Step getOrderedStep(@PathVariable int recipe_id, @PathVariable int pos) {
-        int step_id = recipeRepository.findById(recipe_id).getStepByOrder(pos - 1).getId();
+        Recipe recipe = recipeRepository.findById(recipe_id);
+        if(recipe == null) {
+            return null;
+        }
+        int step_id = recipe.getStepByOrder(pos - 1).getId();
         return this.getStep(step_id);
     }
     @PostMapping(path = "/recipe/{recipe_id}/steps")
@@ -177,15 +189,21 @@ public class RecipeController {
     @PostMapping(path = "/ingredients")
     String createIngredient(@RequestBody Ingredient request){
         if(request == null){
-            return failure;
+            return MessageUtil.newResponseMessage(false, "request body was null");
         }
         request.nameToLower();
+        if(ingredientRepository.findByName(request.getName()) != null){
+            return MessageUtil.newResponseMessage(false, "ingredient already exists");
+        }
         ingredientRepository.save(request);
-        return success;
+        return MessageUtil.newResponseMessage(true, "successfully created");
     }
     @GetMapping(path="/ingredient/{name}/recipes")
     List<Recipe> ingredientRecipes(@PathVariable String name){
         Ingredient i = ingredientRepository.findByName(name);
+        if(i == null){
+            return null;
+        }
         return i.getRecipes();
     }
     @PutMapping(path = "/ingredients/recipes")
@@ -197,32 +215,41 @@ public class RecipeController {
     @GetMapping(path = "/recipes/{id}/ingredients")
     List<Ingredient> ingredientsByRecipe(@PathVariable int id){
         Recipe r = recipeRepository.findById(id);
+        if (r == null){
+            return null;
+        }
         return r.getIngredients();
     }
     @PatchMapping(path = "/recipes/{id}/ingredients/{name}")
     String addIngredient(@PathVariable int id, @PathVariable String name){
         Recipe r = recipeRepository.findById(id);
         Ingredient i = ingredientRepository.findByName(name.toLowerCase());
+        if(r == null || i == null){
+            return MessageUtil.newResponseMessage(false, (r == null ? "recipe " : "ingredient ") + "does not exist");
+        }
 
         if(r.getIngredients().contains(i)) {
-            return already_exists;
+            return MessageUtil.newResponseMessage(false, "already exists");
         }
 
         r.addIngredient(i);
         recipeRepository.save(r);
-        return success;
+        return MessageUtil.newResponseMessage(true, "added successfully");
     }
     @DeleteMapping(path = "/recipes/{id}/ingredients/{name}")
     String removeIngredient(@PathVariable int id, @PathVariable String name){
         Recipe r = recipeRepository.findById(id);
         Ingredient i = ingredientRepository.findByName(name.toLowerCase());
+        if(r == null || i == null){
+            return MessageUtil.newResponseMessage(false, (r == null ? "recipe " : "ingredient ") + "does not exist");
+        }
 
         if(!r.getIngredients().contains(i)) {
-            return failure;
+            return MessageUtil.newResponseMessage(false, "relationship does not exist");
         }
 
         r.removeIngredient(i);
         recipeRepository.save(r);
-        return success;
+        return MessageUtil.newResponseMessage(true, "successfully removed");
     }
 }

@@ -11,6 +11,8 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -23,6 +25,8 @@ class UserControllerTest {
     private UserRepository userRepository;
     @Mock
     private RecipeRepository recipeRepository;
+    @Mock
+    private User mockUser;
 
     // Work In Progress unit tests
     @Test
@@ -76,17 +80,69 @@ class UserControllerTest {
     @Test
     public void testFavorite_whenNewFavorite_ThenReturnSuccess() {
         MockitoAnnotations.openMocks(this);
-        User mockUser = new User("password1", "mockitoUserTest@email.com");
+        //this.mockUser = new User("password1", "mockitoUserTest@email.com");
         Recipe mockRecipe = new Recipe("Drake's soup", 4, "Very stinky", "This is a description");
         int user_id = 1;
         int recipe_id = 1;
-        when(userRepository.findById(user_id)).thenReturn(mockUser);
+        when(userRepository.findById(user_id)).thenReturn(this.mockUser);
         when(recipeRepository.findById(recipe_id)).thenReturn(mockRecipe);
+        List<Recipe> favorites = new ArrayList<Recipe>();
+        when(mockUser.getFavorites()).thenReturn(favorites);
 
         String expected = MessageUtil.newResponseMessage(true, "favorited");
         String actual = userController.favorite(user_id, recipe_id);
         assertEquals(actual, expected);
         Mockito.verify(userRepository).save(mockUser);
+    }
+    @Test
+    public void testFavorite_whenAlreadyFavorite_ThenReturnFailure() {
+        MockitoAnnotations.openMocks(this);
+        //this.mockUser = new User("password1", "mockitoUserTest@email.com");
+        Recipe mockRecipe = new Recipe("Drake's soup", 4, "Very stinky", "This is a description");
+        int user_id = 1;
+        int recipe_id = 1;
+        when(userRepository.findById(user_id)).thenReturn(this.mockUser);
+        when(recipeRepository.findById(recipe_id)).thenReturn(mockRecipe);
+        List<Recipe> favorites = new ArrayList<Recipe>();
+        favorites.add(mockRecipe);
+        when(mockUser.getFavorites()).thenReturn(favorites);
+
+        String expected = MessageUtil.newResponseMessage(false, "releationship already exists");
+        String actual = userController.favorite(user_id, recipe_id);
+        assertEquals(actual, expected);
+    }
+    @Test
+    public void testUnFavorite_whenAlreadyFavorited_ThenReturnSuccess() {
+        MockitoAnnotations.openMocks(this);
+        Recipe mockRecipe = new Recipe("Drake's soup", 4, "Very stinky", "This is a description");
+        int user_id = 1;
+        int recipe_id = 1;
+        when(userRepository.findById(user_id)).thenReturn(this.mockUser);
+        when(recipeRepository.findById(recipe_id)).thenReturn(mockRecipe);
+        List<Recipe> favorites = new ArrayList<Recipe>();
+        favorites.add(mockRecipe);
+        when(mockUser.getFavorites()).thenReturn(favorites);
+
+        String expected = MessageUtil.newResponseMessage(true, "successfully unfavorited");
+        String actual = userController.unfavorite(user_id, recipe_id);
+        assertEquals(actual, expected);
+        Mockito.verify(userRepository).save(mockUser);
+    }
+    @Test
+    public void testUnFavorite_whenNotAlreadyFavorite_ThenReturnFailure() {
+        MockitoAnnotations.openMocks(this);
+        //this.mockUser = new User("password1", "mockitoUserTest@email.com");
+        Recipe mockRecipe = new Recipe("Drake's soup", 4, "Very stinky", "This is a description");
+        int user_id = 1;
+        int recipe_id = 1;
+        when(userRepository.findById(user_id)).thenReturn(this.mockUser);
+        when(recipeRepository.findById(recipe_id)).thenReturn(mockRecipe);
+        List<Recipe> favorites = new ArrayList<Recipe>();
+        when(mockUser.getFavorites()).thenReturn(favorites);
+
+        String expected = MessageUtil.newResponseMessage(false, "relationship does not exist");
+        String actual = userController.unfavorite(user_id, recipe_id);
+        assertEquals(actual, expected);
     }
     @Test
     public void testGetUserByEmail_WhenEmailFound_ThenReturnSuccess() {

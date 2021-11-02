@@ -52,7 +52,7 @@ public class Recipe {
     )
     private List<Ingredient> ingredients;
 
-    @OneToMany(mappedBy = "recipe")
+    @OneToMany(mappedBy = "step")
     @OrderBy("order")
     private List<Step> steps;
 

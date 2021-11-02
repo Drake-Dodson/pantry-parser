@@ -53,7 +53,6 @@ public class ReviewController {
         if(recipeReviewed == null) {
             return MessageUtil.newResponseMessage(false, "Recipe Not Found");
         }
-
         if(recipeReviewed.getCreatorId() == user_id) {
             return MessageUtil.newResponseMessage(false, "Users can't review their own recipes");
         }
@@ -66,9 +65,11 @@ public class ReviewController {
             return MessageUtil.newResponseMessage(false, "Invalid Star number. Try 0 - 5");
         }
 
-        for(Review reviewCheck : recipeReviewed.getRecipeReviews()) {
-            if(reviewCheck.getUserId() == user_id){
-                return MessageUtil.newResponseMessage(false, "User has already reviewed this recipe");
+        if(recipeReviewed.getRecipeReviews() != null) {
+            for(Review reviewCheck : recipeReviewed.getRecipeReviews()) {
+                if(reviewCheck.getUserId() == user_id){
+                    return MessageUtil.newResponseMessage(false, "User has already reviewed this recipe");
+                }
             }
         }
 

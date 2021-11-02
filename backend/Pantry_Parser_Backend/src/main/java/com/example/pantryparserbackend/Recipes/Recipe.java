@@ -22,6 +22,11 @@ public class Recipe {
     private String summary;
     private String description;
 
+    // Used for recipe score
+    private int numberOfReviews;
+    private int totalStars;
+    private int currentPos;
+
     @Temporal(TemporalType.TIMESTAMP)
     private Date created_date;
     @Nullable
@@ -65,6 +70,10 @@ public class Recipe {
         this.description = description;
         this.created_date = new Date();
         this.rating = 0;
+        // Used for recipe score
+        this.numberOfReviews = 0;
+        this.totalStars = 0;
+        this.currentPos = 0;
     }
 
     public Recipe(){}

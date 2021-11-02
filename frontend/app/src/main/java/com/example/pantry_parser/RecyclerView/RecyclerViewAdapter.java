@@ -95,7 +95,6 @@ onRecipeListener.onRecipeClick(getAbsoluteAdapterPosition());
     }
 
     public interface OnRecipeListener{
-
         void onRecipeClick(int position);
     }
 

@@ -1,6 +1,7 @@
 package com.example.pantryparserbackend.users;
 
 import com.example.pantryparserbackend.Recipes.Recipe;
+import com.example.pantryparserbackend.Reviews.Review;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -31,16 +32,22 @@ public class User {
     private String password;
 
     private String role;
+
     @OneToMany(mappedBy = "creator")
     private List<Recipe> created_recipes;
+
     @ManyToMany(mappedBy = "favoritedBy")
     private List<Recipe> favorites;
+
+    @OneToMany(mappedBy = "reviewer")
+    private List<Review> userReviews;
 
     public User(String password, String email) {
         this.password = this.newHash(password);
         this.email = email;
         this.role = "Main";
     }
+
     public User() {}
 
     public int getId() { return this.id; }
@@ -58,6 +65,9 @@ public class User {
     }
     public List<Recipe> getFavorites() {
         return this.favorites;
+    }
+    public List<Review> getUserReviews() {
+        return this.userReviews;
     }
 
     public void setDisplayName(String displayName) {

@@ -34,6 +34,12 @@ public class UserController {
         return userRepository.findById(id);
     }
 
+    @GetMapping(path = "/users")
+    public List<User> getAllUsers()
+    {
+        return userRepository.findAll();
+    }
+
     @GetMapping(path = "/user/email/{email}")
     public User getUserByEmail(@PathVariable String email) throws Exception
     {

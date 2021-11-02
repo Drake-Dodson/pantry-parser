@@ -30,4 +30,11 @@
         <item name="colorControlNormal">@color/cardview_light_background</item>
         <item name="colorControlActivated">@color/red</item>
     </style>
+    <style name="Theme.Pantry_Parser.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+    <style name="Theme.Pantry_Parser.AppBarOverlay"
+        parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+    <style name="Theme.Pantry_Parser.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 </resources>

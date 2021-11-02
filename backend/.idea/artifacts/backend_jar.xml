@@ -1,0 +1,9 @@
+<component name="ArtifactManager">
+  <artifact type="jar" build-on-make="true" name="backend:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/backend_jar</output-path>
+    <root id="archive" name="backend.jar">
+      <element id="module-output" name="main" />
+      <element id="module-output" name=".mvn" />
+    </root>
+  </artifact>
+</component>

@@ -68,15 +68,14 @@ public class Recipe {
     @OrderBy("num")
     private List<Step> steps;
 
-    public Recipe(String name, int time, String summary, String description, List<Step> steps) {
+    public Recipe(String name, int time, String summary, String description) {
         this.name = name;
         this.time = time;
         this.summary = summary;
         this.description = description;
         this.created_date = new Date();
         this.rating = 0;
-        this.steps = steps;
-
+        
         // Used for recipe score
         this.numberOfReviews = 0;
         this.totalStars = 0;

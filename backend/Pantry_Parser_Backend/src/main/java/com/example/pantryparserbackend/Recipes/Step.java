@@ -5,31 +5,36 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.util.List;
-import java.util.Set;
 
 @Entity
-@Table(name = "ingredients")
-public class Ingredient {
+@Table(name = "steps")
+public class Step {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Getter
     private int id;
 
-    @Column(unique = true)
     @Getter
     @Setter
     private String name;
+    @Getter
+    @Setter
+    private int num;
 
-    @ManyToMany(mappedBy = "ingredients")
+    @ManyToOne
+    @JoinColumn(name = "recipe_id")
     @JsonIgnore
     @Getter
-    private List<Recipe> recipes;
+    @Setter
+    private Recipe recipe;
 
-    public Ingredient(String name){
-        this.name = name;
+    public Step (String step, int order, Recipe recipe){
+        this.name = step;
+        this.num = order;
+        this.recipe = recipe;
     }
-    public Ingredient(){}
 
-    public void nameToLower() { this.name = this.name.toLowerCase(); }
+    public Step() {
+
+    }
 }

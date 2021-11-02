@@ -34,6 +34,12 @@ public class UserController {
         return userRepository.findById(id);
     }
 
+    @GetMapping(path = "/users")
+    public List<User> getAllUsers()
+    {
+        return userRepository.findAll();
+    }
+
     @GetMapping(path = "/user/email/{email}")
     public User getUserByEmail(@PathVariable String email) throws Exception
     {
@@ -58,16 +64,16 @@ public class UserController {
     @PostMapping(path = "/login")
     public String login(@RequestBody Login login){
         if (login == null)
-            return failure;
+            return MessageUtil.newResponseMessage(false, "no login info detected");
         User actual = userRepository.findByEmail(login.email);
         if (actual == null)
             // Email not found
-            return failure;
+            return MessageUtil.newResponseMessage(false, "email incorrect");
         if(actual.authenticate(login.password)){
-            return success;
+            return MessageUtil.newResponseMessage(true, "" + actual.getId());
         }else {
             // Password incorrect
-            return failure;
+            return MessageUtil.newResponseMessage(false, "password incorrect");
         }
     }
 

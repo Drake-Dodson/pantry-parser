@@ -54,14 +54,17 @@ public class Home_Page extends AppCompatActivity implements View.OnClickListener
         switch (view.getId()){
             case R.id.bt_FindRecipes:
                 Intent pantryParserIntent = new Intent(getApplicationContext(), ListView.class);
+                pantryParserIntent.putExtra("SwitchView", "ALL_RECIPES");
                 startActivity(pantryParserIntent);
                 break;
             case R.id.bt_MyRecipes:
-                Intent myRecipesIntent = new Intent(getApplicationContext(), MyRecipes_Page.class);
+                Intent myRecipesIntent = new Intent(getApplicationContext(), ListView.class);
+                myRecipesIntent.putExtra("SwitchView", "MY_RECIPES");
                 startActivity(myRecipesIntent);
                 break;
             case R.id.bt_Favorites:
-                Intent FavoritesIntent = new Intent(getApplicationContext(), Favorites_Page.class);
+                Intent FavoritesIntent = new Intent(getApplicationContext(), ListView.class);
+                FavoritesIntent.putExtra("SwitchView", "FAV_RECIPES");
                 startActivity(FavoritesIntent);
                 break;
             case R.id.bt_Settings:

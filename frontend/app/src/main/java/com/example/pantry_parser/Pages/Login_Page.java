@@ -125,7 +125,7 @@ public class Login_Page extends AppCompatActivity implements View.OnClickListene
             VolleyListener.makeRequest(getApplicationContext(), "/login", loginListener, data, Request.Method.POST);
         }
 
-        private boolean validateAdmin(String name, String password) {
+        protected boolean validateAdmin(String name, String password) {
             if (name.equalsIgnoreCase(adminUserName) && password.equals(adminPassword)) {
                 return true;
             }

@@ -16,9 +16,6 @@
             android:name=".Pages.Recipe_Page"
             android:exported="true" />
         <activity
-            android:name=".Pages.RecipeView"
-            android:exported="true" />
-        <activity
             android:name=".RecyclerView.ListView"
             android:exported="true" />
         <activity
@@ -26,12 +23,6 @@
             android:exported="true" />
         <activity
             android:name=".Pages.Settings_Page"
-            android:exported="true" />
-        <activity
-            android:name=".Pages.MyRecipes_Page"
-            android:exported="true" />
-        <activity
-            android:name=".Pages.Favorites_Page"
             android:exported="true" />
         <activity
             android:name=".Pages.PantryParser_Page"

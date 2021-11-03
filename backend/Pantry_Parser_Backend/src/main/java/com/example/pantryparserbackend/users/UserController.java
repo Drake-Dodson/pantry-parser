@@ -5,6 +5,10 @@ import com.example.pantryparserbackend.Util.MessageUtil;
 import com.example.pantryparserbackend.Recipes.Recipe;
 import com.example.pantryparserbackend.Recipes.RecipeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
@@ -70,21 +74,23 @@ public class UserController {
     }
 
     @GetMapping(path = "/user/{user_id}/recipes")
-    public List<Recipe> allRecipes(@PathVariable int user_id){
+    public Page<Recipe> allRecipes(@RequestParam(defaultValue = "0") Integer pageNo, @RequestParam(defaultValue = "15") Integer perPage, @PathVariable int user_id){
         User u = userRepository.findById(user_id);
         if(u == null){
             return null;
         }
-        return u.getRecipes();
+        Pageable page = PageRequest.of(pageNo, perPage, Sort.by("rating"));
+        return recipeRepository.getUserCreated(u, page);
     }
 
     @GetMapping(path = "/user/{user_id}/favorites")
-    public List<Recipe> allFavorites(@PathVariable int user_id){
+    public Page<Recipe> allFavorites(@RequestParam(defaultValue = "0") Integer pageNo, @RequestParam(defaultValue = "15") Integer perPage, @PathVariable int user_id){
         User u = userRepository.findById(user_id);
         if(u == null){
             return null;
         }
-        return u.getFavorites();
+        Pageable page = PageRequest.of(pageNo, perPage, Sort.by("rating"));
+        return recipeRepository.getUserFavorites(user_id, page);
     }
     @PatchMapping(path = "/user/{user_id}/favorite/{recipe_id}")
     public String favorite(@PathVariable int user_id, @PathVariable int recipe_id){

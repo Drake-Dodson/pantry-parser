@@ -2,6 +2,7 @@ package com.example.pantryparserbackend.users;
 
 import com.example.pantryparserbackend.Recipes.Recipe;
 import com.example.pantryparserbackend.Reviews.Review;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Getter;
@@ -43,6 +44,7 @@ public class User {
     private String role;
 
     @OneToMany(mappedBy = "creator")
+    @JsonIgnore
     private List<Recipe> created_recipes;
 
     @Getter
@@ -53,6 +55,7 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "recipe_id"),
             uniqueConstraints = @UniqueConstraint(columnNames = {"recipe_id", "user_id"})
     )
+    @JsonIgnore
     private List<Recipe> favorites;
 
     @Getter

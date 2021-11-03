@@ -43,6 +43,7 @@ public class Recipe {
 
     @Setter
     @OneToMany(mappedBy = "recipe_reviewed")
+    @JsonIgnore
     private List<Review> recipes_reviews;
 
     @ManyToMany(mappedBy = "favorites")

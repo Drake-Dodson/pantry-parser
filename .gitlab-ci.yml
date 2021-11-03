@@ -2,9 +2,9 @@
 stages:
   - mavenbuild
   - maventest
-  - mavenDeploy
   - androidbuild
   - androidtest
+  - mavenDeploy
 
 maven-build:   #this is a JOB
   stage: mavenbuild
@@ -28,7 +28,7 @@ maven-test:
 maven-deploy:
   stage: mavenDeploy
   tags:
-    - springboot_tag
+    - springboot_deployment_tag
   script:
     - cd backend/Pantry_Parser_Backend
     - mvn package

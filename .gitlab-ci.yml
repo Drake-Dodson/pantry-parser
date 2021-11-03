@@ -10,6 +10,9 @@ maven-build:   #this is a JOB
   stage: mavenbuild
   tags:
     - springboot_tag  # this is LINK to the shell runner on the remote-server
+  only:
+    - merge_requests
+    - main
   script:
     - cd backend/Pantry_Parser_Backend
     - mvn package -B
@@ -18,6 +21,9 @@ maven-test:
   stage: maventest
   tags:
     - springboot_tag
+  only:
+    - merge_requests
+    - main
   script:
     - cd backend/Pantry_Parser_Backend
     - mvn test
@@ -29,6 +35,8 @@ maven-deploy:
   stage: mavenDeploy
   tags:
     - springboot_deployment_tag
+  only:
+    - main
   script:
     - cd backend/Pantry_Parser_Backend
     - mvn package
@@ -39,6 +47,9 @@ maven-deploy:
 android-build: #this is another job
   image: alvrme/alpine-android:android-28-jdk11      # this is a directive to DOCKER
   stage: androidbuild
+  only:
+    - merge_requests
+    - main
   tags:
     - android_tag         #this is LINK to the docker runner on the remote-server
   before_script:
@@ -54,6 +65,9 @@ android-build: #this is another job
 android-test: #this is another job
   image: alvrme/alpine-android:android-28-jdk11      # this is a directive to DOCKER
   stage: androidtest
+  only:
+    - merge_requests
+    - main
   before_script:
     - export GRADLE_USER_HOME=`pwd`/.gradle
     - chmod +x ./frontend/gradlew

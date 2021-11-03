@@ -1,21 +1,33 @@
 package com.example.pantry_parser;
 
+import android.graphics.drawable.Drawable;
+import android.media.Image;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 
 public class Recipe implements Serializable {
     private Integer recipeID;
-    public String recipeName;
-    public int timeToMake;
-    public String summary;
-    public ArrayList<String> ingredients;
-    public ArrayList<String> steps;
-    public String author;
-    public float rating;
+    private String recipeName;
+    private int timeToMake;
+    private String summary;
+    private ArrayList<String> ingredients;
+    private ArrayList<String> steps;
+    private String author;
+    private float rating;
+    private Drawable image;
 
     public Recipe(String recipeName, ArrayList<String> ingredients) {
         this.recipeName = recipeName;
         this.ingredients = ingredients;
+    }
+
+    public Drawable getImage() {
+        return image;
+    }
+
+    public void setImage(Drawable image) {
+        this.image = image;
     }
 
     public Recipe(String recipeName) { this.recipeName = recipeName; }

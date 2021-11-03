@@ -34,7 +34,7 @@ public class ListView extends AppCompatActivity implements RecyclerViewAdapter.O
     boolean isLoading = false;
     private static final String URL_RECIPES = "http://coms-309-032.cs.iastate.edu:8080/recipes/";
     private static final String URL_USER = "http://coms-309-032.cs.iastate.edu:8080/user/1/recipes/";
-    private static final String URL_FAV = "http://coms-309-032.cs.iastate.edu:8080/user/13/favorites/";
+    private static final String URL_FAV = "http://coms-309-032.cs.iastate.edu:8080/user/1/favorites/";
     String URL_TO_USE;
     private RequestQueue queue;
     FloatingActionButton newRecipe;
@@ -139,12 +139,12 @@ public class ListView extends AppCompatActivity implements RecyclerViewAdapter.O
                             }
                             recipe.setIngredients(ingredients);
 
-//                            ArrayList<String> steps = new ArrayList<>();
-//                            JSONArray jsonSteps = response.getJSONObject(i).getJSONArray("steps");
-//                            for (int j = 0; j< jsonSteps.length();j++){
-//                                ingredients.add(jsonSteps.getJSONObject(j).getString("name"));
-//                            }
-//                            recipe.setSteps(steps);
+                            ArrayList<String> steps = new ArrayList<>();
+                            JSONArray jsonSteps = response.getJSONObject(i).getJSONArray("steps");
+                            for (int j = 0; j< jsonSteps.length();j++){
+                                steps.add(jsonSteps.getJSONObject(j).getString("name"));
+                            }
+                            recipe.setSteps(steps);
 
                             dataset.add(recipe);
                             recyclerViewAdapter.notifyDataSetChanged();

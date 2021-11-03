@@ -29,16 +29,16 @@ public class UserController {
     {
         return userRepository.findAll();
     }
-    @GetMapping(path = "/user/{id}")
-    public User getUserById(@PathVariable int id)
+    @GetMapping(path = "/user/{user_id}")
+    public User getUserById(@PathVariable int user_id)
     {
-        return userRepository.findById(id);
+        return userRepository.findById(user_id);
     }
     @GetMapping(path = "/user/email/{email}")
     public User getUserByEmail(@PathVariable String email) throws Exception {
         return userRepository.findByEmail(email);
     }
-    @PostMapping(path = "/user")
+    @PostMapping(path = "/users")
     String createUser(@RequestBody User users){
         if (users == null)
             return MessageUtil.newResponseMessage(false, "User was null");

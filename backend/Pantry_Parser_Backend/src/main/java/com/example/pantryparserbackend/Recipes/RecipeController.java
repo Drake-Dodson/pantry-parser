@@ -212,17 +212,17 @@ public class RecipeController {
     }
 
     //adding and removing ingredients
-    @GetMapping(path = "/recipe/{id}/ingredients")
-    List<Ingredient> ingredientsByRecipe(@PathVariable int id){
-        Recipe r = recipeRepository.findById(id);
+    @GetMapping(path = "/recipe/{recipe_id}/ingredients")
+    List<Ingredient> ingredientsByRecipe(@PathVariable int recipe_id){
+        Recipe r = recipeRepository.findById(recipe_id);
         if (r == null){
             return null;
         }
         return r.getIngredients();
     }
-    @PatchMapping(path = "/recipe/{id}/ingredient/{name}")
-    String addIngredient(@PathVariable int id, @PathVariable String name){
-        Recipe r = recipeRepository.findById(id);
+    @PatchMapping(path = "/recipe/{recipe_id}/ingredient/{name}")
+    String addIngredient(@PathVariable int recipe_id, @PathVariable String name){
+        Recipe r = recipeRepository.findById(recipe_id);
         Ingredient i = ingredientRepository.findByName(name.toLowerCase());
         if(r == null || i == null){
             return MessageUtil.newResponseMessage(false, (r == null ? "recipe " : "ingredient ") + "does not exist");
@@ -236,9 +236,9 @@ public class RecipeController {
         recipeRepository.save(r);
         return MessageUtil.newResponseMessage(true, "added successfully");
     }
-    @DeleteMapping(path = "/recipe/{id}/ingredient/{name}")
-    String removeIngredient(@PathVariable int id, @PathVariable String name){
-        Recipe r = recipeRepository.findById(id);
+    @DeleteMapping(path = "/recipe/{recipe_id}/ingredient/{name}")
+    String removeIngredient(@PathVariable int recipe_id, @PathVariable String name){
+        Recipe r = recipeRepository.findById(recipe_id);
         Ingredient i = ingredientRepository.findByName(name.toLowerCase());
         if(r == null || i == null){
             return MessageUtil.newResponseMessage(false, (r == null ? "recipe " : "ingredient ") + "does not exist");

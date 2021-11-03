@@ -29,9 +29,9 @@ public class UserController {
     }
 
     @GetMapping(path = "/users")
-    public List<User> getAllUsers()
-    {
-        return userRepository.findAll();
+    public Page<User> getAllUsers(@RequestParam(defaultValue = "0") Integer pageNo, @RequestParam(defaultValue = "15") Integer perPage) {
+        Pageable page = PageRequest.of(pageNo, perPage, Sort.by("email"));
+        return userRepository.findAll(page);
     }
     @GetMapping(path = "/user/{user_id}")
     public User getUserById(@PathVariable int user_id)

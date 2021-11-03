@@ -92,7 +92,8 @@ public class Recipe {
     public int getNum_ingredients() { return this.num_ingredients; }
     public List<Step> getSteps() { return this.steps; }
     public Step getStepByOrder(int pos) { return this.steps.get(pos); }
-    public List<Review>getRecipeReviews() {return this.recipes_reviews; }
+    @JsonIgnore
+    public List<Review>getRecipeReviews() { return this.recipes_reviews; }
 
     //not including a set for created_date since this shouldn't be changed
     public void setName(String name){ this.name = name; }

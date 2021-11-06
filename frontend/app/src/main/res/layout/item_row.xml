@@ -18,21 +18,14 @@
     >
 
 
-    <ImageView
-        android:id="@+id/imageView3"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:layout_marginLeft="310dp"
-        app:srcCompat="@drawable/general_search_icon" />
-
     <TextView
         android:id="@+id/title"
         android:layout_width="289dp"
         android:layout_height="25dp"
         android:layout_marginLeft="10dp"
         android:layout_marginTop="5dp"
-        android:fontFamily="@font/ultra"
+        android:textColor="@color/black"
+        android:fontFamily="@font/robotobold"
         android:text="Recipe Name"
         android:textSize="20dp" />
 
@@ -42,20 +35,22 @@
         android:layout_height="20dp"
         android:layout_marginTop="30dp"
         android:layout_marginLeft="10dp"
-        android:fontFamily="@font/bebas"
+
+        android:fontFamily="@font/robotomedium"
         android:text="Minutes to make:"
-        android:textSize="20dp" />
+        android:textSize="15dp" />
 
     <TextView
         android:id="@+id/time"
         android:layout_width="wrap_content"
         android:layout_height="20dp"
         android:layout_marginTop="30dp"
-        android:layout_marginLeft="125dp"
-        android:fontFamily="@font/bebas"
+        android:layout_marginLeft="129dp"
+        android:textColor="@color/light_blue"
+        android:fontFamily="@font/robotomedium"
         android:text="100"
         android:textAlignment="center"
-        android:textSize="20dp" />
+        android:textSize="15dp" />
 
     <RatingBar
         android:id="@+id/ratingBar"
@@ -63,12 +58,28 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="51dp"
-        android:layout_marginLeft="10dp"
+        android:layout_marginLeft="8dp"
         android:isIndicator="true"
         android:numStars="5"
-        android:rating="6"
+        android:rating="5"
         android:stepSize=".5"
         android:theme="@style/RatingBar"/>
+
+    <ImageView
+        android:id="@+id/RecipeImage"
+        android:layout_width="400dp"
+        android:layout_height="300dp"
+        android:paddingTop="110dp"
+        android:scaleType="centerCrop"
+        app:srcCompat="@drawable/ginger" />
+
+    <ImageView
+        android:id="@+id/imageView2"
+        android:layout_width="20dp"
+        android:layout_height="16dp"
+        android:layout_marginLeft="100dp"
+        android:layout_marginTop="51dp"
+        app:srcCompat="@drawable/profile" />
 
 
 </androidx.cardview.widget.CardView>

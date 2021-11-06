@@ -89,9 +89,9 @@ onRecipeListener.onRecipeClick(getAbsoluteAdapterPosition());
 
     private void populateItemRows(ItemViewHolder viewHolder, int position) {
         Recipe item = mItemList.get(position);
-        viewHolder.recipeName.setText(item.recipeName);
-        viewHolder.minutesToMake.setText(Integer.toString(item.timeToMake));
-        viewHolder.ratingBar.setRating(item.rating);
+        viewHolder.recipeName.setText(item.getRecipeName());
+        viewHolder.minutesToMake.setText(Integer.toString(item.getTimeToMake()));
+        viewHolder.ratingBar.setRating((float) item.getRating());
     }
 
     public interface OnRecipeListener{

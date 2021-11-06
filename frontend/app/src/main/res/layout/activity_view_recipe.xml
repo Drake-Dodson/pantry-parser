@@ -27,7 +27,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight=".2"
+            android:layout_weight=".15"
+            android:paddingRight="5dp"
             android:orientation="horizontal">
 
             <TextView
@@ -36,38 +37,47 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:layout_gravity="center"
+                android:fontFamily="@font/robotobold"
+                android:textColor="@color/black"
                 android:text="Drake's Spicy Meatballs"
-                android:textSize="20dp" />
+                android:textSize="23dp" />
 
             <Button
                 android:id="@+id/button"
+                android:layout_width="65dp"
+                android:layout_height="34dp"
+                android:backgroundTint="@color/light_blue"
                 android:layout_gravity="center"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:background="@drawable/searchbar"
+                android:fontFamily="@font/robotobold"
                 android:text="Save" />
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight=".2"
+            android:layout_weight=".15"
+            android:gravity="center"
             android:orientation="vertical">
 
             <TextView
                 android:id="@+id/RecipeAuthor"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_gravity="top"
+                android:fontFamily="@font/robotomedium"
                 android:text="By Drake Dodson" />
 
             <RatingBar
                 android:id="@+id/Reciperating"
-                style="@style/Widget.AppCompat.RatingBar.Small"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
                 android:isIndicator="true"
                 android:numStars="0"
                 android:rating="5"
                 android:stepSize=".5"
+                style="@style/Widget.AppCompat.RatingBar.Small"
                 android:theme="@style/RatingBar" />
         </LinearLayout>
 
@@ -75,7 +85,7 @@
             android:id="@+id/tablayout"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight=".2">
+            android:layout_weight=".15">
 
             <com.google.android.material.tabs.TabItem
                 android:id="@+id/DetailsTab"
@@ -121,7 +131,8 @@
 
                         <TextView
                             android:id="@+id/DetailsText"
-                            android:fontFamily="@font/comforta"
+                            android:fontFamily="@font/robotoregular"
+                            android:textColor="@color/black"
                             android:textSize="20sp"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -145,8 +156,9 @@
                             android:id="@+id/IngredientsText"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:fontFamily="@font/comforta"
+                            android:fontFamily="@font/robotoregular"
                             android:textSize="20sp"
+                            android:textColor="@color/black"
                             android:lineSpacingExtra="10dp"
                             android:paddingLeft="10dp"
                             android:paddingRight="10dp"
@@ -168,7 +180,8 @@
                             android:id="@+id/StepsText"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:fontFamily="@font/comforta"
+                            android:textColor="@color/black"
+                            android:fontFamily="@font/robotoregular"
                             android:textSize="20sp"
                             android:lineSpacingExtra="10dp"
                             android:paddingLeft="10dp"

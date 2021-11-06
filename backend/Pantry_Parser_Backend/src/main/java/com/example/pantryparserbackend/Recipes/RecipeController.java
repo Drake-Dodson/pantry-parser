@@ -26,11 +26,11 @@ public class RecipeController {
     List<Recipe> getAllRecipes(){
         return recipeRepository.findAll();
     }
-    @GetMapping(path = "/recipes/{id}")
-    Recipe getRecipeById(@PathVariable int id){
-        return recipeRepository.findById(id);
+    @GetMapping(path = "/recipe/{recipe_id}")
+    Recipe getRecipeById(@PathVariable int recipe_id){
+        return recipeRepository.findById(recipe_id);
     }
-    @PostMapping(path = "/recipes/{user_id}")
+    @PostMapping(path = "/user/{user_id}/recipes")
     String createRecipe(@PathVariable int user_id, @RequestBody Recipe recipe){
         if(recipe == null)
             return MessageUtil.newResponseMessage(false, "invalid input");
@@ -45,7 +45,7 @@ public class RecipeController {
         userRepository.save(u);
         return MessageUtil.newResponseMessage(true, "successfully created recipe");
     }
-    @PatchMapping(path = "/recipes/{recipe_id}")
+    @PatchMapping(path = "/recipe/{recipe_id}")
     Recipe updateRecipe(@PathVariable int recipe_id, @RequestBody Recipe request){
         Recipe recipe = recipeRepository.findById(recipe_id);
         if(recipe == null)
@@ -54,7 +54,7 @@ public class RecipeController {
         recipeRepository.save(recipe);
         return recipeRepository.findById(recipe_id);
     }
-    @DeleteMapping(path = "/recipes/{recipe_id}")
+    @DeleteMapping(path = "/recipe/{recipe_id}")
     String deleteRecipe(@PathVariable int recipe_id){
         Recipe recipe = recipeRepository.findById(recipe_id);
         if (recipe == null){
@@ -206,23 +206,23 @@ public class RecipeController {
         }
         return i.getRecipes();
     }
-    @PutMapping(path = "/ingredients/recipes")
+    @PutMapping(path = "/pantry-parser")
     List<Recipe> recipesByIngrents(@RequestBody List<String> input){
         return recipeRepository.getByIngredients(input);
     }
 
     //adding and removing ingredients
-    @GetMapping(path = "/recipes/{id}/ingredients")
-    List<Ingredient> ingredientsByRecipe(@PathVariable int id){
-        Recipe r = recipeRepository.findById(id);
+    @GetMapping(path = "/recipe/{recipe_id}/ingredients")
+    List<Ingredient> ingredientsByRecipe(@PathVariable int recipe_id){
+        Recipe r = recipeRepository.findById(recipe_id);
         if (r == null){
             return null;
         }
         return r.getIngredients();
     }
-    @PatchMapping(path = "/recipes/{id}/ingredients/{name}")
-    String addIngredient(@PathVariable int id, @PathVariable String name){
-        Recipe r = recipeRepository.findById(id);
+    @PatchMapping(path = "/recipe/{recipe_id}/ingredient/{name}")
+    String addIngredient(@PathVariable int recipe_id, @PathVariable String name){
+        Recipe r = recipeRepository.findById(recipe_id);
         Ingredient i = ingredientRepository.findByName(name.toLowerCase());
         if(r == null || i == null){
             return MessageUtil.newResponseMessage(false, (r == null ? "recipe " : "ingredient ") + "does not exist");
@@ -236,9 +236,9 @@ public class RecipeController {
         recipeRepository.save(r);
         return MessageUtil.newResponseMessage(true, "added successfully");
     }
-    @DeleteMapping(path = "/recipes/{id}/ingredients/{name}")
-    String removeIngredient(@PathVariable int id, @PathVariable String name){
-        Recipe r = recipeRepository.findById(id);
+    @DeleteMapping(path = "/recipe/{recipe_id}/ingredient/{name}")
+    String removeIngredient(@PathVariable int recipe_id, @PathVariable String name){
+        Recipe r = recipeRepository.findById(recipe_id);
         Ingredient i = ingredientRepository.findByName(name.toLowerCase());
         if(r == null || i == null){
             return MessageUtil.newResponseMessage(false, (r == null ? "recipe " : "ingredient ") + "does not exist");

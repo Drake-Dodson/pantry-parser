@@ -24,24 +24,21 @@ public class UserController {
         return "Pantry Parser Super Cool Homepage";
     }
 
-    @GetMapping(path = "/user/{id}")
-    public User getUserById(@PathVariable int id)
-    {
-        return userRepository.findById(id);
-    }
-
     @GetMapping(path = "/users")
     public List<User> getAllUsers()
     {
         return userRepository.findAll();
     }
-
+    @GetMapping(path = "/user/{user_id}")
+    public User getUserById(@PathVariable int user_id)
+    {
+        return userRepository.findById(user_id);
+    }
     @GetMapping(path = "/user/email/{email}")
     public User getUserByEmail(@PathVariable String email) throws Exception {
         return userRepository.findByEmail(email);
     }
-
-    @PostMapping(path = "/user")
+    @PostMapping(path = "/users")
     String createUser(@RequestBody User users){
         if (users == null)
             return MessageUtil.newResponseMessage(false, "User was null");
@@ -89,7 +86,7 @@ public class UserController {
         }
         return u.getFavorites();
     }
-    @PatchMapping(path = "/user/{user_id}/favorites/{recipe_id}")
+    @PatchMapping(path = "/user/{user_id}/favorite/{recipe_id}")
     public String favorite(@PathVariable int user_id, @PathVariable int recipe_id){
         User u = userRepository.findById(user_id);
         Recipe r = recipeRepository.findById(recipe_id);
@@ -105,7 +102,7 @@ public class UserController {
         userRepository.save(u);
         return MessageUtil.newResponseMessage(true, "favorited");
     }
-    @DeleteMapping(path = "/user/{user_id}/favorites/{recipe_id}")
+    @DeleteMapping(path = "/user/{user_id}/favorite/{recipe_id}")
     public String unfavorite(@PathVariable int user_id, @PathVariable int recipe_id){
         User u = userRepository.findById(user_id);
         Recipe r = recipeRepository.findById(recipe_id);

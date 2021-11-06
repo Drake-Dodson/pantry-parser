@@ -23,13 +23,13 @@ public class ReviewController {
     @Autowired
     ReviewRepository reviewRepository;
 
-    @GetMapping(path = "user/{user_id}/reviews")
+    @GetMapping(path = "/user/{user_id}/reviews")
     public List<Review> getReviewsByUser(@PathVariable int user_id) {
         User user = userRepository.findById(user_id);
         return user.getUserReviews();
     }
 
-    @GetMapping(path = "recipe/{recipe_id}/reviews")
+    @GetMapping(path = "/recipe/{recipe_id}/reviews")
     public List<Review> getRecipeReviews(@PathVariable int recipe_id) {
         Recipe recipe = recipeRepository.findById(recipe_id);
         return recipe.getRecipeReviews();
@@ -40,7 +40,7 @@ public class ReviewController {
         return reviewRepository.findAll();
     }
 
-    @PostMapping(path = "user/{user_id}/recipe/{recipe_id}/review")
+    @PostMapping(path = "/user/{user_id}/recipe/{recipe_id}/review")
     public String writeReview(@PathVariable int user_id, @PathVariable int recipe_id, @RequestBody Review review)
     {
         User reviewer = userRepository.findById(user_id);
@@ -88,7 +88,7 @@ public class ReviewController {
         return MessageUtil.newResponseMessage(true, "Review created");
     }
 
-    @PatchMapping(path = "review/{review_id}")
+    @PatchMapping(path = "/review/{review_id}")
     public String updateReview(@PathVariable int review_id, @RequestBody Review reviewChanges)
     {
         Review review = reviewRepository.findById(review_id);
@@ -121,7 +121,7 @@ public class ReviewController {
         return MessageUtil.newResponseMessage(true, "Review updated");
     }
 
-    @DeleteMapping(path = "review/{review_id}")
+    @DeleteMapping(path = "/review/{review_id}")
     public String deleteReview(@PathVariable int review_id)
     {
         Review review = reviewRepository.findById(review_id);

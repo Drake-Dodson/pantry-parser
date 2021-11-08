@@ -9,8 +9,8 @@ import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
-@Configuration
 @EnableSwagger2
+@Configuration
 public class Swagger2UiConfiguration
 {
     @Bean
@@ -21,4 +21,15 @@ public class Swagger2UiConfiguration
                 .paths(PathSelectors.any())
                 .build();
     }
+//    private static final String[] AUTH_WHITELIST = {
+//            "/swagger-resources/**",
+//            "/swagger-ui.html",
+//            "/v2/api-docs",
+//            "/webjars/**"
+//    };
+//
+//    @Override
+//    public void configure(WebSecurity web) throws Exception {
+//        web.ignoring().antMatchers(AUTH_WHITELIST);
+//    }
 }

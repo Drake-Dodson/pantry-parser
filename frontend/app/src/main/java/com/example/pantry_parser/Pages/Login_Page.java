@@ -34,7 +34,11 @@ public class Login_Page extends AppCompatActivity implements View.OnClickListene
         boolean isAdmin = false;
         private int counter = 5;
 
-        @Override
+    /**
+     *
+     * @param savedInstanceState
+     */
+    @Override
         protected void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             setContentView(R.layout.activity_main);
@@ -52,7 +56,11 @@ public class Login_Page extends AppCompatActivity implements View.OnClickListene
             eGuest.setOnClickListener(this);
         }
 
-        @Override
+    /**
+     *
+     * @param view
+     */
+    @Override
         public void onClick(View view) {
             Intent intentSignUp = new Intent(getApplicationContext(), Registration_Page.class);
             Intent intentLogin = new Intent(Login_Page.this, Home_Page.class);
@@ -88,9 +96,19 @@ public class Login_Page extends AppCompatActivity implements View.OnClickListene
             }
         }
 
-        private void sendLoginInfo(String eName, String ePassword) throws JSONException {
+    /**
+     *
+     * @param eName name inputted by user
+     * @param ePassword password inputted by user
+     * @throws JSONException throws error
+     */
+    private void sendLoginInfo(String eName, String ePassword) throws JSONException {
             RequestListener loginListener = new RequestListener(){
 
+                /**
+                 *
+                 * @param jsonObject
+                 */
                 @Override
                 public void onSuccess(Object jsonObject) {
                     JSONObject object = (JSONObject)jsonObject;
@@ -110,6 +128,11 @@ public class Login_Page extends AppCompatActivity implements View.OnClickListene
                         System.out.println("connection issues");
                     }
                 }
+
+                /**
+                 *
+                 * @param error
+                 */
                 @Override
                 public void onFailure(String error) {
                     counter--;
@@ -125,7 +148,13 @@ public class Login_Page extends AppCompatActivity implements View.OnClickListene
             VolleyListener.makeRequest(getApplicationContext(), "/login", loginListener, data, Request.Method.POST);
         }
 
-        protected boolean validateAdmin(String name, String password) {
+    /**
+     *
+     * @param name Admin username
+     * @param password Admin password
+     * @return Returns true if correct admin, otherwise false
+     */
+    protected boolean validateAdmin(String name, String password) {
             if (name.equalsIgnoreCase(adminUserName) && password.equals(adminPassword)) {
                 return true;
             }

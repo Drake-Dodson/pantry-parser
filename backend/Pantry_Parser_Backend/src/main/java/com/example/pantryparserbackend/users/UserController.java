@@ -4,6 +4,8 @@ import com.example.pantryparserbackend.Util.MessageUtil;
 
 import com.example.pantryparserbackend.Recipes.Recipe;
 import com.example.pantryparserbackend.Recipes.RecipeRepository;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,6 +16,7 @@ import java.util.Set;
 /**
  * User controller, responsible for all user stuff
  */
+@Api(value = "User Controller", description = "Contains all of the calls for the users")
 @RestController
 public class UserController {
 
@@ -25,6 +28,7 @@ public class UserController {
     /**
      * this is just a test method to show us our server is up
      */
+    @ApiOperation(value = "The super cool homepage")
     @GetMapping("/")
     public String welcome() {
         return "Pantry Parser Super Cool Homepage";
@@ -34,6 +38,7 @@ public class UserController {
      * gets a list of all users in the database
      * @return list of users
      */
+    @ApiOperation(value = "Gets all of the users in the database")
     @GetMapping(path = "/users")
     public List<User> getAllUsers()
     {
@@ -45,6 +50,7 @@ public class UserController {
      * @param user_id input user id
      * @return user
      */
+    @ApiOperation(value = "Gets the given user's information")
     @GetMapping(path = "/user/{user_id}")
     public User getUserById(@PathVariable int user_id)
     {
@@ -57,6 +63,7 @@ public class UserController {
      * @return user
      * @throws Exception if the email doesn't exist in the database
      */
+    @ApiOperation(value = "Finds a user by a given email")
     @GetMapping(path = "/user/email/{email}")
     public User getUserByEmail(@PathVariable String email) throws Exception {
         return userRepository.findByEmail(email);
@@ -67,6 +74,7 @@ public class UserController {
      * @param users new user input data
      * @return either success or a failure message
      */
+    @ApiOperation(value = "Creates a new user")
     @PostMapping(path = "/users")
     String createUser(@RequestBody User users){
         if (users == null)
@@ -87,6 +95,7 @@ public class UserController {
      * @param login a special model with the input email and password
      * @return either success with the user id or a failure message
      */
+    @ApiOperation(value = "Logs in a user")
     @PostMapping(path = "/login")
     public String login(@RequestBody Login login){
         if (login == null)
@@ -108,6 +117,7 @@ public class UserController {
      * @param user_id the id of the user
      * @return list of recipes that user created
      */
+    @ApiOperation(value = "gets all recipes of a user")
     @GetMapping(path = "/user/{user_id}/recipes")
     public List<Recipe> allRecipes(@PathVariable int user_id){
         User u = userRepository.findById(user_id);
@@ -122,6 +132,7 @@ public class UserController {
      * @param user_id the id of the user
      * @return a list of the user's favorite recipes
      */
+    @ApiOperation(value = "Gets all of the favorites of a user")
     @GetMapping(path = "/user/{user_id}/favorites")
     public List<Recipe> allFavorites(@PathVariable int user_id){
         User u = userRepository.findById(user_id);
@@ -137,6 +148,7 @@ public class UserController {
      * @param recipe_id the id of the recipe
      * @return either success or a failure message
      */
+    @ApiOperation(value = "Route to favorite a recipe")
     @PatchMapping(path = "/user/{user_id}/favorite/{recipe_id}")
     public String favorite(@PathVariable int user_id, @PathVariable int recipe_id){
         User u = userRepository.findById(user_id);
@@ -159,6 +171,7 @@ public class UserController {
      * @param recipe_id the id of the recipe
      * @return either success or a failure message
      */
+    @ApiOperation(value = "The route for a user to unfavorite a recipe")
     @DeleteMapping(path = "/user/{user_id}/favorite/{recipe_id}")
     public String unfavorite(@PathVariable int user_id, @PathVariable int recipe_id){
         User u = userRepository.findById(user_id);

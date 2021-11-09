@@ -3,6 +3,8 @@ package com.example.pantryparserbackend.Recipes;
 import java.util.List;
 
 import com.example.pantryparserbackend.Util.MessageUtil;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.aspectj.bridge.Message;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -13,6 +15,7 @@ import com.example.pantryparserbackend.users.User;
  * Controller that manages all recipe stuff
  * (recipes, ingredients, and steps)
  */
+@Api(value = "Recipe Controller", description = "Contains all of the calls for Recipe data")
 @RestController
 public class RecipeController {
 
@@ -30,6 +33,7 @@ public class RecipeController {
      * gets a list of all the recipes
      * @return a list of all the recipes in the database
      */
+    @ApiOperation(value = "Get all of the recipes in the database")
     @GetMapping(path = "/recipes")
     List<Recipe> getAllRecipes(){
         return recipeRepository.findAll();
@@ -40,6 +44,7 @@ public class RecipeController {
      * @param recipe_id id of the recipe you are looking for
      * @return the recipe that belongs to the id
      */
+    @ApiOperation(value = "Get the recipe with the specified id")
     @GetMapping(path = "/recipe/{recipe_id}")
     Recipe getRecipeById(@PathVariable int recipe_id){
         return recipeRepository.findById(recipe_id);
@@ -51,6 +56,7 @@ public class RecipeController {
      * @param recipe the input values for the recipe
      * @return either success or a failure message
      */
+    @ApiOperation(value = "Create a new recipe with the given user ")
     @PostMapping(path = "/user/{user_id}/recipes")
     String createRecipe(@PathVariable int user_id, @RequestBody Recipe recipe){
         if(recipe == null)
@@ -73,6 +79,7 @@ public class RecipeController {
      * @param request the new set of values
      * @return the new recipe
      */
+    @ApiOperation(value = "Updates the recipe of the given id")
     @PatchMapping(path = "/recipe/{recipe_id}")
     Recipe updateRecipe(@PathVariable int recipe_id, @RequestBody Recipe request){
         Recipe recipe = recipeRepository.findById(recipe_id);
@@ -88,6 +95,7 @@ public class RecipeController {
      * @param recipe_id the id of the recipe we want to delete
      * @return either success or a failure message
      */
+    @ApiOperation(value = "Deletes the recipe of the given id")
     @DeleteMapping(path = "/recipe/{recipe_id}")
     String deleteRecipe(@PathVariable int recipe_id){
         Recipe recipe = recipeRepository.findById(recipe_id);
@@ -100,10 +108,11 @@ public class RecipeController {
 
     //recipe steps stuff
     /**
-     * gets a recipe from the database
+     * gets the step of the given id
      * @param step_id the id of the step we want to look at
      * @return the step at the provided id, or null
      */
+    @ApiOperation(value = "Gets the steps of the given id")
     @GetMapping(path = "/step/{step_id}")
     Step getStep(@PathVariable int step_id) { return stepRepository.findById(step_id); }
 
@@ -113,6 +122,7 @@ public class RecipeController {
      * @param newStep the new values of the step
      * @return either success or a failure message
      */
+    @ApiOperation(value = "Updates the given step")
     @PatchMapping(path = "/step/{step_id}")
     String updateStep(@PathVariable int step_id, @RequestBody Step newStep) {
         Step step = stepRepository.findById(step_id);
@@ -151,6 +161,7 @@ public class RecipeController {
      * @param step_id the id of the step we want to delete
      * @return either success or a failure message
      */
+    @ApiOperation(value = "Deletes the step of the given id")
     @DeleteMapping(path = "/step/{step_id}")
     String deleteStep(@PathVariable int step_id){
         Step step = stepRepository.findById(step_id);
@@ -180,6 +191,7 @@ public class RecipeController {
      * @param recipe_id the id of the recipe whose steps we're looking for
      * @return a list of steps from the provided recipe
      */
+    @ApiOperation(value = "Gets all of the steps of a given recipe id")
     @GetMapping(path = "/recipe/{recipe_id}/steps")
     List<Step> showStepsByRecipe(@PathVariable int recipe_id){
         Recipe r = recipeRepository.findById(recipe_id);
@@ -195,6 +207,7 @@ public class RecipeController {
      * @param pos the step number of the recipe
      * @return the step we want to look at
      */
+    @ApiOperation(value = "Gets a specific step of a recipe")
     @GetMapping(path = "/recipe/{recipe_id}/step/{pos}")
     Step getOrderedStep(@PathVariable int recipe_id, @PathVariable int pos) {
         Recipe recipe = recipeRepository.findById(recipe_id);
@@ -211,6 +224,7 @@ public class RecipeController {
      * @param step the new step we are creating
      * @return either success or a failure message
      */
+    @ApiOperation(value = "Creates a step for the given recipe")
     @PostMapping(path = "/recipe/{recipe_id}/steps")
     String createStep(@PathVariable int recipe_id, @RequestBody Step step) {
         Recipe recipe = recipeRepository.findById(recipe_id);
@@ -235,6 +249,7 @@ public class RecipeController {
      * @param newStep the new step values we want to update
      * @return either success or a failure message
      */
+    @ApiOperation(value = "Updates the step at the given position in a given recipe")
     @PatchMapping(path = "/recipe/{recipe_id}/step/{pos}")
     String updateOrderedStep(@PathVariable int recipe_id, @PathVariable int pos, @RequestBody Step newStep) {
         Recipe recipe = recipeRepository.findById(recipe_id);
@@ -253,6 +268,7 @@ public class RecipeController {
      * @param pos the step number on the recipe
      * @return either success or a failure message
      */
+    @ApiOperation(value = "Deletes the step at the given position in a given recipe")
     @DeleteMapping(path = "/recipe/{recipe_id}/step/{pos}")
     String deleteOrderedStep(@PathVariable int recipe_id, @PathVariable int pos){
         Recipe recipe = recipeRepository.findById(recipe_id);
@@ -271,6 +287,7 @@ public class RecipeController {
      * gets a list of all ingredients
      * @return a list of all ingredients in the database
      */
+    @ApiOperation(value = "Gets the list of all ingredients")
     @GetMapping(path = "/ingredients")
     List<Ingredient> showIngredients(){
         return ingredientRepository.findAll();
@@ -281,6 +298,7 @@ public class RecipeController {
      * @param request the input values for the new ingredient
      * @return either succsess or an error message
      */
+    @ApiOperation(value = "Creates a new ingredient")
     @PostMapping(path = "/ingredients")
     String createIngredient(@RequestBody Ingredient request){
         if(request == null){
@@ -299,6 +317,7 @@ public class RecipeController {
      * @param name the input name of the ingredient
      * @return list of recipes
      */
+    @ApiOperation(value = "Gets all of the recipes that have the given ingredient")
     @GetMapping(path="/ingredient/{name}/recipes")
     List<Recipe> ingredientRecipes(@PathVariable String name){
         Ingredient i = ingredientRepository.findByName(name);
@@ -317,6 +336,7 @@ public class RecipeController {
      * @param input array of strings with ingredient names
      * @return list of recipes
      */
+    @ApiOperation(value = "Gets a list of ingredients and searches recipes based on that list")
     @PutMapping(path = "/pantry-parser")
     List<Recipe> recipesByIngrents(@RequestBody List<String> input){
         return recipeRepository.getByIngredients(input);
@@ -328,6 +348,7 @@ public class RecipeController {
      * @param recipe_id the id of the recipe
      * @return a list of ingredients
      */
+    @ApiOperation(value = "Gets the list of ingredients for a recipe")
     @GetMapping(path = "/recipe/{recipe_id}/ingredients")
     List<Ingredient> ingredientsByRecipe(@PathVariable int recipe_id){
         Recipe r = recipeRepository.findById(recipe_id);
@@ -343,6 +364,7 @@ public class RecipeController {
      * @param name name of the ingredient we want to add
      * @return either success or a failure message
      */
+    @ApiOperation(value = "Attaches a recipe and ingredient to each other")
     @PatchMapping(path = "/recipe/{recipe_id}/ingredient/{name}")
     String addIngredient(@PathVariable int recipe_id, @PathVariable String name){
         Recipe r = recipeRepository.findById(recipe_id);
@@ -365,6 +387,7 @@ public class RecipeController {
      * @param name name of the ingredient we want to remove
      * @return either success or a failure message
      */
+    @ApiOperation(value = "Deletes an ingredient from a recipe")
     @DeleteMapping(path = "/recipe/{recipe_id}/ingredient/{name}")
     String removeIngredient(@PathVariable int recipe_id, @PathVariable String name){
         Recipe r = recipeRepository.findById(recipe_id);

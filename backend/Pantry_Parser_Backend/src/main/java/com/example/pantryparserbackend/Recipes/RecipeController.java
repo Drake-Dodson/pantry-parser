@@ -9,6 +9,10 @@ import org.springframework.web.bind.annotation.*;
 import com.example.pantryparserbackend.users.UserRepository;
 import com.example.pantryparserbackend.users.User;
 
+/**
+ * Controller that manages all recipe stuff
+ * (recipes, ingredients, and steps)
+ */
 @RestController
 public class RecipeController {
 

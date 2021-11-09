@@ -14,6 +14,9 @@ import org.springframework.lang.Nullable;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * Basic recipe model
+ */
 @Entity
 @Table(name = "recipes")
 public class Recipe {

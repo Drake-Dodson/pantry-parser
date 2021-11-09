@@ -8,6 +8,9 @@ import javax.persistence.*;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * The basic entity for ingredients
+ */
 @Entity
 @Table(name = "ingredients")
 public class Ingredient {

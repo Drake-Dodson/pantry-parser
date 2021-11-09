@@ -7,10 +7,18 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * basic repository for recipes
+ */
 public interface RecipeRepository extends JpaRepository <Recipe, Long> {
 
     Recipe findById(int id);
 
+    /**
+     * Does the pantry-parser functionality
+     * @param ingredients array of strings
+     * @return list of recipes matching ingredients
+     */
     @Query(value = "SELECT DISTINCT r.* FROM recipes r " +
             "JOIN recipe_ingredient ri ON r.id = ri.recipe_id " +
             "JOIN (SELECT * FROM ingredients " +

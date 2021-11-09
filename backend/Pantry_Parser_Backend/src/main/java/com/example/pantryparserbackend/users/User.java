@@ -18,6 +18,9 @@ import java.security.spec.KeySpec;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * basic user model
+ */
 @Entity
 @Table(name = "users")
 public class User {

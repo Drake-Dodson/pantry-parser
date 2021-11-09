@@ -6,6 +6,9 @@ import lombok.Setter;
 
 import javax.persistence.*;
 
+/**
+ * basic class for steps on a recipe
+ */
 @Entity
 @Table(name = "steps")
 public class Step {

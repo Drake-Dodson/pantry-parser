@@ -26,10 +26,18 @@ public class Ingredient {
     @Getter
     private List<Recipe> recipes;
 
+    /**
+     * basic constructor for a new ingredient
+     * @param name
+     */
     public Ingredient(String name){
         this.name = name;
     }
     public Ingredient(){}
 
+    /**
+     * sets the name of the ingredient to lowercase letters
+     * used for consistency in the database
+     */
     public void nameToLower() { this.name = this.name.toLowerCase(); }
 }

@@ -28,6 +28,12 @@ public class Step {
     @Setter
     private Recipe recipe;
 
+    /**
+     * basic constructor for a step
+     * @param step text content of the step
+     * @param order position it should be in
+     * @param recipe recipe this step belongs to
+     */
     public Step (String step, int order, Recipe recipe){
         this.name = step;
         this.num = order;

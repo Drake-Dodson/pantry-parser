@@ -112,6 +112,9 @@ public class Recipe {
 
     public Recipe(){}
 
+    public List<Review> getRecipeReviews () {
+        return this.recipes_reviews;
+    }
     /**
      * Gets the id of the user that created this recipe
      * @return int Creator id

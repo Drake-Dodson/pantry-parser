@@ -23,23 +23,44 @@ public class ReviewController {
     @Autowired
     ReviewRepository reviewRepository;
 
+    /**
+     * returns all the reviews the provided user has written
+     * @param user_id id of the user
+     * @return list of reviews
+     */
     @GetMapping(path = "/user/{user_id}/reviews")
     public List<Review> getReviewsByUser(@PathVariable int user_id) {
         User user = userRepository.findById(user_id);
         return user.getUserReviews();
     }
 
+    /**
+     * returns all the reviews the provided recipe has received
+     * @param recipe_id the id of the recipe
+     * @return list of reviews
+     */
     @GetMapping(path = "/recipe/{recipe_id}/reviews")
     public List<Review> getRecipeReviews(@PathVariable int recipe_id) {
         Recipe recipe = recipeRepository.findById(recipe_id);
         return recipe.getRecipeReviews();
     }
 
+    /**
+     * gets all reviews in the database
+     * @return list of reviews
+     */
     @GetMapping(path = "/reviews")
     public List<Review> getAllReviews() {
         return reviewRepository.findAll();
     }
 
+    /**
+     * writes a review as the provided user on the provided recipe
+     * @param user_id id of user
+     * @param recipe_id id of recipe
+     * @param review review contents
+     * @return either success or a failure message
+     */
     @PostMapping(path = "/user/{user_id}/recipe/{recipe_id}/review")
     public String writeReview(@PathVariable int user_id, @PathVariable int recipe_id, @RequestBody Review review)
     {
@@ -88,6 +109,12 @@ public class ReviewController {
         return MessageUtil.newResponseMessage(true, "Review created");
     }
 
+    /**
+     * updates the values of a review
+     * @param review_id id of review
+     * @param reviewChanges new values for review
+     * @return either success or a failure message
+     */
     @PatchMapping(path = "/review/{review_id}")
     public String updateReview(@PathVariable int review_id, @RequestBody Review reviewChanges)
     {
@@ -121,6 +148,11 @@ public class ReviewController {
         return MessageUtil.newResponseMessage(true, "Review updated");
     }
 
+    /**
+     * deletes a review
+     * @param review_id id of review to delete
+     * @return either success or a failure message
+     */
     @DeleteMapping(path = "/review/{review_id}")
     public String deleteReview(@PathVariable int review_id)
     {

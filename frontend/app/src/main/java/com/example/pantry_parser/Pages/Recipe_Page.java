@@ -1,24 +1,16 @@
 package com.example.pantry_parser.Pages;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentPagerAdapter;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.viewpager.widget.ViewPager;
-
 import android.graphics.Point;
 import android.os.Bundle;
 import android.view.Display;
-import android.view.View;
 import android.widget.HorizontalScrollView;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
-import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.Volley;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.viewpager.widget.ViewPager;
+
 import com.example.pantry_parser.R;
 import com.example.pantry_parser.Recipe;
-import com.example.pantry_parser.RecyclerView.RecyclerViewAdapter;
-import com.example.pantry_parser.VPAdapter;
 import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;
@@ -35,10 +27,11 @@ public class Recipe_Page extends AppCompatActivity {
         private HorizontalScrollView scrollView;
 
 
-
-
-
-        @Override
+    /**
+     *
+     * @param savedInstanceState
+     */
+    @Override
         protected void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             setContentView(R.layout.activity_view_recipe);
@@ -52,6 +45,11 @@ public class Recipe_Page extends AppCompatActivity {
             scrollView = findViewById(R.id.RecipeScrollView);
             tabLayout = findViewById(R.id.tablayout);
             tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+
+                /**
+                 *
+                 * @param tab
+                 */
                 @Override
                 public void onTabSelected(TabLayout.Tab tab) {
                     switch (tab.getPosition()){
@@ -67,11 +65,19 @@ public class Recipe_Page extends AppCompatActivity {
                     }
                 }
 
+                /**
+                 *
+                 * @param tab
+                 */
                 @Override
                 public void onTabUnselected(TabLayout.Tab tab) {
 
                 }
 
+                /**
+                 *
+                 * @param tab
+                 */
                 @Override
                 public void onTabReselected(TabLayout.Tab tab) {
 

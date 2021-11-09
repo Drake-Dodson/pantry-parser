@@ -1,14 +1,14 @@
 package com.example.pantry_parser.RecyclerView;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -16,10 +16,10 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.pantry_parser.Pages.Recipe_Page;
 import com.example.pantry_parser.Pages.Settings_Page;
 import com.example.pantry_parser.R;
 import com.example.pantry_parser.Recipe;
-import com.example.pantry_parser.Pages.Recipe_Page;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import org.json.JSONArray;
@@ -39,6 +39,10 @@ public class ListView extends AppCompatActivity implements RecyclerViewAdapter.O
     private RequestQueue queue;
     FloatingActionButton newRecipe;
 
+    /**
+     *
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,6 +55,9 @@ public class ListView extends AppCompatActivity implements RecyclerViewAdapter.O
         setupAdapter();
     }
 
+    /**
+     * Initial setup of recycler for recycler view
+     */
     private void setupRecycler() {
         recyclerView = findViewById(R.id.recyclerView);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
@@ -71,10 +78,19 @@ public class ListView extends AppCompatActivity implements RecyclerViewAdapter.O
         });
     }
 
+    /**
+     *
+     * @param viewType View to be initialized
+     */
     private void initializeElements(String viewType) {
         queue = Volley.newRequestQueue(this);
         newRecipe = findViewById(R.id.addRecipeButton);
         newRecipe.setOnClickListener(new View.OnClickListener() {
+
+            /**
+             *
+             * @param view
+             */
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getApplicationContext(), Settings_Page.class);
@@ -98,6 +114,9 @@ public class ListView extends AppCompatActivity implements RecyclerViewAdapter.O
         }
     }
 
+    /**
+     * If end of data set is reached in view, then more items are created and inserted into view
+     */
     private void getMoreData() {
         if (URL_TO_USE == URL_RECIPES) {
             dataset.add(null);
@@ -117,8 +136,15 @@ public class ListView extends AppCompatActivity implements RecyclerViewAdapter.O
         }
     }
 
+    /**
+     * Populates items in view with recipe data from server
+     */
     private void popData() {
         JsonArrayRequest recipeRequest = new JsonArrayRequest(Request.Method.GET, URL_TO_USE, null, new Response.Listener<JSONArray>() {
+            /**
+             *
+             * @param response
+             */
             @Override
             public void onResponse(JSONArray response) {
                 if (response != null) {
@@ -157,6 +183,10 @@ public class ListView extends AppCompatActivity implements RecyclerViewAdapter.O
                 }
             }
         }, new Response.ErrorListener() {
+            /**
+             *
+             * @param error
+             */
             @Override
             public void onErrorResponse(VolleyError error) {
 
@@ -165,12 +195,18 @@ public class ListView extends AppCompatActivity implements RecyclerViewAdapter.O
         queue.add(recipeRequest);
     }
 
-
+    /**
+     * Constructor for adapter
+     */
     private void setupAdapter() {
         recyclerViewAdapter = new RecyclerViewAdapter(dataset, this);
         recyclerView.setAdapter(recyclerViewAdapter);
     }
 
+    /**
+     *
+     * @param position Position of recipe in view
+     */
     @Override
     public void onRecipeClick(int position) {
         dataset.get(position);

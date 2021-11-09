@@ -13,6 +13,14 @@ import org.json.JSONObject;
 public class VolleyListener {
     private static String baseUrl = "http://coms-309-032.cs.iastate.edu:8080";
 
+    /**
+     *
+     * @param context Request context
+     * @param path Server url path
+     * @param requestListener
+     * @param data json object data
+     * @param method request method type
+     */
     public static void makeRequest(Context context, String path, RequestListener requestListener, JSONObject data, int method){
 
             JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(method, baseUrl + path, data,

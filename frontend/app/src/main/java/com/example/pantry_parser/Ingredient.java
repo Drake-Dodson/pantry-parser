@@ -6,6 +6,12 @@ public class Ingredient {
     private Double quantity;
     private Unit unit;
 
+    /**
+     *
+     * @param name Name of ingredient
+     * @param quantity Quantity of ingredient
+     * @param unit  Unit of ingredient
+     */
     public Ingredient(String name, Double quantity, Unit unit) {
         this.name = name;
         this.quantity = quantity;

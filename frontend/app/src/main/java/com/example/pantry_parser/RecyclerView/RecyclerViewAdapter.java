@@ -24,7 +24,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     private OnRecipeListener mOnRecipeListener;
 
     /**
-     *
+     *Recycler View Adapter Constructor
      * @param recipeList
      * @param onRecipeListener
      */
@@ -34,7 +34,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     }
 
     /**
-     *
+     *Layout inflator and viewholder setup
      * @param parent
      * @param viewType
      * @return
@@ -52,7 +52,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     }
 
     /**
-     *
+     *Populates rows on bind
      * @param viewHolder
      * @param position
      */
@@ -64,9 +64,9 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     }
 
     /**
-     *
-     * @param position
-     * @return
+     *Returns the type of row, loading or item
+     * @param position the position of the row in the list view
+     * @return the item view type of the row at position
      */
     @Override
     public int getItemViewType(int position) {
@@ -74,8 +74,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     }
 
     /**
-     *
-     * @return
+     *Gets the number of items in the list view
+     * @return the size of the list
      */
     @Override
     public int getItemCount() {
@@ -89,7 +89,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         OnRecipeListener onRecipeListener;
 
         /**
-         *
+         *Sets the information for each Recipe in list view
          * @param itemView
          * @param onRecipeListener
          */
@@ -125,9 +125,9 @@ onRecipeListener.onRecipeClick(getAbsoluteAdapterPosition());
     }
 
     /**
-     *
+     *populates the row items with recipe information
      * @param viewHolder
-     * @param position
+     * @param position the position at which the row to be filled is in the list view
      */
     private void populateItemRows(ItemViewHolder viewHolder, int position) {
         Recipe item = mItemList.get(position);

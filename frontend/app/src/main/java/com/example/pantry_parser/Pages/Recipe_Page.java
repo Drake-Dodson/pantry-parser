@@ -28,7 +28,7 @@ public class Recipe_Page extends AppCompatActivity {
 
 
     /**
-     *
+     *Initiazes the recipe elements
      * @param savedInstanceState
      */
     @Override
@@ -47,8 +47,8 @@ public class Recipe_Page extends AppCompatActivity {
             tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
 
                 /**
-                 *
-                 * @param tab
+                 *Changes displayed information
+                 * @param tab the tab to be selected, details, ingredients, or steps
                  */
                 @Override
                 public void onTabSelected(TabLayout.Tab tab) {

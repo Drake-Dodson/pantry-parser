@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"All Packages","url":"allpackages-index.html"},{"l":"com.example.pantry_parser"},{"l":"com.example.pantry_parser.Network"},{"l":"com.example.pantry_parser.Pages"},{"l":"com.example.pantry_parser.RecyclerView"},{"l":"com.example.pantry_parser.Utilities"}]

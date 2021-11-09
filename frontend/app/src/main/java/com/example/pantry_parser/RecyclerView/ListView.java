@@ -40,7 +40,7 @@ public class ListView extends AppCompatActivity implements RecyclerViewAdapter.O
     FloatingActionButton newRecipe;
 
     /**
-     *
+     *Create listview activity and instantiate elements
      * @param savedInstanceState
      */
     @Override
@@ -56,7 +56,7 @@ public class ListView extends AppCompatActivity implements RecyclerViewAdapter.O
     }
 
     /**
-     * Initial setup of recycler for recycler view
+     * Initial setup of infinite recycler for recycler view
      */
     private void setupRecycler() {
         recyclerView = findViewById(R.id.recyclerView);
@@ -79,7 +79,7 @@ public class ListView extends AppCompatActivity implements RecyclerViewAdapter.O
     }
 
     /**
-     *
+     *Inializes volley request queue and determines the dataset to fill list view with
      * @param viewType View to be initialized
      */
     private void initializeElements(String viewType) {
@@ -115,7 +115,7 @@ public class ListView extends AppCompatActivity implements RecyclerViewAdapter.O
     }
 
     /**
-     * If end of data set is reached in view, then more items are created and inserted into view
+     * Method to get more recipes once the user scrolls to the end of the current view
      */
     private void getMoreData() {
         if (URL_TO_USE == URL_RECIPES) {
@@ -137,12 +137,12 @@ public class ListView extends AppCompatActivity implements RecyclerViewAdapter.O
     }
 
     /**
-     * Populates items in view with recipe data from server
+     * Populates list view with recipes from selected database endpoint
      */
     private void popData() {
         JsonArrayRequest recipeRequest = new JsonArrayRequest(Request.Method.GET, URL_TO_USE, null, new Response.Listener<JSONArray>() {
             /**
-             *
+             *Adds recipes based on good request
              * @param response
              */
             @Override
@@ -184,7 +184,7 @@ public class ListView extends AppCompatActivity implements RecyclerViewAdapter.O
             }
         }, new Response.ErrorListener() {
             /**
-             *
+             *Does not fill recipes if no data is returned from database
              * @param error
              */
             @Override
@@ -196,7 +196,7 @@ public class ListView extends AppCompatActivity implements RecyclerViewAdapter.O
     }
 
     /**
-     * Constructor for adapter
+     * Initialize recyclerView adapter
      */
     private void setupAdapter() {
         recyclerViewAdapter = new RecyclerViewAdapter(dataset, this);
@@ -204,7 +204,7 @@ public class ListView extends AppCompatActivity implements RecyclerViewAdapter.O
     }
 
     /**
-     *
+     *Opens new recipe view on click and passes recpe object to new activity
      * @param position Position of recipe in view
      */
     @Override

@@ -19,7 +19,7 @@ public class Home_Page extends AppCompatActivity implements View.OnClickListener
 
 
     /**
-     *
+     *Initializes home page elements
      * @param savedInstanceState
      */
     @Override
@@ -53,8 +53,8 @@ public class Home_Page extends AppCompatActivity implements View.OnClickListener
     }
 
     /**
-     *
-     * @param view
+     *Method to start new activities based on button click
+     * @param view the button id
      */
     @Override
     public void onClick(View view) {

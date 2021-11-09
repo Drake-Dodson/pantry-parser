@@ -10,6 +10,9 @@ import org.springframework.lang.Nullable;
 
 import javax.persistence.*;
 
+/**
+ * a basic model for reviews
+ */
 @Entity
 @Table(name = "reviews")
 public class Review {
@@ -60,9 +63,17 @@ public class Review {
 
     public void setRecipeReviewed(Recipe recipeReviewed){ this.recipe_reviewed = recipeReviewed; }
 
+    /**
+     * returns id of the user who wrote this review
+     * @return id
+     */
     public int getUserId(){
         return reviewer.getId();
     }
 
+    /**
+     * returns the id of the recipe being reviewed
+     * @return recipe id
+     */
     public int getRecipeId() { return recipe_reviewed.getId(); }
 }

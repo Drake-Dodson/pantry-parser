@@ -11,6 +11,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * User controller, responsible for all user stuff
+ */
 @RestController
 public class UserController {
 
@@ -19,25 +22,51 @@ public class UserController {
     @Autowired
     private RecipeRepository recipeRepository;
 
+    /**
+     * this is just a test method to show us our server is up
+     */
     @GetMapping("/")
     public String welcome() {
         return "Pantry Parser Super Cool Homepage";
     }
 
+    /**
+     * gets a list of all users in the database
+     * @return list of users
+     */
     @GetMapping(path = "/users")
     public List<User> getAllUsers()
     {
         return userRepository.findAll();
     }
+
+    /**
+     * gets a user from the database by the provided id
+     * @param user_id input user id
+     * @return user
+     */
     @GetMapping(path = "/user/{user_id}")
     public User getUserById(@PathVariable int user_id)
     {
         return userRepository.findById(user_id);
     }
+
+    /**
+     * finds a user by the input email
+     * @param email input email
+     * @return user
+     * @throws Exception if the email doesn't exist in the database
+     */
     @GetMapping(path = "/user/email/{email}")
     public User getUserByEmail(@PathVariable String email) throws Exception {
         return userRepository.findByEmail(email);
     }
+
+    /**
+     * creates a new user
+     * @param users new user input data
+     * @return either success or a failure message
+     */
     @PostMapping(path = "/users")
     String createUser(@RequestBody User users){
         if (users == null)
@@ -53,6 +82,11 @@ public class UserController {
         return MessageUtil.newResponseMessage(true, "User created");
     }
 
+    /**
+     * attempts to log a user in by checking their credentials against what's in the database
+     * @param login a special model with the input email and password
+     * @return either success with the user id or a failure message
+     */
     @PostMapping(path = "/login")
     public String login(@RequestBody Login login){
         if (login == null)
@@ -69,6 +103,11 @@ public class UserController {
         }
     }
 
+    /**
+     * gets a list of recipes the provided user has created
+     * @param user_id the id of the user
+     * @return list of recipes that user created
+     */
     @GetMapping(path = "/user/{user_id}/recipes")
     public List<Recipe> allRecipes(@PathVariable int user_id){
         User u = userRepository.findById(user_id);
@@ -78,6 +117,11 @@ public class UserController {
         return u.getRecipes();
     }
 
+    /**
+     * gets a list of a certain user's favorites
+     * @param user_id the id of the user
+     * @return a list of the user's favorite recipes
+     */
     @GetMapping(path = "/user/{user_id}/favorites")
     public List<Recipe> allFavorites(@PathVariable int user_id){
         User u = userRepository.findById(user_id);
@@ -86,6 +130,13 @@ public class UserController {
         }
         return u.getFavorites();
     }
+
+    /**
+     * the route for a user to favorite a recipe
+     * @param user_id the id of the user
+     * @param recipe_id the id of the recipe
+     * @return either success or a failure message
+     */
     @PatchMapping(path = "/user/{user_id}/favorite/{recipe_id}")
     public String favorite(@PathVariable int user_id, @PathVariable int recipe_id){
         User u = userRepository.findById(user_id);
@@ -102,6 +153,12 @@ public class UserController {
         userRepository.save(u);
         return MessageUtil.newResponseMessage(true, "favorited");
     }
+    /**
+     * the route for a user to unfavorite a recipe
+     * @param user_id the id of the user
+     * @param recipe_id the id of the recipe
+     * @return either success or a failure message
+     */
     @DeleteMapping(path = "/user/{user_id}/favorite/{recipe_id}")
     public String unfavorite(@PathVariable int user_id, @PathVariable int recipe_id){
         User u = userRepository.findById(user_id);

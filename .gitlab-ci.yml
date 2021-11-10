@@ -13,6 +13,7 @@ maven-build:   #this is a JOB
   only:
     - merge_requests
     - main
+    - backend/**/*
   script:
     - cd backend/Pantry_Parser_Backend
     - mvn package -B
@@ -23,6 +24,7 @@ maven-test:
     - springboot_tag
   only:
     - merge_requests
+    - backend/**/*
     - main
   script:
     - cd backend/Pantry_Parser_Backend
@@ -37,6 +39,7 @@ maven-deploy:
     - springboot_deployment_tag
   only:
     - main
+    - backend/**/*
   script:
     - cd backend/Pantry_Parser_Backend
     - mvn package
@@ -50,6 +53,7 @@ android-build: #this is another job
   only:
     - merge_requests
     - main
+    - frontend/**/*
   tags:
     - android_tag         #this is LINK to the docker runner on the remote-server
   before_script:
@@ -68,6 +72,7 @@ android-test: #this is another job
   only:
     - merge_requests
     - main
+    - frontend/**/*
   before_script:
     - export GRADLE_USER_HOME=`pwd`/.gradle
     - chmod +x ./frontend/gradlew

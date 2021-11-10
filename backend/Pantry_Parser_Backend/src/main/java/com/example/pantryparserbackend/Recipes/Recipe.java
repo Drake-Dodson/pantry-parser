@@ -68,6 +68,7 @@ public class Recipe {
 
     @Setter
     @OneToMany(mappedBy = "recipe_reviewed")
+    @JsonIgnore
     private List<Review> recipes_reviews;
 
     @ManyToMany(mappedBy = "favorites")
@@ -112,9 +113,11 @@ public class Recipe {
 
     public Recipe(){}
 
+    @JsonIgnore
     public List<Review> getRecipeReviews () {
         return this.recipes_reviews;
     }
+
     /**
      * Gets the id of the user that created this recipe
      * @return int Creator id

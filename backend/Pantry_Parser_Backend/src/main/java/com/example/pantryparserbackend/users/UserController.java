@@ -7,6 +7,10 @@ import com.example.pantryparserbackend.Recipes.RecipeRepository;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
@@ -40,9 +44,9 @@ public class UserController {
      */
     @ApiOperation(value = "Gets all of the users in the database")
     @GetMapping(path = "/users")
-    public List<User> getAllUsers()
-    {
-        return userRepository.findAll();
+    public Page<User> getAllUsers(@RequestParam(defaultValue = "0") Integer pageNo, @RequestParam(defaultValue = "15") Integer perPage) {
+        Pageable page = PageRequest.of(pageNo, perPage, Sort.by("email"));
+        return userRepository.findAll(page);
     }
 
     /**
@@ -119,12 +123,13 @@ public class UserController {
      */
     @ApiOperation(value = "gets all recipes of a user")
     @GetMapping(path = "/user/{user_id}/recipes")
-    public List<Recipe> allRecipes(@PathVariable int user_id){
+    public Page<Recipe> allRecipes(@RequestParam(defaultValue = "0") Integer pageNo, @RequestParam(defaultValue = "15") Integer perPage, @PathVariable int user_id){
         User u = userRepository.findById(user_id);
         if(u == null){
             return null;
         }
-        return u.getRecipes();
+        Pageable page = PageRequest.of(pageNo, perPage, Sort.by("rating"));
+        return recipeRepository.getUserCreated(u, page);
     }
 
     /**
@@ -134,12 +139,13 @@ public class UserController {
      */
     @ApiOperation(value = "Gets all of the favorites of a user")
     @GetMapping(path = "/user/{user_id}/favorites")
-    public List<Recipe> allFavorites(@PathVariable int user_id){
+    public Page<Recipe> allFavorites(@RequestParam(defaultValue = "0") Integer pageNo, @RequestParam(defaultValue = "15") Integer perPage, @PathVariable int user_id){
         User u = userRepository.findById(user_id);
         if(u == null){
             return null;
         }
-        return u.getFavorites();
+        Pageable page = PageRequest.of(pageNo, perPage, Sort.by("rating"));
+        return recipeRepository.getUserFavorites(user_id, page);
     }
 
     /**

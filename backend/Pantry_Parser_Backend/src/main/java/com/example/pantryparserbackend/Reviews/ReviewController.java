@@ -9,6 +9,10 @@ import com.example.pantryparserbackend.users.UserRepository;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -33,9 +37,13 @@ public class ReviewController {
      */
     @ApiOperation(value = "Gets all of the recipes a user has created")
     @GetMapping(path = "/user/{user_id}/reviews")
-    public List<Review> getReviewsByUser(@PathVariable int user_id) {
+    public Page<Review> getReviewsByUser(@RequestParam(defaultValue = "0") Integer pageNo, @RequestParam(defaultValue = "15") Integer perPage, @PathVariable int user_id) {
         User user = userRepository.findById(user_id);
-        return user.getUserReviews();
+        if(user == null) {
+            return null;
+        }
+        Pageable page = PageRequest.of(pageNo, perPage, Sort.by("starNumber"));
+        return reviewRepository.findByUser(user, page);
     }
 
     /**
@@ -45,9 +53,13 @@ public class ReviewController {
      */
     @ApiOperation(value = "Gets all of the reviews on a recipe")
     @GetMapping(path = "/recipe/{recipe_id}/reviews")
-    public List<Review> getRecipeReviews(@PathVariable int recipe_id) {
+    public Page<Review> getRecipeReviews(@RequestParam(defaultValue = "0") Integer pageNo, @RequestParam(defaultValue = "15") Integer perPage, @PathVariable int recipe_id) {
         Recipe recipe = recipeRepository.findById(recipe_id);
-        return recipe.getRecipeReviews();
+        if(recipe == null) {
+            return null;
+        }
+        Pageable page = PageRequest.of(pageNo, perPage, Sort.by("starNumber"));
+        return reviewRepository.fingByRecipe(recipe, page);
     }
 
     /**
@@ -56,8 +68,9 @@ public class ReviewController {
      */
     @ApiOperation(value = "Gets all reviews in the database")
     @GetMapping(path = "/reviews")
-    public List<Review> getAllReviews() {
-        return reviewRepository.findAll();
+    public Page<Review> getAllReviews(@RequestParam(defaultValue = "0") Integer pageNo, @RequestParam(defaultValue = "15") Integer perPage) {
+        Pageable page = PageRequest.of(pageNo, perPage, Sort.by("starNumber"));
+        return reviewRepository.findAll(page);
     }
 
     /**

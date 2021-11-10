@@ -7,6 +7,10 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.aspectj.bridge.Message;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 import com.example.pantryparserbackend.users.UserRepository;
 import com.example.pantryparserbackend.users.User;
@@ -35,8 +39,9 @@ public class RecipeController {
      */
     @ApiOperation(value = "Get all of the recipes in the database")
     @GetMapping(path = "/recipes")
-    List<Recipe> getAllRecipes(){
-        return recipeRepository.findAll();
+    Page<Recipe> getAllRecipes(@RequestParam(defaultValue = "0") Integer pageNo, @RequestParam(defaultValue = "15") Integer perPage){
+        Pageable page = PageRequest.of(pageNo, perPage, Sort.by("rating"));
+        return recipeRepository.findAll(page);
     }
 
     /**
@@ -289,8 +294,9 @@ public class RecipeController {
      */
     @ApiOperation(value = "Gets the list of all ingredients")
     @GetMapping(path = "/ingredients")
-    List<Ingredient> showIngredients(){
-        return ingredientRepository.findAll();
+    Page<Ingredient> showIngredients(@RequestParam(defaultValue = "0") Integer pageNo, @RequestParam(defaultValue = "15") Integer perPage){
+        Pageable page = PageRequest.of(pageNo, perPage, Sort.by("name"));
+        return ingredientRepository.findAll(page);
     }
 
     /**
@@ -319,12 +325,13 @@ public class RecipeController {
      */
     @ApiOperation(value = "Gets all of the recipes that have the given ingredient")
     @GetMapping(path="/ingredient/{name}/recipes")
-    List<Recipe> ingredientRecipes(@PathVariable String name){
+    Page<Recipe> ingredientRecipes(@RequestParam(defaultValue = "0") Integer pageNo, @RequestParam(defaultValue = "15") Integer perPage, @PathVariable String name){
+        Pageable page = PageRequest.of(pageNo, perPage, Sort.by("rating"));
         Ingredient i = ingredientRepository.findByName(name);
         if(i == null){
             return null;
         }
-        return i.getRecipes();
+        return recipeRepository.getByIngredient(i.getId(), page);
     }
 
     /**
@@ -338,8 +345,9 @@ public class RecipeController {
      */
     @ApiOperation(value = "Gets a list of ingredients and searches recipes based on that list")
     @PutMapping(path = "/pantry-parser")
-    List<Recipe> recipesByIngrents(@RequestBody List<String> input){
-        return recipeRepository.getByIngredients(input);
+    Page<Recipe> recipesByIngrents(@RequestParam(defaultValue = "0") Integer pageNo, @RequestParam(defaultValue = "15") Integer perPage, @RequestBody List<String> input){
+        Pageable page = PageRequest.of(pageNo, perPage, Sort.by("rating"));
+        return recipeRepository.getByIngredients(input, page);
     }
 
     //adding and removing ingredients

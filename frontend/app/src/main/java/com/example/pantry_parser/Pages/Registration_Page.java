@@ -1,13 +1,13 @@
 package com.example.pantry_parser.Pages;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -17,7 +17,6 @@ import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.pantry_parser.R;
-import com.example.pantry_parser.IView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -31,6 +30,10 @@ public class Registration_Page extends AppCompatActivity implements View.OnClick
     private static final String URL_REGIST = "http://coms-309-032.cs.iastate.edu:8080/user";
     private RequestQueue Queue;
 
+    /**
+     *
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,6 +55,10 @@ public class Registration_Page extends AppCompatActivity implements View.OnClick
         alreadyRegButton.setOnClickListener(this);
     }
 
+    /**
+     *
+     * @param view
+     */
     @Override
     public void onClick(View view) {
         Intent intentAlreadyReg = new Intent(getApplicationContext(), Login_Page.class);
@@ -65,6 +72,9 @@ public class Registration_Page extends AppCompatActivity implements View.OnClick
         }
     }
 
+    /**
+     * Creates a new user from inputted username, email, password, and confirms passwords match.
+     */
     private void Register() {
         final String user_Name = userName.getText().toString().trim();
         final String user_Email = userEmail.getText().toString().trim();
@@ -83,6 +93,10 @@ public class Registration_Page extends AppCompatActivity implements View.OnClick
         final String requestBody = params.toString();
 
         StringRequest stringRequest = new StringRequest(Request.Method.POST, URL_REGIST, new Response.Listener<String>() {
+            /**
+             *
+             * @param response
+             */
             @Override
             public void onResponse(String response) {
                 try{
@@ -105,6 +119,10 @@ public class Registration_Page extends AppCompatActivity implements View.OnClick
             }
         },
                 new Response.ErrorListener() {
+                    /**
+                     *
+                     * @param error
+                     */
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         Toast.makeText(Registration_Page.this,

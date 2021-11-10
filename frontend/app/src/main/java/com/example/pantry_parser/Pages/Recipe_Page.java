@@ -1,24 +1,16 @@
 package com.example.pantry_parser.Pages;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentPagerAdapter;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.viewpager.widget.ViewPager;
-
 import android.graphics.Point;
 import android.os.Bundle;
 import android.view.Display;
-import android.view.View;
 import android.widget.HorizontalScrollView;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
-import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.Volley;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.viewpager.widget.ViewPager;
+
 import com.example.pantry_parser.R;
 import com.example.pantry_parser.Recipe;
-import com.example.pantry_parser.RecyclerView.RecyclerViewAdapter;
-import com.example.pantry_parser.VPAdapter;
 import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;
@@ -35,69 +27,57 @@ public class Recipe_Page extends AppCompatActivity {
         private HorizontalScrollView scrollView;
 
 
-
-
-
-        @Override
+    /**
+     *Initiazes the recipe elements
+     * @param savedInstanceState
+     */
+    @Override
         protected void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             setContentView(R.layout.activity_view_recipe);
             Recipe recipe = (Recipe) getIntent().getSerializableExtra("Recipe");
 
-            TextView NameRecipe = findViewById(R.id.RecipeName);
-            NameRecipe.setText(recipe.getRecipeName());
-            TextView AuthorRecipe = findViewById(R.id.RecipeAuthor);
-            AuthorRecipe.setText(recipe.getAuthor());
-
-
-            //Setting Recipe Params
-            recipe = (Recipe) getIntent().getSerializableExtra("Recipe");
-
             NameRecipe = findViewById(R.id.RecipeName);
             NameRecipe.setText(recipe.getRecipeName());
-
             AuthorRecipe = findViewById(R.id.RecipeAuthor);
             AuthorRecipe.setText(recipe.getAuthor());
-            //Setting Recipe Params
 
             scrollView = findViewById(R.id.RecipeScrollView);
             tabLayout = findViewById(R.id.tablayout);
             tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+
+                /**
+                 *Changes displayed information
+                 * @param tab the tab to be selected, details, ingredients, or steps
+                 */
                 @Override
                 public void onTabSelected(TabLayout.Tab tab) {
                     switch (tab.getPosition()){
                         case (0):
-                            scrollView.post(new Runnable() {
-                                @Override
-                                public void run() {
-                                    scrollView.setScrollX(0);
-                                }
-                            });
+                            scrollView.post(() -> scrollView.setScrollX(0));
                             break;
                         case (1):
-                            scrollView.post(new Runnable() {
-                                @Override
-                                public void run() {
-                                    scrollView.setScrollX(1440);
-                                }
-                            });
+                            scrollView.post(() -> scrollView.setScrollX(1440));
                             break;
                         case (2):
-                            scrollView.post(new Runnable() {
-                                @Override
-                                public void run() {
-                                    scrollView.setScrollX(1440*2);
-                                }
-                            });
+                            scrollView.post(() -> scrollView.setScrollX(1440*2));
                             break;
                     }
                 }
 
+                /**
+                 *
+                 * @param tab
+                 */
                 @Override
                 public void onTabUnselected(TabLayout.Tab tab) {
 
                 }
 
+                /**
+                 *
+                 * @param tab
+                 */
                 @Override
                 public void onTabReselected(TabLayout.Tab tab) {
 
@@ -122,9 +102,9 @@ public class Recipe_Page extends AppCompatActivity {
 
             ArrayList<String> stepsList = recipe.getSteps();
             if(stepsList != null) {
-                String stepsConc = null;
+                String stepsConc = "";
                 for (int s = 0; s < stepsList.size(); s++) {
-                    stepsConc = stepsConc + s + ") " + stepsList.get(s) + "\r\n";
+                    stepsConc = stepsConc + (s+1) + ") " + stepsList.get(s) + "\r\n";
                 }
                 steps.setText(stepsConc);
             }
@@ -133,7 +113,8 @@ public class Recipe_Page extends AppCompatActivity {
             if(ingredientsList != null) {
                 String ingConc = "";
                 for (int j = 0; j < ingredientsList.size(); j++) {
-                    ingConc = ingConc + (j+1) + ") " + ingredientsList.get(j) + "\r\n";
+                    String ing = ingredientsList.get(j);
+                    ingConc = ingConc + "- " + ing.substring(0,1).toUpperCase() + ing.substring(1) + "\r\n";
                 }
                 ingredients.setText(ingConc);
             }

@@ -1,14 +1,14 @@
 package com.example.pantry_parser.RecyclerView;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -16,10 +16,10 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.pantry_parser.Pages.Recipe_Page;
 import com.example.pantry_parser.Pages.Settings_Page;
 import com.example.pantry_parser.R;
 import com.example.pantry_parser.Recipe;
-import com.example.pantry_parser.Pages.Recipe_Page;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import org.json.JSONArray;
@@ -34,11 +34,15 @@ public class ListView extends AppCompatActivity implements RecyclerViewAdapter.O
     boolean isLoading = false;
     private static final String URL_RECIPES = "http://coms-309-032.cs.iastate.edu:8080/recipes/";
     private static final String URL_USER = "http://coms-309-032.cs.iastate.edu:8080/user/1/recipes/";
-    private static final String URL_FAV = "http://coms-309-032.cs.iastate.edu:8080/user/13/favorites/";
+    private static final String URL_FAV = "http://coms-309-032.cs.iastate.edu:8080/user/1/favorites/";
     String URL_TO_USE;
     private RequestQueue queue;
     FloatingActionButton newRecipe;
 
+    /**
+     *Create listview activity and instantiate elements
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,6 +55,9 @@ public class ListView extends AppCompatActivity implements RecyclerViewAdapter.O
         setupAdapter();
     }
 
+    /**
+     * Initial setup of infinite recycler for recycler view
+     */
     private void setupRecycler() {
         recyclerView = findViewById(R.id.recyclerView);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
@@ -71,10 +78,19 @@ public class ListView extends AppCompatActivity implements RecyclerViewAdapter.O
         });
     }
 
+    /**
+     *Inializes volley request queue and determines the dataset to fill list view with
+     * @param viewType View to be initialized
+     */
     private void initializeElements(String viewType) {
         queue = Volley.newRequestQueue(this);
         newRecipe = findViewById(R.id.addRecipeButton);
         newRecipe.setOnClickListener(new View.OnClickListener() {
+
+            /**
+             *
+             * @param view
+             */
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getApplicationContext(), Settings_Page.class);
@@ -98,6 +114,9 @@ public class ListView extends AppCompatActivity implements RecyclerViewAdapter.O
         }
     }
 
+    /**
+     * Method to get more recipes once the user scrolls to the end of the current view
+     */
     private void getMoreData() {
         if (URL_TO_USE == URL_RECIPES) {
             dataset.add(null);
@@ -117,8 +136,15 @@ public class ListView extends AppCompatActivity implements RecyclerViewAdapter.O
         }
     }
 
+    /**
+     * Populates list view with recipes from selected database endpoint
+     */
     private void popData() {
         JsonArrayRequest recipeRequest = new JsonArrayRequest(Request.Method.GET, URL_TO_USE, null, new Response.Listener<JSONArray>() {
+            /**
+             *Adds recipes based on good request
+             * @param response
+             */
             @Override
             public void onResponse(JSONArray response) {
                 if (response != null) {
@@ -139,12 +165,12 @@ public class ListView extends AppCompatActivity implements RecyclerViewAdapter.O
                             }
                             recipe.setIngredients(ingredients);
 
-//                            ArrayList<String> steps = new ArrayList<>();
-//                            JSONArray jsonSteps = response.getJSONObject(i).getJSONArray("steps");
-//                            for (int j = 0; j< jsonSteps.length();j++){
-//                                ingredients.add(jsonSteps.getJSONObject(j).getString("name"));
-//                            }
-//                            recipe.setSteps(steps);
+                            ArrayList<String> steps = new ArrayList<>();
+                            JSONArray jsonSteps = response.getJSONObject(i).getJSONArray("steps");
+                            for (int j = 0; j< jsonSteps.length();j++){
+                                steps.add(jsonSteps.getJSONObject(j).getString("name"));
+                            }
+                            recipe.setSteps(steps);
 
                             dataset.add(recipe);
                             recyclerViewAdapter.notifyDataSetChanged();
@@ -157,6 +183,10 @@ public class ListView extends AppCompatActivity implements RecyclerViewAdapter.O
                 }
             }
         }, new Response.ErrorListener() {
+            /**
+             *Does not fill recipes if no data is returned from database
+             * @param error
+             */
             @Override
             public void onErrorResponse(VolleyError error) {
 
@@ -165,12 +195,18 @@ public class ListView extends AppCompatActivity implements RecyclerViewAdapter.O
         queue.add(recipeRequest);
     }
 
-
+    /**
+     * Initialize recyclerView adapter
+     */
     private void setupAdapter() {
         recyclerViewAdapter = new RecyclerViewAdapter(dataset, this);
         recyclerView.setAdapter(recyclerViewAdapter);
     }
 
+    /**
+     *Opens new recipe view on click and passes recpe object to new activity
+     * @param position Position of recipe in view
+     */
     @Override
     public void onRecipeClick(int position) {
         dataset.get(position);

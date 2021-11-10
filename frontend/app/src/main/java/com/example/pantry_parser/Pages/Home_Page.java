@@ -1,7 +1,5 @@
 package com.example.pantry_parser.Pages;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Bundle;
@@ -12,13 +10,18 @@ import android.view.animation.RotateAnimation;
 import android.widget.Button;
 import android.widget.ImageView;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.example.pantry_parser.R;
 import com.example.pantry_parser.RecyclerView.ListView;
 
 public class Home_Page extends AppCompatActivity implements View.OnClickListener{
 
 
-
+    /**
+     *Initializes home page elements
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,6 +52,10 @@ public class Home_Page extends AppCompatActivity implements View.OnClickListener
 
     }
 
+    /**
+     *Method to start new activities based on button click
+     * @param view the button id
+     */
     @Override
     public void onClick(View view) {
         switch (view.getId()){

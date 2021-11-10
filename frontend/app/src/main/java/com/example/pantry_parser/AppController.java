@@ -17,16 +17,31 @@ public class AppController extends Application {
     private static RequestQueue requestQueue;
     private final Context context;
 
+    /**
+     *
+     * @param context
+     */
     private AppController(Context context){
         this.context = context;
         this.requestQueue = getRequestQueue();
     }
+
+    /**
+     *
+     * @param context
+     * @return
+     */
     public static synchronized AppController getInstance(Context context){
         if(mInstance == null){
             mInstance = new AppController(context);
         }
         return mInstance;
     }
+
+    /**
+     *
+     * @return Returns the request queue
+     */
     public RequestQueue getRequestQueue() {
         if (this.requestQueue == null) {
             return Volley.newRequestQueue(this.context);
@@ -34,6 +49,11 @@ public class AppController extends Application {
         return requestQueue;
     }
 
+    /**
+     *
+     * @param request Request object
+     * @param <Obj> Tag
+     */
     public <Obj> void addToRequestQueue(Request<Obj> request){
         getRequestQueue().add(request);
     }

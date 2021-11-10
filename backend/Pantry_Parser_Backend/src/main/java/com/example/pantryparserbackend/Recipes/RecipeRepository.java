@@ -11,10 +11,17 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * basic repository for recipes
+ */
 public interface RecipeRepository extends PagingAndSortingRepository<Recipe, Long> {
-
     Recipe findById(int id);
 
+    /**
+     * Does the pantry-parser functionality
+     * @param ingredients array of strings
+     * @return list of recipes matching ingredients
+     */
     @Query(value = "SELECT DISTINCT r.* FROM recipes r " +
             "JOIN recipe_ingredient ri ON r.id = ri.recipe_id " +
             "JOIN (SELECT * FROM ingredients " +
@@ -25,16 +32,34 @@ public interface RecipeRepository extends PagingAndSortingRepository<Recipe, Lon
             nativeQuery  = true)
     Page<Recipe> getByIngredients(List<String> ingredients, Pageable pageable);
 
+    /**
+     * Finds a specific user's favorite recipes
+     * @param user_id id of the user
+     * @param pageable paginator settings
+     * @return the user's favorites
+     */
     @Query(value = "SELECT r.* FROM recipes r " +
             "JOIN favorites f ON f.recipe_id = r.id " +
             "WHERE f.user_id = :user_id ",
         nativeQuery = true)
     Page<Recipe> getUserFavorites(Integer user_id, Pageable pageable);
 
+    /**
+     * Gets the recipes a user has created
+     * @param user the user whose recipes we are looking at
+     * @param pageable paginator settings
+     * @return list of recipes
+     */
     @Query(value = "SELECT r FROM Recipe r WHERE " +
             "r.creator = ?1")
     Page<Recipe> getUserCreated(User user, Pageable pageable);
 
+    /**
+     * Finds a list of recipes attached to a specific ingredient
+     * @param ingredient_id the id of the ingredient
+     * @param pageable paginator settings
+     * @return list of recipes containing the provided ingredient
+     */
     @Query(value = "SELECT r.* FROM recipes r " +
             "JOIN recipe_ingredient ri ON ri.recipe_id = r.id " +
             "WHERE ri.ingredient_id = :ingredient_id ",

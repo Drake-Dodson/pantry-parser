@@ -6,6 +6,8 @@ import com.example.pantryparserbackend.Recipes.Recipe;
 import com.example.pantryparserbackend.Recipes.RecipeRepository;
 import com.example.pantryparserbackend.users.User;
 import com.example.pantryparserbackend.users.UserRepository;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Api(value = "Review Controller", description = "Contains all of the calls for writing reviews")
 @RestController
 public class ReviewController {
 
@@ -27,6 +30,12 @@ public class ReviewController {
     @Autowired
     ReviewRepository reviewRepository;
 
+    /**
+     * returns all the reviews the provided user has written
+     * @param user_id id of the user
+     * @return list of reviews
+     */
+    @ApiOperation(value = "Gets all of the recipes a user has created")
     @GetMapping(path = "/user/{user_id}/reviews")
     public Page<Review> getReviewsByUser(@RequestParam(defaultValue = "0") Integer pageNo, @RequestParam(defaultValue = "15") Integer perPage, @PathVariable int user_id) {
         User user = userRepository.findById(user_id);
@@ -37,6 +46,12 @@ public class ReviewController {
         return reviewRepository.findByUser(user, page);
     }
 
+    /**
+     * returns all the reviews the provided recipe has received
+     * @param recipe_id the id of the recipe
+     * @return list of reviews
+     */
+    @ApiOperation(value = "Gets all of the reviews on a recipe")
     @GetMapping(path = "/recipe/{recipe_id}/reviews")
     public Page<Review> getRecipeReviews(@RequestParam(defaultValue = "0") Integer pageNo, @RequestParam(defaultValue = "15") Integer perPage, @PathVariable int recipe_id) {
         Recipe recipe = recipeRepository.findById(recipe_id);
@@ -47,12 +62,25 @@ public class ReviewController {
         return reviewRepository.fingByRecipe(recipe, page);
     }
 
+    /**
+     * gets all reviews in the database
+     * @return list of reviews
+     */
+    @ApiOperation(value = "Gets all reviews in the database")
     @GetMapping(path = "/reviews")
     public Page<Review> getAllReviews(@RequestParam(defaultValue = "0") Integer pageNo, @RequestParam(defaultValue = "15") Integer perPage) {
         Pageable page = PageRequest.of(pageNo, perPage, Sort.by("starNumber"));
         return reviewRepository.findAll(page);
     }
 
+    /**
+     * writes a review as the provided user on the provided recipe
+     * @param user_id id of user
+     * @param recipe_id id of recipe
+     * @param review review contents
+     * @return either success or a failure message
+     */
+    @ApiOperation(value = "Creates a review object by a given user on a recipe")
     @PostMapping(path = "/user/{user_id}/recipe/{recipe_id}/review")
     public String writeReview(@PathVariable int user_id, @PathVariable int recipe_id, @RequestBody Review review)
     {
@@ -101,6 +129,13 @@ public class ReviewController {
         return MessageUtil.newResponseMessage(true, "Review created");
     }
 
+    /**
+     * updates the values of a review
+     * @param review_id id of review
+     * @param reviewChanges new values for review
+     * @return either success or a failure message
+     */
+    @ApiOperation(value = "Updates a given review")
     @PatchMapping(path = "/review/{review_id}")
     public String updateReview(@PathVariable int review_id, @RequestBody Review reviewChanges)
     {
@@ -113,7 +148,6 @@ public class ReviewController {
         int oldRating = review.getStarNumber();
         Recipe recipeStore = review.getRecipe_reviewed();
 
-        // This might be redundant. I'm not sure
         review.setStarNumber(reviewChanges.getStarNumber());
         review.setTitle(reviewChanges.getTitle());
         review.setReviewBody(reviewChanges.getReviewBody());
@@ -134,6 +168,12 @@ public class ReviewController {
         return MessageUtil.newResponseMessage(true, "Review updated");
     }
 
+    /**
+     * deletes a review
+     * @param review_id id of review to delete
+     * @return either success or a failure message
+     */
+    @ApiOperation(value = "Deletes a given review")
     @DeleteMapping(path = "/review/{review_id}")
     public String deleteReview(@PathVariable int review_id)
     {

@@ -294,9 +294,9 @@ public class RecipeController {
      */
     @ApiOperation(value = "Gets the list of all ingredients")
     @GetMapping(path = "/ingredients")
-    Page<Ingredient> showIngredients(@RequestParam(defaultValue = "0") Integer pageNo, @RequestParam(defaultValue = "15") Integer perPage){
+    Page<Ingredient> showIngredients(@RequestParam(defaultValue = "0") Integer pageNo, @RequestParam(defaultValue = "15") Integer perPage, @RequestParam(defaultValue = "") String query){
         Pageable page = PageRequest.of(pageNo, perPage, Sort.by("name"));
-        return ingredientRepository.findAll(page);
+        return query.equals("") ? ingredientRepository.findAll(page) : ingredientRepository.findAllSearch(query, page);
     }
 
     /**

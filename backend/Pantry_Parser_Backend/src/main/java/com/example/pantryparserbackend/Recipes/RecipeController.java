@@ -1,6 +1,7 @@
 package com.example.pantryparserbackend.Recipes;
 
 import java.util.List;
+import java.util.Objects;
 
 import com.example.pantryparserbackend.Util.MessageUtil;
 import io.swagger.annotations.Api;
@@ -39,9 +40,9 @@ public class RecipeController {
      */
     @ApiOperation(value = "Get all of the recipes in the database")
     @GetMapping(path = "/recipes")
-    Page<Recipe> getAllRecipes(@RequestParam(defaultValue = "0") Integer pageNo, @RequestParam(defaultValue = "15") Integer perPage){
+    Page<Recipe> getAllRecipes(@RequestParam(defaultValue = "0") Integer pageNo, @RequestParam(defaultValue = "15") Integer perPage, @RequestParam(defaultValue = "") String query){
         Pageable page = PageRequest.of(pageNo, perPage, Sort.by("rating"));
-        return recipeRepository.findAll(page);
+        return Objects.equals(query, "") ? recipeRepository.findAll(page) : recipeRepository.getAllBy(query, page);
     }
 
     /**

@@ -123,13 +123,13 @@ public class UserController {
      */
     @ApiOperation(value = "gets all recipes of a user")
     @GetMapping(path = "/user/{user_id}/recipes")
-    public Page<Recipe> allRecipes(@RequestParam(defaultValue = "0") Integer pageNo, @RequestParam(defaultValue = "15") Integer perPage, @PathVariable int user_id){
+    public Page<Recipe> allRecipes(@RequestParam(defaultValue = "0") Integer pageNo, @RequestParam(defaultValue = "15") Integer perPage, @RequestParam(defaultValue = "") String query, @PathVariable int user_id){
         User u = userRepository.findById(user_id);
         if(u == null){
             return null;
         }
         Pageable page = PageRequest.of(pageNo, perPage, Sort.by("rating"));
-        return recipeRepository.getUserCreated(u, page);
+        return query.equals("") ? recipeRepository.getUserCreated(u, page) : recipeRepository.getUserCreatedSearch(u, query, page);
     }
 
     /**
@@ -139,13 +139,13 @@ public class UserController {
      */
     @ApiOperation(value = "Gets all of the favorites of a user")
     @GetMapping(path = "/user/{user_id}/favorites")
-    public Page<Recipe> allFavorites(@RequestParam(defaultValue = "0") Integer pageNo, @RequestParam(defaultValue = "15") Integer perPage, @PathVariable int user_id){
+    public Page<Recipe> allFavorites(@RequestParam(defaultValue = "0") Integer pageNo, @RequestParam(defaultValue = "15") Integer perPage, @RequestParam(defaultValue = "") String query, @PathVariable int user_id){
         User u = userRepository.findById(user_id);
         if(u == null){
             return null;
         }
         Pageable page = PageRequest.of(pageNo, perPage, Sort.by("rating"));
-        return recipeRepository.getUserFavorites(user_id, page);
+        return query.equals("") ? recipeRepository.getUserFavorites(user_id, page) : recipeRepository.getUserFavoritesSearch(user_id, query, page);
     }
 
     /**

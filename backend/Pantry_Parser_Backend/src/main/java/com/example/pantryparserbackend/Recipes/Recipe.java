@@ -23,71 +23,70 @@ public class Recipe {
 
     @Id
     @Getter
+    @Column(nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     @Getter
     @Setter
-    @NotNull
+    @Column(nullable = false)
     private String name;
     @Getter
     @Setter
-    @NotNull
+    @Column(nullable = false)
     private int time;
     @Getter
     @Setter
-    @NotNull
+    @Column(nullable = false)
     private String summary;
     @Getter
     @Setter
-    @NotNull
+    @Column(nullable = false, columnDefinition = "text")
     private String description;
-
+    
     // Used for recipe score
     private int numberOfReviews;
     private int totalStars;
     private int currentPos;
 
-    @Temporal(TemporalType.TIMESTAMP)
     @Getter
-    @NotNull
+    @Column(nullable = false)
+    @Temporal(TemporalType.TIMESTAMP)
     private Date created_date;
-    @Nullable
     @Getter
     private double rating;
     @Getter
     @Setter
     private int num_ingredients;
 
-    @ManyToOne
-    @JoinColumn(name = "creator_id")
-    @JsonIgnore
     @Getter
     @Setter
-    @Nullable
+    @ManyToOne
+    @JsonIgnore
+    @JoinColumn(name = "creator_id")
     private User creator;
 
     @Setter
-    @OneToMany(mappedBy = "recipe_reviewed")
     @JsonIgnore
+    @OneToMany(mappedBy = "recipe_reviewed")
     private List<Review> recipes_reviews;
 
-    @ManyToMany(mappedBy = "favorites")
     @JsonIgnore
+    @ManyToMany(mappedBy = "favorites")
     private List<User> favoritedBy;
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @Getter
     @JoinTable(
             name = "recipe_ingredient",
             joinColumns = @JoinColumn(name = "recipe_id"),
             inverseJoinColumns = @JoinColumn(name = "ingredient_id"),
             uniqueConstraints = @UniqueConstraint(columnNames = {"recipe_id", "ingredient_id"})
     )
-    @Getter
+    @ManyToMany(fetch = FetchType.LAZY)
     private List<Ingredient> ingredients;
 
-    @OneToMany(mappedBy = "recipe")
-    @OrderBy("num")
     @Getter
+    @OrderBy("num")
+    @OneToMany(mappedBy = "recipe")
     private List<Step> steps;
 
     /**

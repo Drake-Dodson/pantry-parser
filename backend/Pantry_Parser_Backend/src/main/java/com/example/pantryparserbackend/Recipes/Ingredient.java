@@ -1,6 +1,7 @@
 package com.example.pantryparserbackend.Recipes;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.sun.istack.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -15,18 +16,19 @@ import java.util.Set;
 @Table(name = "ingredients")
 public class Ingredient {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Getter
+    @Column(nullable = false, unique = true)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(unique = true)
     @Getter
     @Setter
+    @Column(nullable = false, unique = true)
     private String name;
 
-    @ManyToMany(mappedBy = "ingredients")
-    @JsonIgnore
     @Getter
+    @JsonIgnore
+    @ManyToMany(mappedBy = "ingredients")
     private List<Recipe> recipes;
 
     /**

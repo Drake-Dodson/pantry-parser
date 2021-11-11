@@ -1,6 +1,7 @@
 package com.example.pantryparserbackend.Recipes;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.sun.istack.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,22 +14,26 @@ import javax.persistence.*;
 @Table(name = "steps")
 public class Step {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Getter
+    @Column(nullable = false, unique = true)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     @Getter
     @Setter
+    @NotNull
+    @Column(nullable = false)
     private String name;
     @Getter
     @Setter
+    @Column(nullable = false)
     private int num;
 
-    @ManyToOne
-    @JoinColumn(name = "recipe_id")
-    @JsonIgnore
     @Getter
     @Setter
+    @ManyToOne
+    @JsonIgnore
+    @JoinColumn(name = "recipe_id", nullable = false)
     private Recipe recipe;
 
     /**

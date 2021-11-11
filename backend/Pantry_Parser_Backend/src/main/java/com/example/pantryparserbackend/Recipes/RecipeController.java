@@ -73,8 +73,12 @@ public class RecipeController {
         }
         recipe.setCreator(u);
         u.addRecipe(recipe);
-        recipeRepository.save(recipe);
-        userRepository.save(u);
+        try {
+            recipeRepository.save(recipe);
+            userRepository.save(u);
+        } catch (Exception ex) {
+            return MessageUtil.newResponseMessage(false, "you did not fill out all required fields");
+        }
         return MessageUtil.newResponseMessage(true, "successfully created recipe");
     }
 
@@ -242,8 +246,13 @@ public class RecipeController {
         step.setNum(recipe.getSteps().size() + 1);
         recipe.addStep(step);
         step.setRecipe(recipe);
-        recipeRepository.save(recipe);
-        stepRepository.save(step);
+        try {
+            recipeRepository.save(recipe);
+            stepRepository.save(step);
+        } catch (Exception ex) {
+            return MessageUtil.newResponseMessage(false, "you did not fill out all required fields");
+        }
+
         return MessageUtil.newResponseMessage(true, "successfully created");
     }
 
@@ -314,7 +323,11 @@ public class RecipeController {
         if(ingredientRepository.findByName(request.getName()) != null){
             return MessageUtil.newResponseMessage(false, "ingredient already exists");
         }
-        ingredientRepository.save(request);
+        try {
+            ingredientRepository.save(request);
+        } catch (Exception ex) {
+            return MessageUtil.newResponseMessage(false, "you did not fill out all required fields");
+        }
         return MessageUtil.newResponseMessage(true, "successfully created");
     }
 

@@ -88,7 +88,9 @@ public class UserController {
             userRepository.save(users);
         }
         catch(Exception ex) {
-            return MessageUtil.newResponseMessage(false, "Email already used");
+            if(userRepository.findByEmail(users.getEmail()) != null)
+                return MessageUtil.newResponseMessage(false, "Email already used");
+            return MessageUtil.newResponseMessage(false, "some fields were left empty");
         }
 
         return MessageUtil.newResponseMessage(true, "User created");

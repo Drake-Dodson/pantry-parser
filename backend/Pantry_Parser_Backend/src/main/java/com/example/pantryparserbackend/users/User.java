@@ -5,6 +5,7 @@ import com.example.pantryparserbackend.Reviews.Review;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sun.istack.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -27,38 +28,41 @@ import java.util.Set;
 public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Getter
+    @Column(nullable = false, unique = true)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     @Getter
     @Setter
+    @Column(nullable = false)
     private String displayName;
 
-    @Column(unique = true)
     @Getter
     @Setter
+    @Column(nullable = false, unique = true)
     private String email;
 
+    @Column(nullable = false)
     private String password;
 
     @Getter
     @Setter
     private String role;
 
-    @OneToMany(mappedBy = "creator")
     @JsonIgnore
+    @OneToMany(mappedBy = "creator")
     private List<Recipe> created_recipes;
 
     @Getter
-    @ManyToMany(fetch = FetchType.LAZY)
+    @JsonIgnore
     @JoinTable(
             name = "favorites",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "recipe_id"),
             uniqueConstraints = @UniqueConstraint(columnNames = {"recipe_id", "user_id"})
     )
-    @JsonIgnore
+    @ManyToMany(fetch = FetchType.LAZY)
     private List<Recipe> favorites;
 
     @Getter

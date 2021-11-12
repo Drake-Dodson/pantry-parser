@@ -6,7 +6,6 @@ import com.example.pantryparserbackend.users.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.lang.Nullable;
 
 import javax.persistence.*;
 
@@ -18,8 +17,9 @@ import javax.persistence.*;
 public class Review {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Getter
+    @Column(nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     @Getter
@@ -32,17 +32,19 @@ public class Review {
 
     @Getter
     @Setter
+    @Column(nullable = false)
     private int starNumber;
 
+    @Getter
     @ManyToOne
-    @JoinColumn(name = "user_id")
     @JsonIgnore
+    @JoinColumn(name = "user_id", nullable = false)
     private User reviewer;
 
     @Getter
     @ManyToOne
-    @JoinColumn(name = "recipe_id")
     @JsonIgnore
+    @JoinColumn(name = "recipe_id", nullable = false)
     private Recipe recipe_reviewed;
 
     public Review(int starNumber, String title, String reviewBody, User reviewer, Recipe recipe_reviewed) {

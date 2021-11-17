@@ -2,14 +2,12 @@ package com.example.pantryparserbackend.Recipes;
 
 import javax.persistence.*;
 
+import com.example.pantryparserbackend.Ingredients.Ingredient;
 import com.example.pantryparserbackend.Reviews.Review;
 import com.example.pantryparserbackend.users.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.sun.istack.NotNull;
 import lombok.Getter;
-import org.springframework.core.annotation.Order;
 import lombok.Setter;
-import org.springframework.lang.Nullable;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -111,6 +109,7 @@ public class Recipe {
         this.numberOfReviews = 0;
         this.totalStars = 0;
         this.currentPos = 0;
+        this.num_ingredients = 0;
     }
 
     public Recipe(){}

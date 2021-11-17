@@ -59,14 +59,15 @@ public class RecipeController {
     /**
      * creates a new recipe as the provided user
      * @param user_id the id of the user who is creating the new recipe
-     * @param recipe the input values for the recipe
+     * @param recipeRequest the input values for the recipe
      * @return either success or a failure message
      */
     @ApiOperation(value = "Create a new recipe with the given user ")
     @PostMapping(path = "/user/{user_id}/recipes")
-    String createRecipe(@PathVariable int user_id, @RequestBody Recipe recipe){
-        if(recipe == null)
+    String createRecipe(@PathVariable int user_id, @RequestBody RecipeRequest recipeRequest){
+        if(recipeRequest == null)
             return MessageUtil.newResponseMessage(false, "invalid input");
+        Recipe recipe = new Recipe(recipeRequest.name, recipeRequest.time, recipeRequest.summary, recipeRequest.description);
         recipe.setCreatedDate();
         User u = userRepository.findById(user_id);
         if(u == null){
@@ -80,24 +81,79 @@ public class RecipeController {
         } catch (Exception ex) {
             return MessageUtil.newResponseMessage(false, "you did not fill out all required fields");
         }
-        return MessageUtil.newResponseMessage(true, "successfully created recipe");
+        int i = 1;
+        for (String s : recipeRequest.steps) {
+            this.createStep(recipe.getId(), new Step(s, i, recipe));
+            i++;
+        }
+
+        boolean all = true;
+        for (String s : recipeRequest.ingredients) {
+            if(ingredientRepository.findByName(s) == null) {
+                all = false;
+            }
+            this.addIngredient(recipe.getId(), s);
+        }
+        return MessageUtil.newResponseMessage(true, all ? "successfully created recipe" : "recipe was created, however some ingredients didn't exist and were not added");
     }
 
     /**
      * updates the values of a recipe
      * @param recipe_id the id of the recipe we are looking to update
-     * @param request the new set of values
-     * @return the new recipe
+     * @param recipeRequest the new set of values
+     * @return success or failure message
      */
     @ApiOperation(value = "Updates the recipe of the given id")
     @PatchMapping(path = "/recipe/{recipe_id}")
-    Recipe updateRecipe(@PathVariable int recipe_id, @RequestBody Recipe request){
+    String updateRecipe(@PathVariable int recipe_id, @RequestBody RecipeRequest recipeRequest){
         Recipe recipe = recipeRepository.findById(recipe_id);
         if(recipe == null)
             return null;
-        recipe.update(request);
-        recipeRepository.save(recipe);
-        return recipeRepository.findById(recipe_id);
+        recipe.update(recipeRequest);
+        try {
+            recipeRepository.save(recipe);
+        } catch (Exception ex) {
+            return MessageUtil.newResponseMessage(false, "There was an error saving to the database");
+        }
+
+        //request -> recipe (handles updates and additions)
+        int i = 1;
+        for (String s : recipeRequest.steps) {
+            //a new step was added
+            if (recipe.getSteps().size() <= i) {
+                this.createStep(recipe.getId(), new Step(s, i, recipe));
+            } else if (!s.equals(recipe.getStepByOrder(i).getName())) {
+                recipe.getStepByOrder(i).setName(s);
+                stepRepository.save(recipe.getStepByOrder(i));
+            }
+            i++;
+        }
+
+        boolean all = true;
+        i = 0;
+        for (String s : recipeRequest.ingredients) {
+            Ingredient ingredient = ingredientRepository.findByName(s);
+            if(ingredient == null) {
+                all = false;
+            } else if (!recipe.getIngredients().contains(ingredient)) {
+                this.addIngredient(recipe.getId(), ingredient.getName());
+            }
+        }
+
+        //step deletion
+        if(recipe.getSteps().size() > recipeRequest.steps.size()) {
+            for (i = recipeRequest.steps.size(); i < recipe.getSteps().size(); i++) {
+                this.deleteOrderedStep(recipe.getId(), i);
+            }
+        }
+
+        //removes extra ingredients
+        for (Ingredient s : recipe.getIngredients()) {
+            if(!recipeRequest.ingredients.contains(s.getName())){
+                this.removeIngredient(recipe.getId(), s.getName());
+            }
+        }
+        return MessageUtil.newResponseMessage(true, all ? "successfully updated recipe" : "recipe was updated, however some ingredients didn't exist and were not added");
     }
 
     /**

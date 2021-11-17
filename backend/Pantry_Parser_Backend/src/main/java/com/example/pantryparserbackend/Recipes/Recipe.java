@@ -11,6 +11,7 @@ import org.springframework.core.annotation.Order;
 import lombok.Setter;
 import org.springframework.lang.Nullable;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -103,6 +104,8 @@ public class Recipe {
         this.description = description;
         this.created_date = new Date();
         this.rating = 0;
+        this.steps = new ArrayList<>();
+        this.ingredients = new ArrayList<>();
 
         // Used for recipe score
         this.numberOfReviews = 0;
@@ -267,10 +270,10 @@ public class Recipe {
      * Updates a recipe based on a batch of values
      * @param request the new recipe values
      */
-    public void update(Recipe request) {
-        this.setName(request.getName());
-        this.setTime(request.getTime());
-        this.setSummary(request.getSummary());
-        this.setDescription(request.getDescription());
+    public void update(RecipeRequest request) {
+        this.setName(request.name);
+        this.setTime(request.time);
+        this.setSummary(request.summary);
+        this.setDescription(request.description);
     }
 }

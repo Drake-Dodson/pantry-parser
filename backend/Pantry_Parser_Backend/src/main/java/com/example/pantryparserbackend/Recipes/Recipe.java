@@ -60,6 +60,10 @@ public class Recipe {
 
     @Getter
     @Setter
+    private String imagePath;
+
+    @Getter
+    @Setter
     @ManyToOne
     @JsonIgnore
     @JoinColumn(name = "creator_id")

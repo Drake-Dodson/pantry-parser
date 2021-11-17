@@ -168,6 +168,7 @@ public class RecipeController {
         if (recipe == null){
             return MessageUtil.newResponseMessage(false, "recipe does not exist");
         }
+        stepRepository.deleteAll(recipe.getSteps());
         recipeRepository.delete(recipe);
         return MessageUtil.newResponseMessage(true, "successfully deleted");
     }

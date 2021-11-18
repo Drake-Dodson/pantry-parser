@@ -2,15 +2,14 @@ package com.example.pantryparserbackend.Recipes;
 
 import javax.persistence.*;
 
+import com.example.pantryparserbackend.Ingredients.Ingredient;
 import com.example.pantryparserbackend.Reviews.Review;
 import com.example.pantryparserbackend.users.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.sun.istack.NotNull;
 import lombok.Getter;
-import org.springframework.core.annotation.Order;
 import lombok.Setter;
-import org.springframework.lang.Nullable;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -103,11 +102,14 @@ public class Recipe {
         this.description = description;
         this.created_date = new Date();
         this.rating = 0;
+        this.steps = new ArrayList<>();
+        this.ingredients = new ArrayList<>();
 
         // Used for recipe score
         this.numberOfReviews = 0;
         this.totalStars = 0;
         this.currentPos = 0;
+        this.num_ingredients = 0;
     }
 
     public Recipe(){}
@@ -267,10 +269,10 @@ public class Recipe {
      * Updates a recipe based on a batch of values
      * @param request the new recipe values
      */
-    public void update(Recipe request) {
-        this.setName(request.getName());
-        this.setTime(request.getTime());
-        this.setSummary(request.getSummary());
-        this.setDescription(request.getDescription());
+    public void update(RecipeRequest request) {
+        this.setName(request.name);
+        this.setTime(request.time);
+        this.setSummary(request.summary);
+        this.setDescription(request.description);
     }
 }

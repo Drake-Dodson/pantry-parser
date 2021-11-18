@@ -1,11 +1,9 @@
 package com.example.pantryparserbackend.Reviews;
 
-import com.example.pantryparserbackend.Recipes.Ingredient;
 import com.example.pantryparserbackend.Recipes.Recipe;
 import com.example.pantryparserbackend.users.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 

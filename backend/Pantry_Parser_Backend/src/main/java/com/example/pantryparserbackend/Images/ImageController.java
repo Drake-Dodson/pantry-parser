@@ -3,7 +3,10 @@ package com.example.pantryparserbackend.Images;
 import com.example.pantryparserbackend.Recipes.Recipe;
 import com.example.pantryparserbackend.Recipes.RecipeRepository;
 import com.example.pantryparserbackend.Util.MessageUtil;
+import com.example.pantryparserbackend.users.User;
+import com.example.pantryparserbackend.users.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -23,80 +26,103 @@ public class ImageController {
     @Autowired
     RecipeRepository recipeRepo;
 
-    // - We need make sure that we can overwrite a file
+    @Autowired
+    UserRepository userRepo;
+
+    private ImageUtil imageUtil = new ImageUtil();
+
     @PostMapping(path = "/recipe/{recipe_id}/image")
-    String setRecipeImage(@RequestParam("image") MultipartFile image, @PathVariable int recipe_id) throws IOException {
+    public String setRecipeImage(@RequestParam("image") MultipartFile image, @PathVariable int recipe_id) throws IOException {
         Recipe recipe = recipeRepo.findById(recipe_id);
 
         if(recipe == null){
             return MessageUtil.newResponseMessage(false, "Recipe Id not found");
         }
-
         if(image == null){
             return MessageUtil.newResponseMessage(false, "Image was null");
         }
-
         if(!image.getOriginalFilename().contains(".jpg") && !image.getOriginalFilename().contains(".png") && !image.getOriginalFilename().contains(".jpeg")) {
             return MessageUtil.newResponseMessage(false, "Accepted file types are .jpg .jpeg and .png");
         }
 
-        String fileName = StringUtils.cleanPath("Recipe" + recipe_id + "Image.png");
         String fileDirectory = "mainImageDirectory/recipes/" + recipe_id;
+        String fileName = StringUtils.cleanPath("Recipe" + recipe_id + "Image.png");
 
-        saveFile(fileDirectory, fileName, image);
+        // If file is a jpg
+        if(image.getOriginalFilename().contains(".jpg") || image.getOriginalFilename().contains(".jpeg")){
+            File file = new File("Recipe" + recipe_id + "Image.png");
+            imageUtil.saveFile(fileDirectory, "temp.jpg", image);
+            BufferedImage bufferedImage = ImageIO.read(new File(fileDirectory + "/temp.jpg"));
+            ImageIO.write(bufferedImage, "png", new File(fileDirectory + "/" + fileName));
+            imageUtil.compressFile(fileDirectory, fileName);
 
-        compressFile(fileDirectory, fileName);
-
-        return MessageUtil.newResponseMessage(true, "Image uploaded to server successfully");
-    }
-
-    private void compressFile(String filePath, String fileName) throws IOException {
-        String inputPath = filePath + "/" + fileName;
-        String outputPath = filePath + "/" + fileName.replace(".png", "") + "_compressed.png";
-
-        // Worth noting that the compression is very miniscule and doesn't seem to do much. I tried changing the quality and didn't notice much of
-        // a difference. Also sometimes the file size is larger than it should be so idk what that's about
-        // Code provide courtesy of this stack overflow post https://stackoverflow.com/questions/2721303/how-to-compress-a-png-image-using-java
-        BufferedImage image;
-        IIOMetadata metadata;
-
-        try (ImageInputStream in = ImageIO.createImageInputStream(Files.newInputStream(Paths.get(inputPath)))) {
-            ImageReader reader = ImageIO.getImageReadersByFormatName("png").next();
-            reader.setInput(in, true, false);
-            image = reader.read(0);
-            metadata = reader.getImageMetadata(0);
-            reader.dispose();
+            return MessageUtil.newResponseMessage(true, "Image uploaded to server successfully");
         }
-
-        try (ImageOutputStream out = ImageIO.createImageOutputStream(Files.newOutputStream(Paths.get(outputPath)))) {
-            ImageTypeSpecifier type = ImageTypeSpecifier.createFromRenderedImage(image);
-            ImageWriter writer = ImageIO.getImageWriters(type, "png").next();
-
-            ImageWriteParam param = writer.getDefaultWriteParam();
-            if (param.canWriteCompressed()) {
-                param.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
-                param.setCompressionQuality(0.0000000000005f);
-            }
-
-            writer.setOutput(out);
-            writer.write(null, new IIOImage(image, null, metadata), param);
-            writer.dispose();
+        else
+        {
+            imageUtil.saveFile(fileDirectory, fileName, image);
+            imageUtil.compressFile(fileDirectory, fileName);
+            return MessageUtil.newResponseMessage(true, "Image uploaded to server successfully");
         }
     }
 
-    private void saveFile(String uploadDir, String fileName, MultipartFile multipartFile) throws IOException {
-        Path uploadPath = Paths.get(uploadDir);
+    @GetMapping(path = "/recipe/{recipe_id}/image", produces = MediaType.IMAGE_PNG_VALUE)
+    public byte[] getRecipeImage( @PathVariable int recipe_id, @RequestParam(defaultValue = "false") boolean compressed) throws IOException{
+        String compressionString = compressed ? "_compressed" : "";
+        Path filePath = Paths.get("mainImageDirectory/recipes/" + recipe_id + "/Recipe" + recipe_id + "Image" + compressionString + ".png");
 
-        if (!Files.exists(uploadPath)) {
-            Files.createDirectories(uploadPath);
+        if(Files.notExists(filePath)){
+            throw new IOException("Image does not exist");
         }
 
-        try (InputStream inputStream = multipartFile.getInputStream()) {
-            Path filePath = uploadPath.resolve(fileName);
-            Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
-        } catch (IOException ioe) {
-            throw new IOException("Could not save image file: " + fileName, ioe);
+        return Files.readAllBytes(Paths.get("mainImageDirectory/recipes/" + recipe_id + "/Recipe" + recipe_id + "Image" + compressionString + ".png"));
+    }
+
+    @PostMapping(path = "/user/{user_id}/image")
+    public String setUserProfileImage(@RequestParam("image") MultipartFile image, @PathVariable int user_id) throws IOException {
+        User user = userRepo.findById(user_id);
+
+        if(user == null){
+            return MessageUtil.newResponseMessage(false, "User Id not found");
+        }
+        if(image == null){
+            return MessageUtil.newResponseMessage(false, "Image was null");
+        }
+        if(!image.getOriginalFilename().contains(".jpg") && !image.getOriginalFilename().contains(".png") && !image.getOriginalFilename().contains(".jpeg")) {
+            return MessageUtil.newResponseMessage(false, "Accepted file types are .jpg .jpeg and .png");
+        }
+
+        String fileDirectory = "mainImageDirectory/users/" + user_id;
+        String fileName = StringUtils.cleanPath("User" + user_id + "Image.png");
+
+        // If file is a jpg
+        if(image.getOriginalFilename().contains(".jpg") || image.getOriginalFilename().contains(".jpeg")){
+            File tempFile = new File("User" + user_id + "Image.png");
+            imageUtil.saveFile(fileDirectory, "temp.jpg", image);
+            BufferedImage bufferedImage = ImageIO.read(new File(fileDirectory + "/temp.jpg"));
+            ImageIO.write(bufferedImage, "png", new File(fileDirectory + "/" + fileName));
+            imageUtil.compressFile(fileDirectory, fileName);
+            Files.delete(Paths.get(fileDirectory + "/temp.jpg"));
+
+            return MessageUtil.newResponseMessage(true, "Image uploaded to server successfully");
+        }
+        else
+        {
+            imageUtil.saveFile(fileDirectory, fileName, image);
+            imageUtil.compressFile(fileDirectory, fileName);
+            return MessageUtil.newResponseMessage(true, "Image uploaded to server successfully");
         }
     }
 
+    @GetMapping(path = "/user/{user_id}/image", produces = MediaType.IMAGE_PNG_VALUE)
+    public byte[] getUserProfileImage( @PathVariable int user_id, @RequestParam(defaultValue = "false") boolean compressed) throws IOException{
+        String compressionString = compressed ? "_compressed" : "";
+        Path filePath = Paths.get("mainImageDirectory/users/" + user_id + "/Recipe" + user_id + "Image" + compressionString + ".png");
+
+        if(Files.notExists(filePath)){
+            throw new IOException("Image does not exist");
+        }
+
+        return Files.readAllBytes(Paths.get("mainImageDirectory/users/" + user_id + "/Recipe" + user_id + "Image" + compressionString + ".png"));
+    }
 }

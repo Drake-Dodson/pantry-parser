@@ -199,7 +199,13 @@ public class FavoriteSocket {
         try {
             userRepository.addFavorite(user.getId(), recipe.getId());
             user.favorite(recipe);
-            sendToUser(user,"Successfully favorited " + recipe.getName());
+
+            //since this method can be invoked in other routes, make sure the acting user is in an online session
+            //probably won't come up in actual app since it should open a websocket upon login, however
+            //here just in case
+            if(userSessionMap.containsKey(user.getId())) {
+                sendToUser(user,"Successfully favorited " + recipe.getName());
+            }
 
             logger.info("Sending a favorite message");
             //we only want to send a message if the creator is on the app
@@ -226,7 +232,11 @@ public class FavoriteSocket {
         if (favorites.contains(recipe.getId())) {
             userRepository.deleteFavorite(user.getId(), recipe.getId());
             user.unfavorite(recipe);
-            sendToUser(user, "Successfully unfavorited " + recipe.getName());
+
+            //since this method can be invoked in other routes, make sure the acting user is in an online session
+            if(userSessionMap.containsKey(user.getId())){
+                sendToUser(user, "Successfully unfavorited " + recipe.getName());
+            }
 
             logger.info("Sending a unfavorite message");
             //we only want to send a message if the creator is on the app

@@ -29,6 +29,8 @@ public class UserController {
     private UserRepository userRepository;
     @Autowired
     private RecipeRepository recipeRepository;
+    @Autowired
+    private FavoriteSocket favoriteSocket;
 
     /**
      * this is just a test method to show us our server is up
@@ -170,10 +172,7 @@ public class UserController {
             return MessageUtil.newResponseMessage(false, "releationship already exists");
         }
 
-     //   FavoriteSocket.onFavorite(r, u);
-
-        u.favorite(r);
-        userRepository.save(u);
+        favoriteSocket.onFavorite(r, u);
         return MessageUtil.newResponseMessage(true, "favorited");
     }
     /**
@@ -194,8 +193,7 @@ public class UserController {
             return MessageUtil.newResponseMessage(false, "relationship does not exist");
         }
 
-        u.unfavorite(r);
-        userRepository.save(u);
+        favoriteSocket.onUnfavorite(r, u);
         return MessageUtil.newResponseMessage(true, "successfully unfavorited");
     }
 }

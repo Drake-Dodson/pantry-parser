@@ -4,6 +4,7 @@ import com.example.pantryparserbackend.Util.MessageUtil;
 
 import com.example.pantryparserbackend.Recipes.Recipe;
 import com.example.pantryparserbackend.Recipes.RecipeRepository;
+import com.example.pantryparserbackend.Websockets.FavoriteSocket;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -168,6 +169,8 @@ public class UserController {
         if(u.getFavorites().contains(r)) {
             return MessageUtil.newResponseMessage(false, "releationship already exists");
         }
+
+     //   FavoriteSocket.onFavorite(r, u);
 
         u.favorite(r);
         userRepository.save(u);

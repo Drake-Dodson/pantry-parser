@@ -71,6 +71,7 @@ public class Recipe {
 
     @JsonIgnore
     @ManyToMany(mappedBy = "favorites")
+    @Getter
     private List<User> favoritedBy;
 
     @Getter

@@ -125,7 +125,7 @@ class ReviewControllerTest {
         String actual = reviewController.deleteReview(review_id);
 
         Mockito.verify(reviewRepository).delete(mockReview1);
-        Mockito.verify(mockRecipe).updateRating0N();
+        Mockito.verify(mockRecipe).removeRating(mockReview1.getStarNumber());
         Mockito.verify(recipeRepository).save(mockRecipe);
         assertEquals(expected, actual);
     }
@@ -135,17 +135,19 @@ class ReviewControllerTest {
     public void testUpdateReview_whenUserUpdatesReview_thenReturnSuccess(){
         MockitoAnnotations.openMocks(this);
         int review_id = 3;
+        int initial_stars = 5;
+        int new_stars = 4;
         String expected = "{\"success\":\"true\", \"message\":\"Review updated\"}";
         User mockUser = new User("Password", "john@somemail.com");
-        Review mockReview1 = new Review(5, "Amazing!", "The best thing I've ever made!", mockUser, mockRecipe);
-        Review mockUpdateReview = new Review(4, "Amazing!", "The best thing I've ever made!", mockUser, mockRecipe);
+        Review mockReview1 = new Review(initial_stars, "Amazing!", "The best thing I've ever made!", mockUser, mockRecipe);
+        Review mockUpdateReview = new Review(new_stars, "Amazing!", "The best thing I've ever made!", mockUser, mockRecipe);
 
         when(reviewRepository.findById(review_id)).thenReturn(mockReview1);
 
         String actual = reviewController.updateReview(review_id, mockUpdateReview);
 
         Mockito.verify(reviewRepository).save(mockReview1);
-        Mockito.verify(mockRecipe).updateRating0N();
+        Mockito.verify(mockRecipe).updateRating(initial_stars, new_stars);
         Mockito.verify(recipeRepository).save(mockRecipe);
         assertEquals(expected, actual);
         assertEquals(4, mockReview1.getStarNumber());

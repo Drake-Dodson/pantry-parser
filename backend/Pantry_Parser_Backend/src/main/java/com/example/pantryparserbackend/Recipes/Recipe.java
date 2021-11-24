@@ -41,11 +41,6 @@ public class Recipe {
     @Setter
     @Column(nullable = false, columnDefinition = "text")
     private String description;
-    
-    // Used for recipe score
-    private int numberOfReviews;
-    private int totalStars;
-    private int currentPos;
 
     @Getter
     @Column(nullable = false)
@@ -105,10 +100,6 @@ public class Recipe {
         this.steps = new ArrayList<>();
         this.ingredients = new ArrayList<>();
 
-        // Used for recipe score
-        this.numberOfReviews = 0;
-        this.totalStars = 0;
-        this.currentPos = 0;
         this.num_ingredients = 0;
     }
 
@@ -172,7 +163,7 @@ public class Recipe {
     /**
      * updates the rating based on the current rating, the
      * original number of stars a review had, and the updated number
-     * not currently working, but has a constant runtime
+     * has a constant runtime
      * @param oldRating the previous value for this review
      * @param newRating the new value for this review
      */
@@ -190,7 +181,7 @@ public class Recipe {
 
     /**
      * updates the rating based on the current overall rating and the
-     * number of stars in the new review. not currently working, but
+     * number of stars in the new review
      * has a constant runtime
      * @param newRating the new star value for the rating
      */
@@ -207,18 +198,18 @@ public class Recipe {
 
     /**
      * updates the rating based on the current overall rating and the
-     * number of stars in the removed review. not currently working, but
+     * number of stars in the removed review
      * has a constant runtime
-     * @param newRating the value of the removed rating
+     * @param rating the value of the removed rating
      */
-    public void removeRating(int newRating){
+    public void removeRating(int rating){
         if(recipes_reviews.size() == 0){
             this.rating = 0;
         }
         else {
-            double total = this.rating * recipes_reviews.size();
-            total -= newRating;
-            this.rating = total / (recipes_reviews.size() - 1);
+            double total = this.rating * (recipes_reviews.size() + 1);
+            total -= rating;
+            this.rating = total / (recipes_reviews.size());
         }
     }
 

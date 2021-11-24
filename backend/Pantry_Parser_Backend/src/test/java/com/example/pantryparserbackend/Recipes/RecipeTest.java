@@ -60,11 +60,27 @@ class RecipeTest {
 
     @Test
     void updateRating() {
-        //TODO
+        initialization();
+
+        recipe.updateRating0N();
+        int oldRating = recipe.getRecipeReviews().get(1).getStarNumber();
+        //changing the second review from a 1 star to a 4 star
+        recipe.getRecipeReviews().get(1).setStarNumber(4);
+        double expected = 4.0;
+        recipe.updateRating(oldRating, 4);
+        assertEquals(expected, recipe.getRating());
     }
 
     @Test
     void removeRating() {
-        //TODO
+        initialization();
+
+        recipe.updateRating0N();
+        int oldRating = recipe.getRecipeReviews().get(1).getStarNumber();
+        //removes the 1 star review
+        recipe.getRecipeReviews().remove(1);
+        double expected = 4.0;
+        recipe.removeRating(oldRating);
+        assertEquals(expected, recipe.getRating());
     }
 }

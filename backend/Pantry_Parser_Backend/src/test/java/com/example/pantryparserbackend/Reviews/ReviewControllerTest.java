@@ -61,8 +61,11 @@ class ReviewControllerTest {
 
         String actual = reviewController.writeReview(user_id, recipe_id, mockReview);
 
-        assertEquals(expected, actual);
         Mockito.verify(reviewRepository).save(mockReview);
+        Mockito.verify(mockRecipe).addRating(5);
+        Mockito.verify(recipeRepository).save(mockRecipe);
+
+        assertEquals(expected, actual);
     }
 
     @Test
@@ -90,26 +93,26 @@ class ReviewControllerTest {
 
     @Test
     public void testWriteReview_whenUserHasAlreadyReviewedARecipe_thenReturnFailure(){
-//        MockitoAnnotations.openMocks(this);
-//        int user_id = 1;
-//        int recipe_id = 2;
-//        String expected = "{\"success\":\"false\", \"message\":\"Users can't review their own recipes\"}";
-//
-//        User mockUser = new User("Password", "john@somemail.com");
-//        User mockReviewer = new User("Password1", "jim@somemail.com");
-//        mockReview.setReviewer(mockReviewer);
-//
-//        when(userRepository.findById(user_id)).thenReturn(mockUser);
-//        when(recipeRepository.findById(recipe_id)).thenReturn(mockRecipe);
-//        when(mockRecipe.getRecipeReviews()).thenReturn(mockReviewList);
-//
-//        when(reviewIterator.hasNext()).thenReturn(true, false);
-//        when(reviewIterator.next()).thenReturn(mockReview).thenReturn(mockReview);
-//        when(mockReview.getUserId()).thenReturn(1);
-//
-//        String actual = reviewController.writeReview(user_id, recipe_id, mockReview);
-//
-//        assertEquals(expected, actual);
+        MockitoAnnotations.openMocks(this);
+        int user_id = 1;
+        int recipe_id = 2;
+        String expected = "{\"success\":\"false\", \"message\":\"Users can't review their own recipes\"}";
+
+        User mockUser = new User("Password", "john@somemail.com");
+        User mockReviewer = new User("Password1", "jim@somemail.com");
+        mockReview.setReviewer(mockReviewer);
+        mockReviewList.add(new Review(5, "great", "pie", mockReviewer, mockRecipe));
+        when(userRepository.findById(user_id)).thenReturn(mockUser);
+        when(recipeRepository.findById(recipe_id)).thenReturn(mockRecipe);
+        when(mockRecipe.getRecipeReviews()).thenReturn(mockReviewList);
+
+        //when(reviewIterator.next()).thenReturn(mockReview).thenReturn(mockReview);
+        when(mockReview.getUserId()).thenReturn(1);
+        when(mockRecipe.getCreatorId()).thenReturn(1);
+
+        String actual = reviewController.writeReview(user_id, recipe_id, mockReview);
+
+        assertEquals(expected, actual);
     }
 
     @Test

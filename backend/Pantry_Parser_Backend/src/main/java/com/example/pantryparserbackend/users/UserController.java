@@ -167,13 +167,12 @@ public class UserController {
 
         if(u == null || r == null){
             return MessageUtil.newResponseMessage(false, (u == null ? "user " : "recipe ") + "does not exist");
-        }
-        if(u.getFavorites().contains(r)) {
+        } else if(u.getFavorites().contains(r)) {
             return MessageUtil.newResponseMessage(false, "releationship already exists");
+        } else {
+            favoriteSocket.onFavorite(r, u);
+            return MessageUtil.newResponseMessage(true, "favorited");
         }
-
-        favoriteSocket.onFavorite(r, u);
-        return MessageUtil.newResponseMessage(true, "favorited");
     }
     /**
      * the route for a user to unfavorite a recipe
@@ -188,12 +187,11 @@ public class UserController {
         Recipe r = recipeRepository.findById(recipe_id);
         if(u == null || r == null){
             return MessageUtil.newResponseMessage(false, (u == null ? "user " : "recipe ") + "does not exist");
-        }
-        if(!u.getFavorites().contains(r)) {
+        } else if(!u.getFavorites().contains(r)) {
             return MessageUtil.newResponseMessage(false, "relationship does not exist");
+        } else {
+            favoriteSocket.onUnfavorite(r, u);
+            return MessageUtil.newResponseMessage(true, "successfully unfavorited");
         }
-
-        favoriteSocket.onUnfavorite(r, u);
-        return MessageUtil.newResponseMessage(true, "successfully unfavorited");
     }
 }

@@ -69,7 +69,7 @@ public class UserController {
      */
     @ApiOperation(value = "Finds a user by a given email")
     @GetMapping(path = "/user/email/{email}")
-    public User getUserByEmail(@PathVariable String email) throws Exception {
+    public User getUserByEmail(@PathVariable String email) {
         return userRepository.findByEmail(email);
     }
 

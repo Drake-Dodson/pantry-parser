@@ -9,6 +9,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.springframework.dao.DataIntegrityViolationException;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -38,15 +39,16 @@ class UserControllerTest {
         assertEquals(expected, actual);
         Mockito.verify(userRepository).save(mockUser);
     }
-//    @Test
-//    public void testRegister_Duplicate_ThenReturnFail() {
-//        MockitoAnnotations.openMocks(this);
-//        User mockUser = new User("password", "mockitoUserTest@email.com");
-//        when(userRepository.save(mockUser)).thenThrow(new Exception());
-//        String expected = MessageUtil.newResponseMessage(false, "Email already used");
-//        String actual = userController.createUser(mockUser);
-//        assertEquals(expected, actual);
-//    }
+    @Test
+    public void testRegister_Duplicate_ThenReturnFail() {
+        MockitoAnnotations.openMocks(this);
+        User mockUser = new User("password", "mockitoUserTest@email.com");
+        when(userRepository.save(mockUser)).thenThrow(new DataIntegrityViolationException("already exists"));
+        when(userRepository.findByEmail(mockUser.getEmail())).thenReturn(mockUser);
+        String expected = MessageUtil.newResponseMessage(false, "Email already used");
+        String actual = userController.createUser(mockUser);
+        assertEquals(expected, actual);
+    }
     @Test
     public void testLogin_WhenCorrect_ThenReturnSuccess() {
         MockitoAnnotations.openMocks(this);
@@ -143,15 +145,5 @@ class UserControllerTest {
         String expected = MessageUtil.newResponseMessage(false, "relationship does not exist");
         String actual = userController.unfavorite(user_id, recipe_id);
         assertEquals(actual, expected);
-    }
-    @Test
-    public void testGetUserByEmail_WhenEmailFound_ThenReturnSuccess() {
-
-        //assert()
-    }
-
-    @Test
-    public void testGetUserByEmail_WhenEmailNotFound_ThenThrowException() {
-
     }
 }

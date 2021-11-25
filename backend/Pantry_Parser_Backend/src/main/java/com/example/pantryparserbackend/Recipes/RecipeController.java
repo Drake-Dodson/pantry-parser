@@ -110,7 +110,6 @@ public class RecipeController {
         } catch (Exception ex) {
             return MessageUtil.newResponseMessage(false, "error saving to database, were all fields filled out correctly?");
         }
-        //TODO: Test
         return MessageUtil.newResponseMessage(true, all ? "successfully created recipe" : "recipe was created, however some ingredients didn't exist and were not added");
     }
 
@@ -189,7 +188,6 @@ public class RecipeController {
         } catch (Exception ex) {
             return MessageUtil.newResponseMessage(false, "error saving to database, were all fields filled out?");
         }
-        //TODO: TEST
         return MessageUtil.newResponseMessage(true, all ? "successfully updated recipe" : "recipe was updated, however some ingredients didn't exist and were not added");
     }
 

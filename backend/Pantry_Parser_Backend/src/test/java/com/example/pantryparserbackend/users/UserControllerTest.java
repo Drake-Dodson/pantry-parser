@@ -52,6 +52,7 @@ class UserControllerTest {
 
         assertEquals(expected, actual);
     }
+
     @Test
     public void testLogin_WhenCorrect_ThenReturnSuccess() {
         MockitoAnnotations.openMocks(this);
@@ -81,6 +82,20 @@ class UserControllerTest {
         assertEquals(expected, actual);
     }
     @Test
+    public void testLogin_WhenNotAUser_ThenReturnFail() {
+        MockitoAnnotations.openMocks(this);
+
+        User mockUser = new User("password1", "mockitoUserTest@email.com");
+        Login mockLogin = new Login("mockitoUserTest@email.com", "password");
+
+        when(userRepository.findByEmail(mockUser.getEmail())).thenReturn(null);
+
+        String expected = MessageUtil.newResponseMessage(false, "email incorrect");
+        String actual = userController.login(mockLogin);
+
+        assertEquals(expected, actual);
+    }
+    @Test
     public void testLogin_WhenBadPass_ThenReturnFail() {
         MockitoAnnotations.openMocks(this);
 
@@ -91,6 +106,37 @@ class UserControllerTest {
 
         String expected = MessageUtil.newResponseMessage(false, "password incorrect");
         String actual = userController.login(mockLogin);
+
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void testFavorite_whenNotRecipe_thenReturnFail() {
+        MockitoAnnotations.openMocks(this);
+
+        int user_id = 1;
+        int recipe_id = 1;
+
+        when(userRepository.findById(user_id)).thenReturn(this.mockUser);
+        when(recipeRepository.findById(recipe_id)).thenReturn(null);
+
+        String expected = MessageUtil.newResponseMessage(false, "recipe does not exist");
+        String actual = userController.favorite(user_id, recipe_id);
+
+        assertEquals(expected, actual);
+    }
+    @Test
+    public void testFavorite_whenNotUser_thenReturnFail() {
+        MockitoAnnotations.openMocks(this);
+
+        int user_id = 1;
+        int recipe_id = 1;
+
+        when(userRepository.findById(user_id)).thenReturn(null);
+        when(recipeRepository.findById(recipe_id)).thenReturn(new Recipe());
+
+        String expected = MessageUtil.newResponseMessage(false, "user does not exist");
+        String actual = userController.favorite(user_id, recipe_id);
 
         assertEquals(expected, actual);
     }
@@ -131,6 +177,37 @@ class UserControllerTest {
         String actual = userController.favorite(user_id, recipe_id);
 
         assertEquals(actual, expected);
+    }
+
+    @Test
+    public void testUnFavorite_whenNotRecipe_thenReturnFail() {
+        MockitoAnnotations.openMocks(this);
+
+        int user_id = 1;
+        int recipe_id = 1;
+
+        when(userRepository.findById(user_id)).thenReturn(this.mockUser);
+        when(recipeRepository.findById(recipe_id)).thenReturn(null);
+
+        String expected = MessageUtil.newResponseMessage(false, "recipe does not exist");
+        String actual = userController.unfavorite(user_id, recipe_id);
+
+        assertEquals(expected, actual);
+    }
+    @Test
+    public void testUnFavorite_whenNotUser_thenReturnFail() {
+        MockitoAnnotations.openMocks(this);
+
+        int user_id = 1;
+        int recipe_id = 1;
+
+        when(userRepository.findById(user_id)).thenReturn(null);
+        when(recipeRepository.findById(recipe_id)).thenReturn(new Recipe());
+
+        String expected = MessageUtil.newResponseMessage(false, "user does not exist");
+        String actual = userController.unfavorite(user_id, recipe_id);
+
+        assertEquals(expected, actual);
     }
     @Test
     public void testUnFavorite_whenAlreadyFavorited_ThenReturnSuccess() {

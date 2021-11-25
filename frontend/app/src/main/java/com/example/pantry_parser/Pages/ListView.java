@@ -1,4 +1,4 @@
-package com.example.pantry_parser.RecyclerView;
+package com.example.pantry_parser.Pages;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -16,10 +16,9 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
-import com.example.pantry_parser.Pages.Recipe_Page;
-import com.example.pantry_parser.Pages.Settings_Page;
 import com.example.pantry_parser.R;
 import com.example.pantry_parser.Recipe;
+import com.example.pantry_parser.RecyclerView.RecyclerViewAdapter;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import org.json.JSONArray;
@@ -93,7 +92,8 @@ public class ListView extends AppCompatActivity implements RecyclerViewAdapter.O
              */
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getApplicationContext(), Settings_Page.class);
+                Intent intent = new Intent(getApplicationContext(), RecipeCreator_Page.class);
+                startActivity(intent);
             }
         });
         newRecipe.hide();

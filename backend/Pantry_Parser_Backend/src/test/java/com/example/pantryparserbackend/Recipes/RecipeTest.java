@@ -39,15 +39,17 @@ class RecipeTest {
     @Test
     void testUpdateRating0N() {
         initialization();
-        double expected = 3;
+
         recipe.updateRating0N();
+
+        double expected = 3;
         assertEquals(expected, recipe.getRating());
     }
 
     @Test
     void testAddRating() {
         initialization();
-        double expected = 2.5;
+
         User mockReviewer = new User("Password", "james@email.com");
         recipe.updateRating0N();
         reviewList.add(new Review(1, "Not for me", "Idk I just didn't like it", mockReviewer, recipe));
@@ -55,6 +57,7 @@ class RecipeTest {
         recipe.setRecipes_reviews(reviewList);
         recipe.addRating(reviewList.get(3).getStarNumber());
 
+        double expected = 2.5;
         assertEquals(expected, recipe.getRating());
     }
 
@@ -66,8 +69,9 @@ class RecipeTest {
         int oldRating = recipe.getRecipeReviews().get(1).getStarNumber();
         //changing the second review from a 1 star to a 4 star
         recipe.getRecipeReviews().get(1).setStarNumber(4);
-        double expected = 4.0;
         recipe.updateRating(oldRating, 4);
+
+        double expected = 4.0;
         assertEquals(expected, recipe.getRating());
     }
 
@@ -79,8 +83,9 @@ class RecipeTest {
         int oldRating = recipe.getRecipeReviews().get(1).getStarNumber();
         //removes the 1 star review
         recipe.getRecipeReviews().remove(1);
-        double expected = 4.0;
         recipe.removeRating(oldRating);
+
+        double expected = 4.0;
         assertEquals(expected, recipe.getRating());
     }
 }

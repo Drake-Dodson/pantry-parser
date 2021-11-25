@@ -124,7 +124,7 @@ public class RecipeController {
     String updateRecipe(@PathVariable int recipe_id, @RequestBody RecipeRequest recipeRequest){
         Recipe recipe = recipeRepository.findById(recipe_id);
         if(recipe == null)
-            return null;
+            return MessageUtil.newResponseMessage(false, "recipe does not exist");
         recipe.update(recipeRequest);
         if (recipeRequest.steps == null) {
             recipeRequest.steps = new ArrayList<>();

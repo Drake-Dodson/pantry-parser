@@ -116,7 +116,6 @@ public class RecipeControllerTest {
         String ingredientName = "fried chicken";
         mockIngredientList.add(ingredientName);
         int recipe_id = 1;
-
         Recipe mockRecipe = new Recipe("name", 4, "summary", "description");
         RecipeRequest mockInput = new RecipeRequest("name", 4, "summary", "description", mockIngredientList, mockStepList);
 
@@ -141,7 +140,6 @@ public class RecipeControllerTest {
         String ingredientName = "fried chicken";
         mockIngredientList.add(ingredientName);
         int recipe_id = 1;
-
         Recipe mockRecipe = new Recipe("name", 4, "summary", "description");
         RecipeRequest mockInput = new RecipeRequest("name", 4, "summary", "description", mockIngredientList, mockStepList);
 
@@ -154,6 +152,28 @@ public class RecipeControllerTest {
         assertEquals(expected, actual);
         Mockito.verify(stepsRepository).saveAll(anyList());
         Mockito.verify(recipeRepository).save(anyObject());
+    }
+
+    @Test
+    void onRecipeUpdate_badRecipe_returnFailure() {
+        MockitoAnnotations.openMocks(this);
+
+        List<String> mockIngredientList = new ArrayList<>();
+        List<String> mockStepList = new ArrayList<>();
+        mockStepList.add("step 1");
+        mockStepList.add("step 2");
+        String ingredientName = "fried chicken";
+        mockIngredientList.add(ingredientName);
+        int recipe_id = 1;
+        RecipeRequest mockInput = new RecipeRequest("name", 4, "summary", "description", mockIngredientList, mockStepList);
+
+        when(ingredientRepository.findByName(ingredientName)).thenReturn(null);
+        when(recipeRepository.findById(recipe_id)).thenReturn(null);
+
+        String expected = MessageUtil.newResponseMessage(false, "recipe does not exist");
+        String actual = recipeController.updateRecipe(recipe_id, mockInput);
+
+        assertEquals(expected, actual);
     }
 
     @Test
@@ -177,7 +197,6 @@ public class RecipeControllerTest {
     void onDeleteRecipe_notARecipe_returnSuccess() {
         MockitoAnnotations.openMocks(this);
 
-        Recipe mockRecipe = new Recipe("name", 4, "summary", "description");
         int recipe_id = 1;
 
         when(recipeRepository.findById(recipe_id)).thenReturn(null);

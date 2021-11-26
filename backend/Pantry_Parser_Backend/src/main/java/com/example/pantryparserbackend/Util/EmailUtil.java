@@ -6,7 +6,6 @@ import com.example.pantryparserbackend.users.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -54,7 +53,7 @@ public class EmailUtil {
             // Set multipart mime message true
             MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
             mimeMessageHelper.setTo(address);
-            mimeMessageHelper.setSubject("Spring Boot=> Sending HTML email");
+            mimeMessageHelper.setSubject("Pantry Parser Password Reset");
             mimeMessageHelper.setText(html, true);
 
             javaMailSender.send(mimeMessage);

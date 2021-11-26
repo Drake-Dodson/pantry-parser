@@ -1,6 +1,5 @@
 package com.example.pantryparserbackend.users;
 
-import com.example.pantryparserbackend.Passwords.OTP;
 import com.example.pantryparserbackend.Recipes.Recipe;
 import com.example.pantryparserbackend.Reviews.Review;
 import com.example.pantryparserbackend.Util.PasswordUtil;
@@ -60,10 +59,6 @@ public class User {
     @OneToMany(mappedBy = "reviewer")
     private List<Review> userReviews;
 
-    @JsonIgnore
-    @OneToMany(mappedBy = "user")
-    private List<OTP> otps;
-
     public User(String password, String email) {
         this.password = PasswordUtil.newHash(password);
         this.email = email;
@@ -74,18 +69,6 @@ public class User {
 
     public List<Recipe> getRecipes() {
         return this.created_recipes;
-    }
-
-    public boolean useOTP(String password) {
-        for (int i = 0; i < otps.size(); i++) {
-            if (otps.get(i).outOfDate()) {
-                otps.remove(i);
-                i--;
-            } else if (otps.get(i).verify(password)){
-                return true;
-            }
-        }
-        return false;
     }
 
     /**
@@ -118,14 +101,6 @@ public class User {
      */
     public void addRecipe(Recipe r){
         this.created_recipes.add(r);
-    }
-
-    /**
-     * adds an OTP (one time password)
-     * @param password otp to add
-     */
-    public void addOTP(String password) {
-        this.otps.add(new OTP(password, this));
     }
 
     /**

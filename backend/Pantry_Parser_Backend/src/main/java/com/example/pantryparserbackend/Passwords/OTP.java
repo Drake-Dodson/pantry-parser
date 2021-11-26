@@ -5,9 +5,6 @@ import com.example.pantryparserbackend.users.User;
 import lombok.Getter;
 
 import javax.persistence.*;
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.Date;
 
 @Entity
@@ -26,7 +23,7 @@ public class OTP {
     @Getter
     @Column(nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
-    private LocalDateTime created_date;
+    private Date created_date;
 
     @Getter
     @ManyToOne
@@ -37,14 +34,14 @@ public class OTP {
     public OTP(String password, User user) {
         this.hash = PasswordUtil.newHash(password);
         this.user = user;
-        this.created_date = LocalDateTime.now();
+        this.created_date = new Date();
     }
 
     public boolean outOfDate() {
-        return ChronoUnit.MINUTES.between(this.created_date, LocalDateTime.now()) <= 10;
+        return this.created_date.after(new Date(this.created_date.getTime() + (10 * 60 * 1000)));
     }
 
     public boolean verify(String password) {
-        return PasswordUtil.comparePasswords(password, this.hash) && !this.outOfDate();
+        return PasswordUtil.comparePasswords(password, this.hash);
     }
 }

@@ -1,6 +1,7 @@
 package com.example.pantryparserbackend.users;
 
 import com.example.pantryparserbackend.Passwords.OTPRepository;
+import com.example.pantryparserbackend.Requests.PasswordResetRequest;
 import com.example.pantryparserbackend.Util.EmailUtil;
 import com.example.pantryparserbackend.Requests.LoginRequest;
 import com.example.pantryparserbackend.Util.MessageUtil;
@@ -15,7 +16,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
-
 
 /**
  * User controller, responsible for all user stuff
@@ -122,21 +122,20 @@ public class UserController {
 
     @GetMapping(path = "/user/{user_id}/password-reset/sendOTP")
     public String sendOTP(@PathVariable int user_id) {
-        //generate OTP
 
         User user = userRepository.findById(user_id);
         if (user == null){
             return MessageUtil.newResponseMessage(false, "user not found");
         }
 
-        String pass = PasswordUtil.generateOTP(6, user);
+        String pass = PasswordUtil.generateOTP(6, user, otpRepository);
         if (pass.contains("ERROR:")) {
-            return MessageUtil.newResponseMessage(false, "there was an error on OTP creation");
+            return MessageUtil.newResponseMessage(false, pass);
         }
 
         //sendEmail
         try {
-            EmailUtil.sendTextEmail();
+            EmailUtil.sendPasswordResetEmail(user, pass);
         } catch (Exception e) {
             return MessageUtil.newResponseMessage(false, "There was an error sending you your OTP");
         }
@@ -144,7 +143,19 @@ public class UserController {
         return MessageUtil.newResponseMessage(true, "check your email for your OTP");
     }
 
-    @PostMapping(path = "/user/{user_id}/password-reset/")
+    @PostMapping(path = "/user/{user_id}/password-reset")
+    public String passwordReset(@PathVariable int user_id, @RequestBody PasswordResetRequest request) {
+        User user = userRepository.findById(user_id);
+        if(user == null) {
+            return MessageUtil.newResponseMessage(false, "user was not found");
+        }
+        if(PasswordUtil.useOTP(request.OTP, user, otpRepository)) {
+            user.setPassword(request.newPassword);
+            userRepository.save(user);
+            return MessageUtil.newResponseMessage(true, "successfully changed password");
+        }
+        return MessageUtil.newResponseMessage(false, "invalid OTP, please try again");
+    }
 
     /**
      * gets a list of recipes the provided user has created

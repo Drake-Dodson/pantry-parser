@@ -3,7 +3,10 @@ package com.example.pantryparserbackend.Util;
 import com.example.pantryparserbackend.Passwords.OTP;
 import com.example.pantryparserbackend.Passwords.OTPRepository;
 import com.example.pantryparserbackend.users.User;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.Repository;
 
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
@@ -12,37 +15,58 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
+import java.sql.Timestamp;
+import java.util.Date;
+import java.util.List;
 
 public class PasswordUtil {
-
-    private static OTPRepository otpRepository;
-
-    @Autowired
-    public void setOtpRepository(OTPRepository repo) {
-        otpRepository = repo;
-    }
-
+    private static final Logger logger = LoggerFactory.getLogger(PasswordUtil.class);
     /**
      * generates an OTP of a specified length
      * @param length length of OTP
      * @return new OTP
      */
-    public static String generateOTP(int length, User user) {
+    public static String generateOTP(int length, User user, OTPRepository otpRepo) {
         SecureRandom random = new SecureRandom();
         String password = "";
         for(int i = 0; i < length; i++){
             //generates a random int that's less than 10
-            password += random.nextInt(10);
+            password += random.nextInt(10) + "";
         }
-        OTP otp = new OTP(password, user);
+        logger.info("Generated the otp " + password + "!");
+        OTP otp = new OTP(password.trim(), user);
 
         try {
-            otpRepository.save(otp);
+            otpRepo.save(otp);
         } catch (Exception e) {
             return "ERROR: " + e.getMessage();
         }
 
         return password;
+    }
+
+    public static boolean useOTP(String password, User user, OTPRepository otpRepo) {
+        logger.info("Attempting to use an OTP " + password);
+        List<OTP> otps = otpRepo.findByUser(user);
+
+
+
+        for (int i = 0; i < otps.size(); i++) {
+            OTP otp = otps.get(i);
+            if (otp.outOfDate()) {
+                logger.info("OTP creation date: " + otp.getCreated_date());
+                logger.info("OTP expiration: " + new Date(otp.getCreated_date().getTime() + (10 * 60 * 1000)));
+                logger.info("OTP " + i + " was old");
+                otpRepo.delete(otp);
+            } else if (otp.verify(password)){
+                logger.info("OTP " + i + " was good");
+                otpRepo.delete(otp);
+                return true;
+            } else {
+                logger.info("OTP " + i + " was neither good nor old");
+            }
+        }
+        return false;
     }
     /**
      * Compares a hash with the hash of a password
@@ -53,8 +77,8 @@ public class PasswordUtil {
     public static boolean comparePasswords(String password, String hash) {
         String[] parts = hash.split(":");
         byte[] salt = PasswordUtil.fromHex(parts[1]);
-
         String passwordToTest = PasswordUtil.hash(password, salt);
+
         return hash.equals(passwordToTest);
     }
 

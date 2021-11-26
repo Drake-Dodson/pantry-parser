@@ -1,15 +1,14 @@
-package com.example.pantryparserbackend.Recipes;
+package com.example.pantryparserbackend.Requests;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class RecipeRequest {
-	protected String name;
-	protected int time;
-	protected String summary;
-	protected String description;
-	protected List<String> ingredients;
-	protected List<String> steps;
+	public String name;
+	public int time;
+	public String summary;
+	public String description;
+	public List<String> ingredients;
+	public List<String> steps;
 
 	public RecipeRequest(String name, int time, String summary, String description, List<String> ingredients, List<String> steps) {
 		this.name = name;

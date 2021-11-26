@@ -3,6 +3,7 @@ package com.example.pantryparserbackend.Recipes;
 import javax.persistence.*;
 
 import com.example.pantryparserbackend.Ingredients.Ingredient;
+import com.example.pantryparserbackend.Requests.RecipeRequest;
 import com.example.pantryparserbackend.Reviews.Review;
 import com.example.pantryparserbackend.users.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;

@@ -1,25 +1,15 @@
 package com.example.pantryparserbackend.users;
 
+import com.example.pantryparserbackend.Passwords.OTP;
 import com.example.pantryparserbackend.Recipes.Recipe;
 import com.example.pantryparserbackend.Reviews.Review;
 import com.example.pantryparserbackend.Util.PasswordUtil;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sun.istack.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.crypto.SecretKeyFactory;
-import javax.crypto.spec.PBEKeySpec;
 import javax.persistence.*;
-import java.math.BigInteger;
-import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
-import java.security.spec.InvalidKeySpecException;
-import java.security.spec.KeySpec;
 import java.util.List;
-import java.util.Set;
 
 /**
  * basic user model

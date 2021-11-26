@@ -15,10 +15,15 @@ import org.springframework.stereotype.Service;
 @Service
 public class EmailUtil {
     private static final Logger logger = LoggerFactory.getLogger(EmailUtil.class);
-    @Autowired
-    private JavaMailSender javaMailSender;
 
-    public boolean sendPasswordResetEmail(User user, String otp) {
+    private static JavaMailSender javaMailSender;
+
+    @Autowired
+    public void setJavaMailSender(JavaMailSender sender) {
+        javaMailSender = sender;
+    }
+
+    public static boolean sendPasswordResetEmail(User user, String otp) {
         String html = "<h3>Dear " + user.getDisplayName() + ",</h3></br>"
                 + "<p>Hello! It looks like you are trying to change your password. </p>" + "</br></br>"
                 + "<h1>Your OTP is: " + otp + "</h1>" + "</br></br>"
@@ -27,7 +32,7 @@ public class EmailUtil {
         return sendHTMLEmail(user.getEmail(), html);
     }
 
-    public void sendTextEmail() {
+    public static void sendTextEmail() {
         logger.info("Simple Email sending start");
 
         SimpleMailMessage simpleMessage = new SimpleMailMessage();
@@ -41,7 +46,7 @@ public class EmailUtil {
 
     }
 
-    private boolean sendHTMLEmail(String address, String html) {
+    private static boolean sendHTMLEmail(String address, String html) {
         logger.info("HTML email sending start");
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
 

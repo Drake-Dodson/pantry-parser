@@ -1,5 +1,10 @@
 package com.example.pantryparserbackend.Util;
 
+import com.example.pantryparserbackend.Passwords.OTP;
+import com.example.pantryparserbackend.Passwords.OTPRepository;
+import com.example.pantryparserbackend.users.User;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 import java.math.BigInteger;
@@ -10,6 +15,35 @@ import java.security.spec.KeySpec;
 
 public class PasswordUtil {
 
+    private static OTPRepository otpRepository;
+
+    @Autowired
+    public void setOtpRepository(OTPRepository repo) {
+        otpRepository = repo;
+    }
+
+    /**
+     * generates an OTP of a specified length
+     * @param length length of OTP
+     * @return new OTP
+     */
+    public static String generateOTP(int length, User user) {
+        SecureRandom random = new SecureRandom();
+        String password = "";
+        for(int i = 0; i < length; i++){
+            //generates a random int that's less than 10
+            password += random.nextInt(10);
+        }
+        OTP otp = new OTP(password, user);
+
+        try {
+            otpRepository.save(otp);
+        } catch (Exception e) {
+            return "ERROR: " + e.getMessage();
+        }
+
+        return password;
+    }
     /**
      * Compares a hash with the hash of a password
      * @param password input password

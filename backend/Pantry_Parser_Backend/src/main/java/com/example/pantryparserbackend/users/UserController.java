@@ -1,9 +1,13 @@
 package com.example.pantryparserbackend.users;
 
+import com.example.pantryparserbackend.Passwords.OTP;
+import com.example.pantryparserbackend.Passwords.OTPRepository;
+import com.example.pantryparserbackend.Util.EmailUtil;
 import com.example.pantryparserbackend.Util.MessageUtil;
 
 import com.example.pantryparserbackend.Recipes.Recipe;
 import com.example.pantryparserbackend.Recipes.RecipeRepository;
+import com.example.pantryparserbackend.Util.PasswordUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +35,8 @@ public class UserController {
     private UserRepository userRepository;
     @Autowired
     private RecipeRepository recipeRepository;
+    @Autowired
+    private OTPRepository otpRepository;
 
     /**
      * this is just a test method to show us our server is up
@@ -125,7 +131,27 @@ public class UserController {
     public String sendOTP(@PathVariable int user_id) {
         //generate OTP
 
+        User user = userRepository.findById(user_id);
+        if (user == null){
+            return MessageUtil.newResponseMessage(false, "user not found");
+        }
+
+        String pass = PasswordUtil.generateOTP(6, user);
+        if (pass.contains("ERROR:")) {
+            return MessageUtil.newResponseMessage(false, "there was an error on OTP creation");
+        }
+
+        //sendEmail
+        try {
+            EmailUtil.sendTextEmail();
+        } catch (Exception e) {
+            return MessageUtil.newResponseMessage(false, "There was an error sending you your OTP");
+        }
+
+        return MessageUtil.newResponseMessage(true, "check your email for your OTP");
     }
+
+    //@PostMapping(path = "/user/{user_id}/password-reset/")
 
     /**
      * gets a list of recipes the provided user has created
@@ -203,5 +229,9 @@ public class UserController {
         u.unfavorite(r);
         userRepository.save(u);
         return MessageUtil.newResponseMessage(true, "successfully unfavorited");
+    }
+
+    private String useOTP(String password, User user) {
+
     }
 }

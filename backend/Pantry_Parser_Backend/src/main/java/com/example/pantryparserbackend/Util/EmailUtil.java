@@ -1,12 +1,11 @@
 package com.example.pantryparserbackend.Util;
+
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
-
 import com.example.pantryparserbackend.users.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
@@ -22,6 +21,12 @@ public class EmailUtil {
         javaMailSender = sender;
     }
 
+    /**
+     * The function that sends the email for password resetting
+     * @param user user we are sending to
+     * @param otp one time password we are sending
+     * @return
+     */
     public static boolean sendPasswordResetEmail(User user, String otp) {
         String html = "<h3>Dear " + user.getDisplayName() + ",</h3></br>"
                 + "<p>Hello! It looks like you are trying to change your password. </p>" + "</br></br>"
@@ -31,20 +36,12 @@ public class EmailUtil {
         return sendHTMLEmail(user.getEmail(), html);
     }
 
-    public static void sendTextEmail() {
-        logger.info("Simple Email sending start");
-
-        SimpleMailMessage simpleMessage = new SimpleMailMessage();
-        simpleMessage.setTo("pbrink21@live.com");
-        simpleMessage.setSubject("Spring Boot=> Sending simple email");
-        simpleMessage.setText("Dear Dhirendra, Hope you are doing well.");
-
-        javaMailSender.send(simpleMessage);
-
-        logger.info("Simple Email sent");
-
-    }
-
+    /**
+     * The main email sending function
+     * @param address addreess to send the email too
+     * @param html html code for the email
+     * @return
+     */
     private static boolean sendHTMLEmail(String address, String html) {
         logger.info("HTML email sending start");
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();

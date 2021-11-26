@@ -11,10 +11,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.PasswordAuthentication;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Properties;
 import java.util.Set;
 
 /**
@@ -116,6 +119,12 @@ public class UserController {
             // Password incorrect
             return MessageUtil.newResponseMessage(false, "password incorrect");
         }
+    }
+
+    @GetMapping(path = "/user/{user_id}/password-reset/sendOTP")
+    public String sendOTP(@PathVariable int user_id) {
+        //generate OTP
+
     }
 
     /**

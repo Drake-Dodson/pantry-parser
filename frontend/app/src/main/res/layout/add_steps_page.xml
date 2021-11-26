@@ -45,10 +45,25 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
+    <Button
+        android:id="@+id/button_clearSteps"
+        android:layout_width="75dp"
+        android:layout_height="50dp"
+        android:background="@android:color/transparent"
+        android:text="Clear"
+        android:textSize="16sp"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+
     <EditText
         android:id="@+id/editText_recipeSteps"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="top|left"
+        android:hint="Please add steps for your recipe. \nEach step will begin with a new line.\n\nExample:
+        \nStep 1 \nStep 2 \nStep 3"
         android:layout_marginTop="50dp"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

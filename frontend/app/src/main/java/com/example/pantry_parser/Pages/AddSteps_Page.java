@@ -1,5 +1,6 @@
 package com.example.pantry_parser.Pages;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -11,21 +12,42 @@ import com.example.pantry_parser.R;
 
 public class AddSteps_Page extends AppCompatActivity {
 
+    String stringSteps;
+    EditText addSteps;
+    Button back, clear;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_steps_page);
 
-        EditText addSteps = findViewById(R.id.editText_recipeSteps);
-        Button back = findViewById(R.id.button_backSteps);
+        addSteps = findViewById(R.id.editText_recipeSteps);
+        back = findViewById(R.id.button_backSteps);
+        clear = findViewById(R.id.button_clearSteps);
 
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                stringSteps = addSteps.getText().toString();
+                Intent intent = new Intent();
+                intent.putExtra("result", stringSteps);
+                setResult(RESULT_OK, intent);
                 finish();
             }
         });
 
+        clear.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                stringSteps = "";
+                addSteps.setText("");
+            }
+        });
     }
+
+   private void createRecipe() {
+
+   }
+
+
 }

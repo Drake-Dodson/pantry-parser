@@ -1,10 +1,9 @@
 package com.example.pantryparserbackend.users;
 
-import com.example.pantryparserbackend.Passwords.OTP;
 import com.example.pantryparserbackend.Passwords.OTPRepository;
 import com.example.pantryparserbackend.Util.EmailUtil;
+import com.example.pantryparserbackend.Requests.LoginRequest;
 import com.example.pantryparserbackend.Util.MessageUtil;
-
 import com.example.pantryparserbackend.Recipes.Recipe;
 import com.example.pantryparserbackend.Recipes.RecipeRepository;
 import com.example.pantryparserbackend.Util.PasswordUtil;
@@ -15,14 +14,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.web.bind.annotation.*;
 
-import java.net.PasswordAuthentication;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Properties;
-import java.util.Set;
 
 /**
  * User controller, responsible for all user stuff
@@ -112,7 +105,7 @@ public class UserController {
      */
     @ApiOperation(value = "Logs in a user")
     @PostMapping(path = "/login")
-    public String login(@RequestBody Login login){
+    public String login(@RequestBody LoginRequest login){
         if (login == null)
             return MessageUtil.newResponseMessage(false, "no login info detected");
         User actual = userRepository.findByEmail(login.email);
@@ -151,7 +144,7 @@ public class UserController {
         return MessageUtil.newResponseMessage(true, "check your email for your OTP");
     }
 
-    //@PostMapping(path = "/user/{user_id}/password-reset/")
+    @PostMapping(path = "/user/{user_id}/password-reset/")
 
     /**
      * gets a list of recipes the provided user has created
@@ -229,9 +222,5 @@ public class UserController {
         u.unfavorite(r);
         userRepository.save(u);
         return MessageUtil.newResponseMessage(true, "successfully unfavorited");
-    }
-
-    private String useOTP(String password, User user) {
-
     }
 }

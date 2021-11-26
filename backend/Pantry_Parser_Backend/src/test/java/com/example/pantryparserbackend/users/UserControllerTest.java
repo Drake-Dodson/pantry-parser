@@ -1,8 +1,8 @@
 package com.example.pantryparserbackend.users;
 
 import com.example.pantryparserbackend.Recipes.Recipe;
-import com.example.pantryparserbackend.Recipes.RecipeController;
 import com.example.pantryparserbackend.Recipes.RecipeRepository;
+import com.example.pantryparserbackend.Requests.LoginRequest;
 import com.example.pantryparserbackend.Util.MessageUtil;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -10,7 +10,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -51,7 +50,7 @@ class UserControllerTest {
     public void testLogin_WhenCorrect_ThenReturnSuccess() {
         MockitoAnnotations.openMocks(this);
         User mockUser = new User("password", "mockitoUserTest@email.com");
-        Login mockLogin = new Login("mockitoUserTest@email.com", "password");
+        LoginRequest mockLogin = new LoginRequest("mockitoUserTest@email.com", "password");
         when(userRepository.findByEmail(mockUser.getEmail())).thenReturn(mockUser);
         String expected = MessageUtil.newResponseMessage(true, "" + mockUser.getId());
         String actual = userController.login(mockLogin);
@@ -61,7 +60,7 @@ class UserControllerTest {
     public void testLogin_IncorrectEmail_ReturnFailedEmail() {
         MockitoAnnotations.openMocks(this);
         User mockUser = new User("password", "mockito1UserTest@email.com");
-        Login mockLogin = new Login("mockitoUserTest@email.com", "password");
+        LoginRequest mockLogin = new LoginRequest("mockitoUserTest@email.com", "password");
         when(userRepository.findByEmail(mockUser.getEmail())).thenReturn(mockUser);
         String expected = MessageUtil.newResponseMessage(false, "email incorrect");
         String actual = userController.login(mockLogin);
@@ -71,7 +70,7 @@ class UserControllerTest {
     public void testLogin_WhenBadPass_ThenReturnFail() {
         MockitoAnnotations.openMocks(this);
         User mockUser = new User("password1", "mockitoUserTest@email.com");
-        Login mockLogin = new Login("mockitoUserTest@email.com", "password");
+        LoginRequest mockLogin = new LoginRequest("mockitoUserTest@email.com", "password");
         when(userRepository.findByEmail(mockUser.getEmail())).thenReturn(mockUser);
         String expected = MessageUtil.newResponseMessage(false, "password incorrect");
         String actual = userController.login(mockLogin);

@@ -50,6 +50,7 @@ public class User {
     @Setter
     private String role;
 
+    @Setter
     @JsonIgnore
     @OneToMany(mappedBy = "creator")
     private List<Recipe> created_recipes;

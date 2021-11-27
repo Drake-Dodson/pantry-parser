@@ -121,9 +121,15 @@ public class Recipe {
         this.summary = summary;
         this.description = description;
         this.created_date = new Date();
+        this.steps = new ArrayList<>();
+        this.ingredients = new ArrayList<>();
+        this.num_reviews = 0;
+        this.num_ingredients = 0;
+        this.chef_verified = false;
     }
 
     public Recipe(RecipeRequest request) {
+        this.created_date = new Date();
         this.steps = new ArrayList<>();
         this.ingredients = new ArrayList<>();
         this.num_reviews = 0;

@@ -5,6 +5,7 @@ import com.example.pantryparserbackend.Util.MessageUtil;
 
 import com.example.pantryparserbackend.Recipes.Recipe;
 import com.example.pantryparserbackend.Recipes.RecipeRepository;
+import com.example.pantryparserbackend.Websockets.FavoriteSocket;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,8 @@ public class UserController {
     private UserRepository userRepository;
     @Autowired
     private RecipeRepository recipeRepository;
+    @Autowired
+    private FavoriteSocket favoriteSocket;
 
     /**
      * this is just a test method to show us our server is up
@@ -161,14 +164,12 @@ public class UserController {
 
         if(u == null || r == null){
             return MessageUtil.newResponseMessage(false, (u == null ? "user " : "recipe ") + "does not exist");
-        }
-        if(u.getFavorites().contains(r)) {
+        } else if(u.getFavorites().contains(r)) {
             return MessageUtil.newResponseMessage(false, "releationship already exists");
+        } else {
+            favoriteSocket.onFavorite(r, u);
+            return MessageUtil.newResponseMessage(true, "favorited");
         }
-
-        u.favorite(r);
-        userRepository.save(u);
-        return MessageUtil.newResponseMessage(true, "favorited");
     }
     /**
      * the route for a user to unfavorite a recipe
@@ -183,13 +184,11 @@ public class UserController {
         Recipe r = recipeRepository.findById(recipe_id);
         if(u == null || r == null){
             return MessageUtil.newResponseMessage(false, (u == null ? "user " : "recipe ") + "does not exist");
-        }
-        if(!u.getFavorites().contains(r)) {
+        } else if(!u.getFavorites().contains(r)) {
             return MessageUtil.newResponseMessage(false, "relationship does not exist");
+        } else {
+            favoriteSocket.onUnfavorite(r, u);
+            return MessageUtil.newResponseMessage(true, "successfully unfavorited");
         }
-
-        u.unfavorite(r);
-        userRepository.save(u);
-        return MessageUtil.newResponseMessage(true, "successfully unfavorited");
     }
 }

@@ -40,7 +40,7 @@ public class RecipeControllerTest {
         stepList.add("step 2");
         String ingredientName = "fried chicken";
         ingredientList.add(ingredientName);
-        RecipeRequest input = new RecipeRequest("name", 4, "summary", "description", ingredientList, stepList);
+        RecipeRequest input = new RecipeRequest("name", 4, 8, 12, "good for you", "summary", "description", ingredientList, stepList);
         int user_id = 1;
         User mockUser = new User("pass", "emalil@lail.com");
         mockUser.setCreated_recipes(new ArrayList<>());
@@ -66,7 +66,7 @@ public class RecipeControllerTest {
         stepList.add("step 2");
         String ingredientName = "fried chicken";
         ingredientList.add(ingredientName);
-        RecipeRequest input = new RecipeRequest("name", 4, "summary", "description", ingredientList, stepList);
+        RecipeRequest input = new RecipeRequest("name", 4, 8, 12, "good for you", "summary", "description", ingredientList, stepList);
         int user_id = 1;
         User mockUser = new User("pass", "emalil@lail.com");
         mockUser.setCreated_recipes(new ArrayList<>());
@@ -74,7 +74,7 @@ public class RecipeControllerTest {
         when(userRepository.findById(user_id)).thenReturn(mockUser);
         when(ingredientRepository.findByName(ingredientName)).thenReturn(null);
 
-        String expected = MessageUtil.newResponseMessage(true, "recipe was created, however some ingredients didn't exist and were not added");
+        String expected = MessageUtil.newResponseMessage(true, "created some ingredients to make this work");
         String actual = recipeController.createRecipe(user_id, input);
 
         assertEquals(expected, actual);
@@ -93,7 +93,7 @@ public class RecipeControllerTest {
         String ingredientName = "fried chicken";
         ingredientList.add(ingredientName);
         int user_id = 1;
-        RecipeRequest input = new RecipeRequest("name", 4, "summary", "description", ingredientList, stepList);
+        RecipeRequest input = new RecipeRequest("name", 4, 8, 12, "good for you", "summary", "description", ingredientList, stepList);
         User mockUser = new User("pass", "emalil@lail.com");
         mockUser.setCreated_recipes(new ArrayList<>());
 
@@ -110,15 +110,15 @@ public class RecipeControllerTest {
     void onRecipeUpdate_goodInputs_returnSuccess() {
         MockitoAnnotations.openMocks(this);
 
-        List<String> mockIngredientList = new ArrayList<>();
-        List<String> mockStepList = new ArrayList<>();
-        mockStepList.add("step 1");
-        mockStepList.add("step 2");
+        List<String> ingredientList = new ArrayList<>();
+        List<String> stepList = new ArrayList<>();
+        stepList.add("step 1");
+        stepList.add("step 2");
         String ingredientName = "fried chicken";
-        mockIngredientList.add(ingredientName);
+        ingredientList.add(ingredientName);
         int recipe_id = 1;
         Recipe mockRecipe = new Recipe("name", 4, "summary", "description");
-        RecipeRequest mockInput = new RecipeRequest("name", 4, "summary", "description", mockIngredientList, mockStepList);
+        RecipeRequest mockInput = new RecipeRequest("name", 4, 8, 12, "good for you", "summary", "description", ingredientList, stepList);
 
         when(ingredientRepository.findByName(ingredientName)).thenReturn(new Ingredient(ingredientName));
         when(recipeRepository.findById(recipe_id)).thenReturn(mockRecipe);
@@ -134,20 +134,20 @@ public class RecipeControllerTest {
     void onRecipeUpdate_badIngredient_returnPartialSuccess() {
         MockitoAnnotations.openMocks(this);
 
-        List<String> mockIngredientList = new ArrayList<>();
-        List<String> mockStepList = new ArrayList<>();
-        mockStepList.add("step 1");
-        mockStepList.add("step 2");
+        List<String> ingredientList = new ArrayList<>();
+        List<String> stepList = new ArrayList<>();
+        stepList.add("step 1");
+        stepList.add("step 2");
         String ingredientName = "fried chicken";
-        mockIngredientList.add(ingredientName);
+        ingredientList.add(ingredientName);
         int recipe_id = 1;
         Recipe mockRecipe = new Recipe("name", 4, "summary", "description");
-        RecipeRequest mockInput = new RecipeRequest("name", 4, "summary", "description", mockIngredientList, mockStepList);
+        RecipeRequest mockInput = new RecipeRequest("name", 4, 8, 12, "good for you", "summary", "description", ingredientList, stepList);
 
         when(ingredientRepository.findByName(ingredientName)).thenReturn(null);
         when(recipeRepository.findById(recipe_id)).thenReturn(mockRecipe);
 
-        String expected = MessageUtil.newResponseMessage(true, "recipe was updated, however some ingredients didn't exist and were not added");
+        String expected = MessageUtil.newResponseMessage(true, "created some ingredients to make this work");
         String actual = recipeController.updateRecipe(recipe_id, mockInput);
 
         assertEquals(expected, actual);
@@ -159,14 +159,14 @@ public class RecipeControllerTest {
     void onRecipeUpdate_badRecipe_returnFailure() {
         MockitoAnnotations.openMocks(this);
 
-        List<String> mockIngredientList = new ArrayList<>();
-        List<String> mockStepList = new ArrayList<>();
-        mockStepList.add("step 1");
-        mockStepList.add("step 2");
+        List<String> ingredientList = new ArrayList<>();
+        List<String> stepList = new ArrayList<>();
+        stepList.add("step 1");
+        stepList.add("step 2");
         String ingredientName = "fried chicken";
-        mockIngredientList.add(ingredientName);
+        ingredientList.add(ingredientName);
         int recipe_id = 1;
-        RecipeRequest mockInput = new RecipeRequest("name", 4, "summary", "description", mockIngredientList, mockStepList);
+        RecipeRequest mockInput = new RecipeRequest("name", 4, 8, 12, "good for you", "summary", "description", ingredientList, stepList);
 
         when(ingredientRepository.findByName(ingredientName)).thenReturn(null);
         when(recipeRepository.findById(recipe_id)).thenReturn(null);

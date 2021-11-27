@@ -4,6 +4,7 @@ import com.example.pantryparserbackend.Recipes.Recipe;
 import com.example.pantryparserbackend.Recipes.RecipeRepository;
 import com.example.pantryparserbackend.Requests.LoginRequest;
 import com.example.pantryparserbackend.Util.MessageUtil;
+import com.example.pantryparserbackend.Websockets.FavoriteSocket;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -24,6 +25,8 @@ class UserControllerTest {
     private UserRepository userRepository;
     @Mock
     private RecipeRepository recipeRepository;
+    @Mock
+    private FavoriteSocket favoriteSocket;
     @Mock
     private User mockUser;
 
@@ -91,7 +94,7 @@ class UserControllerTest {
         String expected = MessageUtil.newResponseMessage(true, "favorited");
         String actual = userController.favorite(user_id, recipe_id);
         assertEquals(actual, expected);
-        Mockito.verify(userRepository).save(mockUser);
+        Mockito.verify(favoriteSocket).onFavorite(mockRecipe, mockUser);
     }
     @Test
     public void testFavorite_whenAlreadyFavorite_ThenReturnFailure() {
@@ -125,7 +128,7 @@ class UserControllerTest {
         String expected = MessageUtil.newResponseMessage(true, "successfully unfavorited");
         String actual = userController.unfavorite(user_id, recipe_id);
         assertEquals(actual, expected);
-        Mockito.verify(userRepository).save(mockUser);
+        Mockito.verify(favoriteSocket).onUnfavorite(mockRecipe, mockUser);
     }
     @Test
     public void testUnFavorite_whenNotAlreadyFavorite_ThenReturnFailure() {

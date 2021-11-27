@@ -92,6 +92,7 @@ public class Recipe {
     private List<Review> recipes_reviews;
     @JsonIgnore
     @ManyToMany(mappedBy = "favorites")
+    @Getter
     private List<User> favoritedBy;
     @Getter
     @JoinTable(

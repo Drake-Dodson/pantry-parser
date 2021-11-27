@@ -2,6 +2,7 @@ package com.example.pantryparserbackend.users;
 
 import com.example.pantryparserbackend.Recipes.Recipe;
 import com.example.pantryparserbackend.Recipes.RecipeRepository;
+import com.example.pantryparserbackend.Requests.LoginRequest;
 import com.example.pantryparserbackend.Util.MessageUtil;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -58,7 +59,7 @@ class UserControllerTest {
         MockitoAnnotations.openMocks(this);
 
         User mockUser = new User("password", "mockitoUserTest@email.com");
-        Login mockLogin = new Login("mockitoUserTest@email.com", "password");
+        LoginRequest mockLogin = new LoginRequest("mockitoUserTest@email.com", "password");
 
         when(userRepository.findByEmail(mockUser.getEmail())).thenReturn(mockUser);
 
@@ -72,7 +73,7 @@ class UserControllerTest {
         MockitoAnnotations.openMocks(this);
 
         User mockUser = new User("password", "mockito1UserTest@email.com");
-        Login mockLogin = new Login("mockitoUserTest@email.com", "password");
+        LoginRequest mockLogin = new LoginRequest("mockitoUserTest@email.com", "password");
 
         when(userRepository.findByEmail(mockUser.getEmail())).thenReturn(mockUser);
 
@@ -86,7 +87,7 @@ class UserControllerTest {
         MockitoAnnotations.openMocks(this);
 
         User mockUser = new User("password1", "mockitoUserTest@email.com");
-        Login mockLogin = new Login("mockitoUserTest@email.com", "password");
+        LoginRequest mockLogin = new LoginRequest("mockitoUserTest@email.com", "password");
 
         when(userRepository.findByEmail(mockUser.getEmail())).thenReturn(null);
 
@@ -100,7 +101,7 @@ class UserControllerTest {
         MockitoAnnotations.openMocks(this);
 
         User mockUser = new User("password1", "mockitoUserTest@email.com");
-        Login mockLogin = new Login("mockitoUserTest@email.com", "password");
+        LoginRequest mockLogin = new LoginRequest("mockitoUserTest@email.com", "password");
 
         when(userRepository.findByEmail(mockUser.getEmail())).thenReturn(mockUser);
 

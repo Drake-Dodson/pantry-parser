@@ -2,6 +2,7 @@ package com.example.pantryparserbackend.Recipes;
 
 import com.example.pantryparserbackend.Ingredients.Ingredient;
 import com.example.pantryparserbackend.Ingredients.IngredientRepository;
+import com.example.pantryparserbackend.Requests.RecipeRequest;
 import com.example.pantryparserbackend.Util.MessageUtil;
 import com.example.pantryparserbackend.users.User;
 import com.example.pantryparserbackend.users.UserRepository;

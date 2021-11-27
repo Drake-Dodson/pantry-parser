@@ -1,11 +1,12 @@
 package com.example.pantryparserbackend.Recipes;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 import com.example.pantryparserbackend.Ingredients.Ingredient;
 import com.example.pantryparserbackend.Ingredients.IngredientRepository;
+import com.example.pantryparserbackend.Requests.PantryParserRequest;
+import com.example.pantryparserbackend.Requests.RecipeRequest;
 import com.example.pantryparserbackend.Util.MessageUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -215,13 +216,13 @@ public class RecipeController {
      * a list of recipes at least one of those ingredients,
      * sorted by the percentage of the recipe's ingredients that
      * match the input
-     * @param input array of strings with ingredient names
+     * @param request object with an array of strings being the names of the ingredients
      * @return list of recipes
      */
     @ApiOperation(value = "Gets a list of ingredients and searches recipes based on that list")
     @PutMapping(path = "/pantry-parser")
-    Page<Recipe> recipesByIngrents(@RequestParam(defaultValue = "0") Integer pageNo, @RequestParam(defaultValue = "15") Integer perPage, @RequestBody List<String> input){
+    Page<Recipe> recipesByIngrents(@RequestParam(defaultValue = "0") Integer pageNo, @RequestParam(defaultValue = "15") Integer perPage, @RequestBody PantryParserRequest request){
         Pageable page = PageRequest.of(pageNo, perPage, Sort.by("rating"));
-        return recipeRepository.getByIngredients(input, page);
+        return recipeRepository.getByIngredients(request.ingredients, page);
     }
 }

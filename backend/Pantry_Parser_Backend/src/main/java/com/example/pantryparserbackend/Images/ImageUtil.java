@@ -7,17 +7,34 @@ import javax.imageio.metadata.IIOMetadata;
 import javax.imageio.stream.ImageInputStream;
 import javax.imageio.stream.ImageOutputStream;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ImageUtil{
+
+    private List<String> acceptedFileTypes = new ArrayList<String>();
+
+    public ImageUtil(){
+        acceptedFileTypes.add("jpg");
+        acceptedFileTypes.add("png");
+        acceptedFileTypes.add("jpeg");
+    }
+
+    public boolean isAcceptedFileType(String fileExtension){
+        return acceptedFileTypes.contains(fileExtension);
+    }
+
     public void compressFile(String filePath, String fileName) throws IOException {
         String inputPath = filePath + "/" + fileName;
         String outputPath = filePath + "/" + fileName.replace(".png", "") + "_compressed.png";
+
 
         // Worth noting that the compression is very miniscule and doesn't seem to do much. I tried changing the quality and didn't notice much of
         // a difference. Also sometimes the file size is larger than it should be so idk what that's about

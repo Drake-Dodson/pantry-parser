@@ -7,14 +7,10 @@ import com.example.pantryparserbackend.users.User;
 import com.example.pantryparserbackend.users.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.imageio.*;
-import javax.imageio.metadata.IIOMetadata;
-import javax.imageio.stream.ImageInputStream;
-import javax.imageio.stream.ImageOutputStream;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.nio.file.*;
@@ -29,7 +25,7 @@ public class ImageController {
     @Autowired
     UserRepository userRepo;
 
-    private ImageUtil imageUtil = new ImageUtil();
+    private final ImageUtil imageUtil = new ImageUtil();
 
     @PostMapping(path = "/recipe/{recipe_id}/image")
     public String setRecipeImage(@RequestParam("image") MultipartFile image, @PathVariable int recipe_id) throws IOException {
@@ -38,25 +34,26 @@ public class ImageController {
         if(recipe == null){
             return MessageUtil.newResponseMessage(false, "Recipe Id not found");
         }
-        if(image == null){
+        if(image == null || image.getOriginalFilename() == null){
             return MessageUtil.newResponseMessage(false, "Image was null");
         }
-        if(!image.getOriginalFilename().contains(".jpg") && !image.getOriginalFilename().contains(".png") && !image.getOriginalFilename().contains(".jpeg")) {
+        if(!image.getOriginalFilename().contains(".") || !imageUtil.isAcceptedFileType(image.getOriginalFilename().split("\\.")[1])) {
             return MessageUtil.newResponseMessage(false, "Accepted file types are .jpg .jpeg and .png");
         }
 
         String fileDirectory = "mainImageDirectory/recipes/" + recipe_id;
-        String fileName = StringUtils.cleanPath("Recipe" + recipe_id + "Image.png");
+        String fileName = "Recipe" + recipe_id + "Image.png";
 
         // If file is a jpg
         if(image.getOriginalFilename().contains(".jpg") || image.getOriginalFilename().contains(".jpeg")){
-            File file = new File("Recipe" + recipe_id + "Image.png");
+            File file = new File(fileName);
             imageUtil.saveFile(fileDirectory, "temp.jpg", image);
             BufferedImage bufferedImage = ImageIO.read(new File(fileDirectory + "/temp.jpg"));
             ImageIO.write(bufferedImage, "png", new File(fileDirectory + "/" + fileName));
             imageUtil.compressFile(fileDirectory, fileName);
+            Files.delete(Paths.get(fileDirectory + "/temp.jpg"));
 
-            return MessageUtil.newResponseMessage(true, "Image uploaded to server successfully");
+            return MessageUtil.newResponseMessage(true, "Image converted to png and uploaded to server successfully");
         }
         else
         {
@@ -85,26 +82,25 @@ public class ImageController {
         if(user == null){
             return MessageUtil.newResponseMessage(false, "User Id not found");
         }
-        if(image == null){
+        if(image == null || image.getOriginalFilename() == null){
             return MessageUtil.newResponseMessage(false, "Image was null");
         }
-        if(!image.getOriginalFilename().contains(".jpg") && !image.getOriginalFilename().contains(".png") && !image.getOriginalFilename().contains(".jpeg")) {
+        if(!image.getOriginalFilename().contains(".") || !imageUtil.isAcceptedFileType(image.getOriginalFilename().split("\\.")[1])) {
             return MessageUtil.newResponseMessage(false, "Accepted file types are .jpg .jpeg and .png");
         }
 
         String fileDirectory = "mainImageDirectory/users/" + user_id;
-        String fileName = StringUtils.cleanPath("User" + user_id + "Image.png");
+        String fileName ="User" + user_id + "Image.png";
 
         // If file is a jpg
         if(image.getOriginalFilename().contains(".jpg") || image.getOriginalFilename().contains(".jpeg")){
-            File tempFile = new File("User" + user_id + "Image.png");
             imageUtil.saveFile(fileDirectory, "temp.jpg", image);
             BufferedImage bufferedImage = ImageIO.read(new File(fileDirectory + "/temp.jpg"));
             ImageIO.write(bufferedImage, "png", new File(fileDirectory + "/" + fileName));
             imageUtil.compressFile(fileDirectory, fileName);
             Files.delete(Paths.get(fileDirectory + "/temp.jpg"));
 
-            return MessageUtil.newResponseMessage(true, "Image uploaded to server successfully");
+            return MessageUtil.newResponseMessage(true, "Image converted and uploaded to server");
         }
         else
         {

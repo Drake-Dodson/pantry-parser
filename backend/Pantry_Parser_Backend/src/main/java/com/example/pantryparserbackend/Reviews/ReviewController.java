@@ -146,6 +146,7 @@ public class ReviewController {
         }
 
         int oldRating = review.getStarNumber();
+        int newRating = reviewChanges.getStarNumber();
         Recipe recipeStore = review.getRecipe_reviewed();
 
         review.setStarNumber(reviewChanges.getStarNumber());
@@ -161,8 +162,8 @@ public class ReviewController {
             return MessageUtil.newResponseMessage(false, "Error saving to the repository");
         }
 
-        //review.getRecipe_reviewed().updateRating(oldRating, review.getStarNumber());
-        review.getRecipe_reviewed().updateRating0N();
+        review.getRecipe_reviewed().updateRating(oldRating, newRating);
+        //review.getRecipe_reviewed().updateRating0N();
         recipeRepository.save(recipeStore);
 
         return MessageUtil.newResponseMessage(true, "Review updated");
@@ -184,8 +185,9 @@ public class ReviewController {
         }
 
         Recipe recipeStore = review.getRecipe_reviewed();
-
-        // Attempt to add the review
+        recipeStore.getRecipeReviews().remove(review);
+        int oldStars = review.getStarNumber();
+        // Attempt to remove the review
         try {
             reviewRepository.delete(review);
         }
@@ -193,8 +195,8 @@ public class ReviewController {
             return MessageUtil.newResponseMessage(false, "Error deleting entry from the repository");
         }
 
-        //recipeStore.removeRating(review.getStarNumber());
-        recipeStore.updateRating0N();
+        recipeStore.removeRating(oldStars);
+        //recipeStore.updateRating0N();
         recipeRepository.save(recipeStore);
 
         return MessageUtil.newResponseMessage(true, "Review deleted");

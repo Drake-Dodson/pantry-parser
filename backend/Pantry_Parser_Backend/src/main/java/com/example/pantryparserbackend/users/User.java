@@ -40,6 +40,7 @@ public class User {
     @Setter
     private String role;
 
+    @Setter
     @JsonIgnore
     @OneToMany(mappedBy = "creator")
     private List<Recipe> created_recipes;
@@ -52,7 +53,7 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "recipe_id"),
             uniqueConstraints = @UniqueConstraint(columnNames = {"recipe_id", "user_id"})
     )
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.EAGER)
     private List<Recipe> favorites;
 
     @Getter

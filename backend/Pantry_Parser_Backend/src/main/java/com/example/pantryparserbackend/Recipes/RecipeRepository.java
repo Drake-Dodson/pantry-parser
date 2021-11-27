@@ -106,6 +106,25 @@ public interface RecipeRepository extends PagingAndSortingRepository<Recipe, Lon
             nativeQuery = true)
     Page<Recipe> getByIngredient(Integer ingredient_id, Pageable pageable);
 
+    /**
+     * gets the recipes a user created and returns a list instead of a page
+     * @param user creator
+     * @return list of recipes
+     */
+    @Query(value = "SELECT r FROM Recipe r WHERE " +
+            "r.creator = ?1")
+    List<Recipe> getUserCreated(User user);
+
+    /**
+     * gets the recipes a user has favorited and returns a list instead of a page
+     * @param user_id id of the user
+     * @return list
+     */
+    @Query(value = "SELECT r.id FROM recipes r " +
+            "JOIN favorites f ON f.recipe_id = r.id " +
+            "WHERE f.user_id = :user_id ",
+            nativeQuery = true)
+    List<Integer> getUserFavoriteIds(Integer user_id);
 
     @Transactional
     void deleteById(int id);

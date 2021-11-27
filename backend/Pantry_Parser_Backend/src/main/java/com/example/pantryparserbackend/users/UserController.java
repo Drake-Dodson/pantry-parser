@@ -1,9 +1,11 @@
 package com.example.pantryparserbackend.users;
 
+import com.example.pantryparserbackend.Requests.LoginRequest;
 import com.example.pantryparserbackend.Util.MessageUtil;
 
 import com.example.pantryparserbackend.Recipes.Recipe;
 import com.example.pantryparserbackend.Recipes.RecipeRepository;
+import com.example.pantryparserbackend.Websockets.FavoriteSocket;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,10 +14,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
 
 /**
  * User controller, responsible for all user stuff
@@ -28,6 +26,8 @@ public class UserController {
     private UserRepository userRepository;
     @Autowired
     private RecipeRepository recipeRepository;
+    @Autowired
+    private FavoriteSocket favoriteSocket;
 
     /**
      * this is just a test method to show us our server is up
@@ -103,7 +103,7 @@ public class UserController {
      */
     @ApiOperation(value = "Logs in a user")
     @PostMapping(path = "/login")
-    public String login(@RequestBody Login login){
+    public String login(@RequestBody LoginRequest login){
         if (login == null)
             return MessageUtil.newResponseMessage(false, "no login info detected");
         User actual = userRepository.findByEmail(login.email);
@@ -164,14 +164,12 @@ public class UserController {
 
         if(u == null || r == null){
             return MessageUtil.newResponseMessage(false, (u == null ? "user " : "recipe ") + "does not exist");
-        }
-        if(u.getFavorites().contains(r)) {
+        } else if(u.getFavorites().contains(r)) {
             return MessageUtil.newResponseMessage(false, "releationship already exists");
+        } else {
+            favoriteSocket.onFavorite(r, u);
+            return MessageUtil.newResponseMessage(true, "favorited");
         }
-
-        u.favorite(r);
-        userRepository.save(u);
-        return MessageUtil.newResponseMessage(true, "favorited");
     }
     /**
      * the route for a user to unfavorite a recipe
@@ -186,13 +184,11 @@ public class UserController {
         Recipe r = recipeRepository.findById(recipe_id);
         if(u == null || r == null){
             return MessageUtil.newResponseMessage(false, (u == null ? "user " : "recipe ") + "does not exist");
-        }
-        if(!u.getFavorites().contains(r)) {
+        } else if(!u.getFavorites().contains(r)) {
             return MessageUtil.newResponseMessage(false, "relationship does not exist");
+        } else {
+            favoriteSocket.onUnfavorite(r, u);
+            return MessageUtil.newResponseMessage(true, "successfully unfavorited");
         }
-
-        u.unfavorite(r);
-        userRepository.save(u);
-        return MessageUtil.newResponseMessage(true, "successfully unfavorited");
     }
 }

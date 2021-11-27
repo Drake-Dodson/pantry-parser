@@ -154,7 +154,7 @@ public class FavoriteSocket {
             try {
                 session.getBasicRemote().sendText(message);
             } catch (IOException e) {
-                logger.info("Eception: " + e.getMessage());
+                logger.info("Exception: " + e.getMessage());
                 e.printStackTrace();
             }
         });

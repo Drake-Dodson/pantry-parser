@@ -123,9 +123,42 @@ public class UserController {
         }
     }
 
-    @GetMapping(path = "/user/{user_id}/password-reset/sendOTP")
-    public String sendOTP(@PathVariable int user_id) {
+    /**
+     * A password reset route that takes in an email to find the user
+     * @param email email of the user
+     * @return string message success or failure
+     */
+    @GetMapping(path = "/user/email/{email}/password-reset/sendOTP")
+    public String sendResetOTP(@PathVariable String email) {
+        User user = userRepository.findByEmail(email);
+        if (user == null){
+            return MessageUtil.newResponseMessage(false, "account not found");
+        }
+        return this.sendChangeOTP(user.getId());
+    }
 
+    /**
+     * Route that performs a password reset by a user's email
+     * @param email the email of the user
+     * @param request the inputted values in the request
+     * @return string success or fail
+     */
+    @PostMapping(path = "/user/email/{email}/password-reset/")
+    public String resetPassword(@PathVariable String email, @RequestBody PasswordResetRequest request) {
+        User user = userRepository.findByEmail(email);
+        if (user == null){
+            return MessageUtil.newResponseMessage(false, "account not found");
+        }
+        return this.changePassword(user.getId(), request);
+    }
+
+    /**
+     * a route for simply changing a user's password
+     * @param user_id id of the user
+     * @return string success or fail
+     */
+    @GetMapping(path = "/user/{user_id}/password-change/sendOTP")
+    public String sendChangeOTP(@PathVariable int user_id) {
         User user = userRepository.findById(user_id);
         if (user == null){
             return MessageUtil.newResponseMessage(false, "user not found");
@@ -136,7 +169,6 @@ public class UserController {
             return MessageUtil.newResponseMessage(false, pass);
         }
 
-        //sendEmail
         try {
             EmailUtil.sendPasswordResetEmail(user, pass);
         } catch (Exception e) {
@@ -146,8 +178,14 @@ public class UserController {
         return MessageUtil.newResponseMessage(true, "check your email for your OTP");
     }
 
-    @PostMapping(path = "/user/{user_id}/password-reset")
-    public String passwordReset(@PathVariable int user_id, @RequestBody PasswordResetRequest request) {
+    /**
+     * A route that verifies the OTP then changes the password
+     * @param user_id id of the user
+     * @param request otp and new password
+     * @return string success or fail
+     */
+    @PostMapping(path = "/user/{user_id}/password-change")
+    public String changePassword(@PathVariable int user_id, @RequestBody PasswordResetRequest request) {
         User user = userRepository.findById(user_id);
         if(user == null) {
             return MessageUtil.newResponseMessage(false, "user was not found");

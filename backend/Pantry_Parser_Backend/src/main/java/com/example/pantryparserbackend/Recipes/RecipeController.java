@@ -1,11 +1,12 @@
 package com.example.pantryparserbackend.Recipes;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 import com.example.pantryparserbackend.Ingredients.Ingredient;
 import com.example.pantryparserbackend.Ingredients.IngredientRepository;
+import com.example.pantryparserbackend.Requests.PantryParserRequest;
+import com.example.pantryparserbackend.Requests.RecipeRequest;
 import com.example.pantryparserbackend.Util.MessageUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -70,7 +71,7 @@ public class RecipeController {
         if(recipeRequest == null)
             return MessageUtil.newResponseMessage(false, "invalid input");
 
-        Recipe recipe = new Recipe(recipeRequest.name, recipeRequest.time, recipeRequest.summary, recipeRequest.description);
+        Recipe recipe = new Recipe(recipeRequest);
         recipe.setCreatedDate();
 
         User u = userRepository.findById(user_id);
@@ -98,9 +99,10 @@ public class RecipeController {
             Ingredient ingredient = ingredientRepository.findByName(s);
             if(ingredient == null) {
                 all = false;
-            } else {
-                recipe.addIngredient(ingredient);
+                ingredient = new Ingredient(s);
+                ingredientRepository.save(ingredient);
             }
+            recipe.addIngredient(ingredient);
         }
 
         try {
@@ -110,7 +112,7 @@ public class RecipeController {
         } catch (Exception ex) {
             return MessageUtil.newResponseMessage(false, "error saving to database, were all fields filled out correctly?");
         }
-        return MessageUtil.newResponseMessage(true, all ? "successfully created recipe" : "recipe was created, however some ingredients didn't exist and were not added");
+        return MessageUtil.newResponseMessage(true, all ? "successfully created recipe" : "created some ingredients to make this work");
     }
 
     /**
@@ -121,10 +123,11 @@ public class RecipeController {
      */
     @ApiOperation(value = "Updates the recipe of the given id")
     @PatchMapping(path = "/recipe/{recipe_id}")
-    String updateRecipe(@PathVariable int recipe_id, @RequestBody RecipeRequest recipeRequest){
+    String updateRecipe(@PathVariable int recipe_id, @RequestBody RecipeRequest recipeRequest) {
         Recipe recipe = recipeRepository.findById(recipe_id);
         if(recipe == null)
-            return null;
+            return MessageUtil.newResponseMessage(false, "recipe does not exist");
+
         recipe.update(recipeRequest);
         if (recipeRequest.steps == null) {
             recipeRequest.steps = new ArrayList<>();
@@ -146,7 +149,7 @@ public class RecipeController {
         }
 
         //step deletion
-        if(recipe.getSteps().size() > recipeRequest.steps.size()) {
+        if (recipe.getSteps().size() > recipeRequest.steps.size()) {
             //since it removes the step each time, the indexing shifts back down, so the position will be the same
             //for each step we want to remove, and we need to prepare the end index outside of the loop
             int pos = recipeRequest.steps.size();
@@ -166,9 +169,12 @@ public class RecipeController {
         i = 0;
         for (String s : recipeRequest.ingredients) {
             Ingredient ingredient = ingredientRepository.findByName(s);
-            if(ingredient == null) {
+            if (ingredient == null) {
                 all = false;
-            } else if (!recipe.getIngredients().contains(ingredient)) {
+                ingredient = new Ingredient(s);
+                ingredientRepository.save(ingredient);
+            }
+            if (!recipe.getIngredients().contains(ingredient)) {
                 recipe.addIngredient(ingredient);
             }
         }
@@ -176,7 +182,7 @@ public class RecipeController {
         //removes extra ingredients
         for (i = 0; i < recipe.getIngredients().size(); i++) {
             Ingredient s = recipe.getIngredients().get(i);
-            if(!recipeRequest.ingredients.contains(s.getName())){
+            if (!recipeRequest.ingredients.contains(s.getName())) {
                 recipe.removeIngredient(s);
                 i--;
             }
@@ -188,7 +194,7 @@ public class RecipeController {
         } catch (Exception ex) {
             return MessageUtil.newResponseMessage(false, "error saving to database, were all fields filled out?");
         }
-        return MessageUtil.newResponseMessage(true, all ? "successfully updated recipe" : "recipe was updated, however some ingredients didn't exist and were not added");
+        return MessageUtil.newResponseMessage(true, all ? "successfully updated recipe" : "created some ingredients to make this work");
     }
 
     /**
@@ -205,6 +211,7 @@ public class RecipeController {
         }
         stepRepository.deleteAll(recipe.getSteps());
         recipeRepository.delete(recipe);
+        //TODO: test
         return MessageUtil.newResponseMessage(true, "successfully deleted");
     }
 
@@ -214,13 +221,13 @@ public class RecipeController {
      * a list of recipes at least one of those ingredients,
      * sorted by the percentage of the recipe's ingredients that
      * match the input
-     * @param input array of strings with ingredient names
+     * @param request object with an array of strings being the names of the ingredients
      * @return list of recipes
      */
     @ApiOperation(value = "Gets a list of ingredients and searches recipes based on that list")
     @PutMapping(path = "/pantry-parser")
-    Page<Recipe> recipesByIngrents(@RequestParam(defaultValue = "0") Integer pageNo, @RequestParam(defaultValue = "15") Integer perPage, @RequestBody List<String> input){
+    Page<Recipe> recipesByIngrents(@RequestParam(defaultValue = "0") Integer pageNo, @RequestParam(defaultValue = "15") Integer perPage, @RequestBody PantryParserRequest request){
         Pageable page = PageRequest.of(pageNo, perPage, Sort.by("rating"));
-        return recipeRepository.getByIngredients(input, page);
+        return recipeRepository.getByIngredients(request.ingredients, page);
     }
 }

@@ -1,10 +1,14 @@
 package com.example.pantryparserbackend.users;
 
+import com.example.pantryparserbackend.Passwords.OTPRepository;
+import com.example.pantryparserbackend.Requests.PasswordResetRequest;
+import com.example.pantryparserbackend.Util.EmailUtil;
 import com.example.pantryparserbackend.Requests.LoginRequest;
 import com.example.pantryparserbackend.Util.MessageUtil;
-
 import com.example.pantryparserbackend.Recipes.Recipe;
 import com.example.pantryparserbackend.Recipes.RecipeRepository;
+import com.example.pantryparserbackend.Util.PasswordUtil;
+import com.example.pantryparserbackend.Websockets.FavoriteSocket;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +29,10 @@ public class UserController {
     private UserRepository userRepository;
     @Autowired
     private RecipeRepository recipeRepository;
+    @Autowired
+    private OTPRepository otpRepository;
+    @Autowired
+    private FavoriteSocket favoriteSocket;
 
     /**
      * this is just a test method to show us our server is up
@@ -66,7 +74,7 @@ public class UserController {
      */
     @ApiOperation(value = "Finds a user by a given email")
     @GetMapping(path = "/user/email/{email}")
-    public User getUserByEmail(@PathVariable String email) throws Exception {
+    public User getUserByEmail(@PathVariable String email) {
         return userRepository.findByEmail(email);
     }
 
@@ -116,6 +124,81 @@ public class UserController {
     }
 
     /**
+     * A password reset route that takes in an email to find the user
+     * @param email email of the user
+     * @return string message success or failure
+     */
+    @GetMapping(path = "/user/email/{email}/password-reset/sendOTP")
+    public String sendResetOTP(@PathVariable String email) {
+        User user = userRepository.findByEmail(email);
+        if (user == null){
+            return MessageUtil.newResponseMessage(false, "account not found");
+        }
+        return this.sendChangeOTP(user.getId());
+    }
+
+    /**
+     * Route that performs a password reset by a user's email
+     * @param email the email of the user
+     * @param request the inputted values in the request
+     * @return string success or fail
+     */
+    @PostMapping(path = "/user/email/{email}/password-reset/")
+    public String resetPassword(@PathVariable String email, @RequestBody PasswordResetRequest request) {
+        User user = userRepository.findByEmail(email);
+        if (user == null){
+            return MessageUtil.newResponseMessage(false, "account not found");
+        }
+        return this.changePassword(user.getId(), request);
+    }
+
+    /**
+     * a route for simply changing a user's password
+     * @param user_id id of the user
+     * @return string success or fail
+     */
+    @GetMapping(path = "/user/{user_id}/password-change/sendOTP")
+    public String sendChangeOTP(@PathVariable int user_id) {
+        User user = userRepository.findById(user_id);
+        if (user == null){
+            return MessageUtil.newResponseMessage(false, "user not found");
+        }
+
+        String pass = PasswordUtil.generateOTP(6, user, otpRepository);
+        if (pass.contains("ERROR:")) {
+            return MessageUtil.newResponseMessage(false, pass);
+        }
+
+        try {
+            EmailUtil.sendPasswordResetEmail(user, pass);
+        } catch (Exception e) {
+            return MessageUtil.newResponseMessage(false, "There was an error sending you your OTP");
+        }
+
+        return MessageUtil.newResponseMessage(true, "check your email for your OTP");
+    }
+
+    /**
+     * A route that verifies the OTP then changes the password
+     * @param user_id id of the user
+     * @param request otp and new password
+     * @return string success or fail
+     */
+    @PostMapping(path = "/user/{user_id}/password-change")
+    public String changePassword(@PathVariable int user_id, @RequestBody PasswordResetRequest request) {
+        User user = userRepository.findById(user_id);
+        if(user == null) {
+            return MessageUtil.newResponseMessage(false, "user was not found");
+        }
+        if(PasswordUtil.useOTP(request.OTP, user, otpRepository)) {
+            user.setPassword(request.newPassword);
+            userRepository.save(user);
+            return MessageUtil.newResponseMessage(true, "successfully changed password");
+        }
+        return MessageUtil.newResponseMessage(false, "invalid OTP, please try again");
+    }
+
+    /**
      * gets a list of recipes the provided user has created
      * @param user_id the id of the user
      * @return list of recipes that user created
@@ -161,14 +244,12 @@ public class UserController {
 
         if(u == null || r == null){
             return MessageUtil.newResponseMessage(false, (u == null ? "user " : "recipe ") + "does not exist");
-        }
-        if(u.getFavorites().contains(r)) {
+        } else if(u.getFavorites().contains(r)) {
             return MessageUtil.newResponseMessage(false, "releationship already exists");
+        } else {
+            favoriteSocket.onFavorite(r, u);
+            return MessageUtil.newResponseMessage(true, "favorited");
         }
-
-        u.favorite(r);
-        userRepository.save(u);
-        return MessageUtil.newResponseMessage(true, "favorited");
     }
     /**
      * the route for a user to unfavorite a recipe
@@ -183,13 +264,11 @@ public class UserController {
         Recipe r = recipeRepository.findById(recipe_id);
         if(u == null || r == null){
             return MessageUtil.newResponseMessage(false, (u == null ? "user " : "recipe ") + "does not exist");
-        }
-        if(!u.getFavorites().contains(r)) {
+        } else if(!u.getFavorites().contains(r)) {
             return MessageUtil.newResponseMessage(false, "relationship does not exist");
+        } else {
+            favoriteSocket.onUnfavorite(r, u);
+            return MessageUtil.newResponseMessage(true, "successfully unfavorited");
         }
-
-        u.unfavorite(r);
-        userRepository.save(u);
-        return MessageUtil.newResponseMessage(true, "successfully unfavorited");
     }
 }

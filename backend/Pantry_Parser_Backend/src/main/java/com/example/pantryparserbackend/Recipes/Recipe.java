@@ -96,6 +96,7 @@ public class Recipe {
     private List<Review> recipes_reviews;
     @JsonIgnore
     @ManyToMany(mappedBy = "favorites")
+    @Getter
     private List<User> favoritedBy;
     @Getter
     @JoinTable(
@@ -124,16 +125,21 @@ public class Recipe {
         this.summary = summary;
         this.description = description;
         this.created_date = new Date();
+        this.steps = new ArrayList<>();
+        this.ingredients = new ArrayList<>();
+        this.num_reviews = 0;
+        this.num_ingredients = 0;
+        this.chef_verified = false;
     }
 
     public Recipe(RecipeRequest request) {
+        this.created_date = new Date();
         this.steps = new ArrayList<>();
         this.ingredients = new ArrayList<>();
         this.num_reviews = 0;
         this.num_ingredients = 0;
         this.chef_verified = false;
         this.update(request);
-
     }
 
     public Recipe(){}
@@ -185,18 +191,17 @@ public class Recipe {
      */
     public void updateRating0N(){
         double total = 0;
+        this.num_reviews = recipes_reviews.size();
         for (Review recipes_review : recipes_reviews) {
             total += recipes_review.getStarNumber();
         }
         this.rating = total / recipes_reviews.size();
     }
 
-    // Not currently implemented
-
     /**
      * updates the rating based on the current rating, the
      * original number of stars a review had, and the updated number
-     * not currently working, but has a constant runtime
+     * has a constant runtime
      * @param oldRating the previous value for this review
      * @param newRating the new value for this review
      */
@@ -214,37 +219,39 @@ public class Recipe {
 
     /**
      * updates the rating based on the current overall rating and the
-     * number of stars in the new review. not currently working, but
+     * number of stars in the new review
      * has a constant runtime
      * @param newRating the new star value for the rating
      */
     public void addRating(int newRating){
-        this.num_reviews++;
-        if(recipes_reviews.size() == 0){
+        if(this.num_reviews == 0){
             this.rating = newRating;
+            this.num_reviews++;
         }
         else{
-            double total = this.rating * (recipes_reviews.size() - 1);
+            double total = this.rating * this.num_reviews;
             total += newRating;
-            this.rating = total / (recipes_reviews.size());
+            this.num_reviews++;
+            this.rating = total / this.num_reviews;
         }
     }
 
     /**
      * updates the rating based on the current overall rating and the
-     * number of stars in the removed review. not currently working, but
+     * number of stars in the removed review
      * has a constant runtime
-     * @param newRating the value of the removed rating
+     * @param removedRating the value of the removed rating
      */
-    public void removeRating(int newRating){
-        this.num_reviews--;
-        if(recipes_reviews.size() == 0){
+    public void removeRating(int removedRating){
+        if(this.num_reviews <= 1){
+            this.num_reviews--;
             this.rating = 0;
         }
         else {
-            double total = this.rating * recipes_reviews.size();
-            total -= newRating;
-            this.rating = total / (recipes_reviews.size() - 1);
+            double total = this.rating * this.num_reviews;
+            total -= removedRating;
+            this.num_reviews--;
+            this.rating = total / this.num_reviews;
         }
     }
 
@@ -302,9 +309,5 @@ public class Recipe {
         this.nutrition_facts = request.nutrition_facts;
         this.summary         = request.summary;
         this.description     = request.description;
-
-        //ingredients
-
-        //steps
     }
 }

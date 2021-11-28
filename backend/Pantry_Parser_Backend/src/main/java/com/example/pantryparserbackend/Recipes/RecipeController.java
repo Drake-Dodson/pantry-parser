@@ -125,8 +125,9 @@ public class RecipeController {
     @PatchMapping(path = "/recipe/{recipe_id}")
     String updateRecipe(@PathVariable int recipe_id, @RequestBody RecipeRequest recipeRequest) {
         Recipe recipe = recipeRepository.findById(recipe_id);
-        if (recipe == null)
-            return null;
+        if(recipe == null)
+            return MessageUtil.newResponseMessage(false, "recipe does not exist");
+
         recipe.update(recipeRequest);
         if (recipeRequest.steps == null) {
             recipeRequest.steps = new ArrayList<>();
@@ -193,7 +194,7 @@ public class RecipeController {
         } catch (Exception ex) {
             return MessageUtil.newResponseMessage(false, "error saving to database, were all fields filled out?");
         }
-        return MessageUtil.newResponseMessage(true, all ? "successfully created recipe" : "created some ingredients to make this work");
+        return MessageUtil.newResponseMessage(true, all ? "successfully updated recipe" : "created some ingredients to make this work");
     }
 
     /**
@@ -210,6 +211,7 @@ public class RecipeController {
         }
         stepRepository.deleteAll(recipe.getSteps());
         recipeRepository.delete(recipe);
+        //TODO: test
         return MessageUtil.newResponseMessage(true, "successfully deleted");
     }
 

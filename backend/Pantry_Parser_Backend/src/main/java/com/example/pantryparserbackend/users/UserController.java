@@ -102,6 +102,34 @@ public class UserController {
     }
 
     /**
+     * Updates the user's information
+     * @param updateUser user object that is to be updated
+     * @return either success or a failure message
+     */
+    @ApiOperation(value = "Updates a given user")
+    @PatchMapping(path = "/user/update")
+    String updateUser(@RequestBody User updateUser, @RequestParam String email, @RequestParam String password){
+        User user = userRepository.findByEmail(email);
+
+        if(user.authenticate(password)){
+            try {
+                user.setEmail(updateUser.getEmail());
+                user.setRole(updateUser.getRole());
+                user.setDisplayName(updateUser.getDisplayName());
+                userRepository.save(user);
+            }
+            catch(Exception ex) {
+                return MessageUtil.newResponseMessage(false, "Error updating information");
+            }
+
+            return MessageUtil.newResponseMessage(true, "User updated");
+
+        }else {
+            return MessageUtil.newResponseMessage(false, "Incorrect Login");
+        }
+    }
+
+    /**
      * attempts to log a user in by checking their credentials against what's in the database
      * @param login a special model with the input email and password
      * @return either success with the user id or a failure message
@@ -271,4 +299,6 @@ public class UserController {
             return MessageUtil.newResponseMessage(true, "successfully unfavorited");
         }
     }
+
+
 }

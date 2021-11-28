@@ -2,6 +2,8 @@ package com.example.pantryparserbackend.Recipes;
 
 import com.example.pantryparserbackend.Ingredients.Ingredient;
 import com.example.pantryparserbackend.Ingredients.IngredientRepository;
+import com.example.pantryparserbackend.Ingredients.RecipeIngredientRepository;
+import com.example.pantryparserbackend.Requests.RecipeIngredientRequest;
 import com.example.pantryparserbackend.Requests.RecipeRequest;
 import com.example.pantryparserbackend.Util.MessageUtil;
 import com.example.pantryparserbackend.users.User;
@@ -29,17 +31,19 @@ public class RecipeControllerTest {
     private IngredientRepository ingredientRepository;
     @Mock
     private StepsRepository stepsRepository;
+    @Mock
+    private RecipeIngredientRepository recipeIngredientRepository;
 
     @Test
     void onRecipeCreate_successful() {
         MockitoAnnotations.openMocks(this);
 
-        List<String> ingredientList = new ArrayList<>();
+        List<RecipeIngredientRequest> ingredientList = new ArrayList<>();
         List<String> stepList = new ArrayList<>();
         stepList.add("step 1");
         stepList.add("step 2");
         String ingredientName = "fried chicken";
-        ingredientList.add(ingredientName);
+        ingredientList.add(new RecipeIngredientRequest(ingredientName, 5, "cups"));
         RecipeRequest input = new RecipeRequest("name", 4, 8, 12, "good for you", "summary", "description", ingredientList, stepList);
         int user_id = 1;
         User mockUser = new User("pass", "emalil@lail.com");
@@ -54,18 +58,19 @@ public class RecipeControllerTest {
         assertEquals(expected, actual);
         Mockito.verify(stepsRepository).saveAll(anyList());
         Mockito.verify(recipeRepository).save(anyObject());
+        Mockito.verify(recipeIngredientRepository).saveAll(anyList());
     }
 
     @Test
     void onRecipeCreate_partiallySuccessful() {
         MockitoAnnotations.openMocks(this);
 
-        List<String> ingredientList = new ArrayList<>();
+        List<RecipeIngredientRequest> ingredientList = new ArrayList<>();
         List<String> stepList = new ArrayList<>();
         stepList.add("step 1");
         stepList.add("step 2");
         String ingredientName = "fried chicken";
-        ingredientList.add(ingredientName);
+        ingredientList.add(new RecipeIngredientRequest(ingredientName, 5, "cups"));
         RecipeRequest input = new RecipeRequest("name", 4, 8, 12, "good for you", "summary", "description", ingredientList, stepList);
         int user_id = 1;
         User mockUser = new User("pass", "emalil@lail.com");
@@ -80,18 +85,69 @@ public class RecipeControllerTest {
         assertEquals(expected, actual);
         Mockito.verify(stepsRepository).saveAll(anyList());
         Mockito.verify(recipeRepository).save(anyObject());
+        Mockito.verify(recipeIngredientRepository).saveAll(anyList());
+    }
+
+    @Test
+    void onRecipeCreate_duplicateIngredient_returnFailure() {
+        MockitoAnnotations.openMocks(this);
+
+        List<RecipeIngredientRequest> ingredientList = new ArrayList<>();
+        List<String> stepList = new ArrayList<>();
+        stepList.add("step 1");
+        stepList.add("step 2");
+        String ingredientName = "fried chicken";
+        Ingredient mockIngredient = new Ingredient(ingredientName);
+        ingredientList.add(new RecipeIngredientRequest(ingredientName, 5, "cups"));
+        ingredientList.add(new RecipeIngredientRequest(ingredientName, 5, "tablespoons"));
+        RecipeRequest input = new RecipeRequest("name", 4, 8, 12, "good for you", "summary", "description", ingredientList, stepList);
+        int user_id = 1;
+        User mockUser = new User("pass", "emalil@lail.com");
+        mockUser.setCreated_recipes(new ArrayList<>());
+
+        when(userRepository.findById(user_id)).thenReturn(mockUser);
+        when(ingredientRepository.findByName(ingredientName)).thenReturn(mockIngredient);
+
+        String expected = MessageUtil.newResponseMessage(false, "you have a duplicate ingredient, this is not allowed");
+        String actual = recipeController.createRecipe(user_id, input);
+
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    void onRecipeCreate_badUnits_returnFailure() {
+        MockitoAnnotations.openMocks(this);
+
+        List<RecipeIngredientRequest> ingredientList = new ArrayList<>();
+        List<String> stepList = new ArrayList<>();
+        stepList.add("step 1");
+        stepList.add("step 2");
+        String ingredientName = "fried chicken";
+        ingredientList.add(new RecipeIngredientRequest(ingredientName, 5, "coops"));
+        RecipeRequest input = new RecipeRequest("name", 4, 8, 12, "good for you", "summary", "description", ingredientList, stepList);
+        int user_id = 1;
+        User mockUser = new User("pass", "emalil@lail.com");
+        mockUser.setCreated_recipes(new ArrayList<>());
+
+        when(userRepository.findById(user_id)).thenReturn(mockUser);
+        when(ingredientRepository.findByName(ingredientName)).thenReturn(new Ingredient(ingredientName));
+
+        String expected = MessageUtil.newResponseMessage(false, "one of your ingredients had an invalid unit");
+        String actual = recipeController.createRecipe(user_id, input);
+
+        assertEquals(expected, actual);
     }
 
     @Test
     void OnRecipeCreate_invalidUser_returnError() {
         MockitoAnnotations.openMocks(this);
 
-        List<String> ingredientList = new ArrayList<>();
+        List<RecipeIngredientRequest> ingredientList = new ArrayList<>();
         List<String> stepList = new ArrayList<>();
         stepList.add("step 1");
         stepList.add("step 2");
         String ingredientName = "fried chicken";
-        ingredientList.add(ingredientName);
+        ingredientList.add(new RecipeIngredientRequest(ingredientName, 5, "cups"));
         int user_id = 1;
         RecipeRequest input = new RecipeRequest("name", 4, 8, 12, "good for you", "summary", "description", ingredientList, stepList);
         User mockUser = new User("pass", "emalil@lail.com");
@@ -110,12 +166,12 @@ public class RecipeControllerTest {
     void onRecipeUpdate_goodInputs_returnSuccess() {
         MockitoAnnotations.openMocks(this);
 
-        List<String> ingredientList = new ArrayList<>();
+        List<RecipeIngredientRequest> ingredientList = new ArrayList<>();
         List<String> stepList = new ArrayList<>();
         stepList.add("step 1");
         stepList.add("step 2");
         String ingredientName = "fried chicken";
-        ingredientList.add(ingredientName);
+        ingredientList.add(new RecipeIngredientRequest(ingredientName, 5, "cups"));
         int recipe_id = 1;
         Recipe mockRecipe = new Recipe("name", 4, "summary", "description");
         RecipeRequest mockInput = new RecipeRequest("name", 4, 8, 12, "good for you", "summary", "description", ingredientList, stepList);
@@ -129,17 +185,18 @@ public class RecipeControllerTest {
         assertEquals(expected, actual);
         Mockito.verify(stepsRepository).saveAll(anyList());
         Mockito.verify(recipeRepository).save(anyObject());
+        Mockito.verify(recipeIngredientRepository).saveAll(anyList());
     }
     @Test
     void onRecipeUpdate_badIngredient_returnPartialSuccess() {
         MockitoAnnotations.openMocks(this);
 
-        List<String> ingredientList = new ArrayList<>();
+        List<RecipeIngredientRequest> ingredientList = new ArrayList<>();
         List<String> stepList = new ArrayList<>();
         stepList.add("step 1");
         stepList.add("step 2");
         String ingredientName = "fried chicken";
-        ingredientList.add(ingredientName);
+        ingredientList.add(new RecipeIngredientRequest(ingredientName, 5, "cups"));
         int recipe_id = 1;
         Recipe mockRecipe = new Recipe("name", 4, "summary", "description");
         RecipeRequest mockInput = new RecipeRequest("name", 4, 8, 12, "good for you", "summary", "description", ingredientList, stepList);
@@ -153,18 +210,19 @@ public class RecipeControllerTest {
         assertEquals(expected, actual);
         Mockito.verify(stepsRepository).saveAll(anyList());
         Mockito.verify(recipeRepository).save(anyObject());
+        Mockito.verify(recipeIngredientRepository).saveAll(anyList());
     }
 
     @Test
     void onRecipeUpdate_badRecipe_returnFailure() {
         MockitoAnnotations.openMocks(this);
 
-        List<String> ingredientList = new ArrayList<>();
+        List<RecipeIngredientRequest> ingredientList = new ArrayList<>();
         List<String> stepList = new ArrayList<>();
         stepList.add("step 1");
         stepList.add("step 2");
         String ingredientName = "fried chicken";
-        ingredientList.add(ingredientName);
+        ingredientList.add(new RecipeIngredientRequest(ingredientName, 5, "cups"));
         int recipe_id = 1;
         RecipeRequest mockInput = new RecipeRequest("name", 4, 8, 12, "good for you", "summary", "description", ingredientList, stepList);
 
@@ -172,6 +230,28 @@ public class RecipeControllerTest {
         when(recipeRepository.findById(recipe_id)).thenReturn(null);
 
         String expected = MessageUtil.newResponseMessage(false, "recipe does not exist");
+        String actual = recipeController.updateRecipe(recipe_id, mockInput);
+
+        assertEquals(expected, actual);
+    }
+    @Test
+    void onRecipeUpdate_badUnit_returnFailure() {
+        MockitoAnnotations.openMocks(this);
+
+        List<RecipeIngredientRequest> ingredientList = new ArrayList<>();
+        List<String> stepList = new ArrayList<>();
+        stepList.add("step 1");
+        stepList.add("step 2");
+        String ingredientName = "fried chicken";
+        ingredientList.add(new RecipeIngredientRequest(ingredientName, 5, "coops"));
+        int recipe_id = 1;
+        Recipe mockRecipe = new Recipe("name", 4, "summary", "description");
+        RecipeRequest mockInput = new RecipeRequest("name", 4, 8, 12, "good for you", "summary", "description", ingredientList, stepList);
+
+        when(ingredientRepository.findByName(ingredientName)).thenReturn(null);
+        when(recipeRepository.findById(recipe_id)).thenReturn(mockRecipe);
+
+        String expected = MessageUtil.newResponseMessage(false, "one of your ingredients had an invalid unit");
         String actual = recipeController.updateRecipe(recipe_id, mockInput);
 
         assertEquals(expected, actual);

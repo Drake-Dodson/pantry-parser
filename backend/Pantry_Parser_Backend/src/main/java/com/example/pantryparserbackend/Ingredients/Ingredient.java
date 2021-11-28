@@ -1,14 +1,12 @@
 package com.example.pantryparserbackend.Ingredients;
 
-import com.example.pantryparserbackend.Recipes.Recipe;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.sun.istack.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 /**
  * The basic entity for ingredients
@@ -29,8 +27,8 @@ public class Ingredient {
 
     @Getter
     @JsonIgnore
-    @ManyToMany(mappedBy = "ingredients")
-    private List<Recipe> recipes;
+    @OneToMany(mappedBy = "ingredient")
+    private List<RecipeIngredient> recipes;
 
     /**
      * basic constructor for a new ingredient
@@ -38,6 +36,7 @@ public class Ingredient {
      */
     public Ingredient(String name){
         this.name = name;
+        this.nameToLower();
     }
     public Ingredient(){}
 

@@ -5,9 +5,13 @@ import java.util.Objects;
 
 import com.example.pantryparserbackend.Ingredients.Ingredient;
 import com.example.pantryparserbackend.Ingredients.IngredientRepository;
+import com.example.pantryparserbackend.Ingredients.RecipeIngredient;
+import com.example.pantryparserbackend.Ingredients.RecipeIngredientRepository;
 import com.example.pantryparserbackend.Requests.PantryParserRequest;
+import com.example.pantryparserbackend.Requests.RecipeIngredientRequest;
 import com.example.pantryparserbackend.Requests.RecipeRequest;
 import com.example.pantryparserbackend.Util.MessageUtil;
+import com.example.pantryparserbackend.Util.UnitUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +39,8 @@ public class RecipeController {
     IngredientRepository ingredientRepository;
     @Autowired
     StepsRepository stepRepository;
+    @Autowired
+    RecipeIngredientRepository recipeIngredientRepository;
 
     //generic recipe stuff
     /**
@@ -95,20 +101,29 @@ public class RecipeController {
         }
 
         boolean all = true;
-        for (String s : recipeRequest.ingredients) {
-            Ingredient ingredient = ingredientRepository.findByName(s);
+        for (RecipeIngredientRequest s : recipeRequest.ingredients) {
+            Ingredient ingredient = ingredientRepository.findByName(s.ingredient_name);
             if(ingredient == null) {
                 all = false;
-                ingredient = new Ingredient(s);
+                ingredient = new Ingredient(s.ingredient_name);
                 ingredientRepository.save(ingredient);
             }
-            recipe.addIngredient(ingredient);
+
+            if (!UnitUtil.isValidUnit(s.units)) {
+                return MessageUtil.newResponseMessage(false, "one of your ingredients had an invalid unit");
+            }else if(recipe.getIngredient(ingredient) != null) {
+                return MessageUtil.newResponseMessage(false, "you have a duplicate ingredient, this is not allowed");
+            }
+
+            RecipeIngredient ri = new RecipeIngredient(ingredient, recipe, s.quantity, s.units);
+            recipe.addIngredient(ri);
         }
 
         try {
+            userRepository.save(u);
             recipeRepository.save(recipe);
             stepRepository.saveAll(recipe.getSteps());
-            userRepository.save(u);
+            recipeIngredientRepository.saveAll(recipe.getIngredients());
         } catch (Exception ex) {
             return MessageUtil.newResponseMessage(false, "error saving to database, were all fields filled out correctly?");
         }
@@ -167,28 +182,41 @@ public class RecipeController {
 
         boolean all = true;
         i = 0;
-        for (String s : recipeRequest.ingredients) {
-            Ingredient ingredient = ingredientRepository.findByName(s);
+        for (RecipeIngredientRequest s : recipeRequest.ingredients) {
+            if(!UnitUtil.isValidUnit(s.units)) {
+                return MessageUtil.newResponseMessage(false, "one of your ingredients had an invalid unit");
+            }
+            Ingredient ingredient = ingredientRepository.findByName(s.ingredient_name);
             if (ingredient == null) {
                 all = false;
-                ingredient = new Ingredient(s);
+                ingredient = new Ingredient(s.ingredient_name);
                 ingredientRepository.save(ingredient);
             }
-            if (!recipe.getIngredients().contains(ingredient)) {
-                recipe.addIngredient(ingredient);
+            RecipeIngredient ri = recipe.getIngredient(ingredient);
+            if (ri == null) {
+                ri = new RecipeIngredient(ingredient, recipe, s.quantity, s.units);
+                recipe.addIngredient(ri);
+            } else {
+                ri.update(s);
             }
         }
 
         //removes extra ingredients
         for (i = 0; i < recipe.getIngredients().size(); i++) {
-            Ingredient s = recipe.getIngredients().get(i);
-            if (!recipeRequest.ingredients.contains(s.getName())) {
+            RecipeIngredient s = recipe.getIngredients().get(i);
+            if (!recipeRequest.containsIngredient(s.getName())) {
                 recipe.removeIngredient(s);
+                try {
+                    recipeIngredientRepository.delete(s);
+                }  catch (Exception ex) {
+                    return MessageUtil.newResponseMessage(false, "error deleting a recipe ingredient, this shouldn't happen");
+                }
                 i--;
             }
         }
 
         try {
+            recipeIngredientRepository.saveAll(recipe.getIngredients());
             stepRepository.saveAll(recipe.getSteps());
             recipeRepository.save(recipe);
         } catch (Exception ex) {
@@ -210,8 +238,8 @@ public class RecipeController {
             return MessageUtil.newResponseMessage(false, "recipe does not exist");
         }
         stepRepository.deleteAll(recipe.getSteps());
+        recipeIngredientRepository.deleteAll(recipe.getIngredients());
         recipeRepository.delete(recipe);
-        //TODO: test
         return MessageUtil.newResponseMessage(true, "successfully deleted");
     }
 

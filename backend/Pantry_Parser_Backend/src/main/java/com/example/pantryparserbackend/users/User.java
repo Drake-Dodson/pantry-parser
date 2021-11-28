@@ -96,6 +96,7 @@ public class User {
     public void favorite(Recipe favorite) {
         this.favorites.add(favorite);
     }
+
     /**
      * removes a recipe to the user's favorites
      * @param favorite new recipe to unfavorite
@@ -103,6 +104,7 @@ public class User {
     public void unfavorite(Recipe favorite) {
         this.favorites.remove(favorite);
     }
+
     /**
      * adds a recipe to the user's created list
      * @param r new recipe to add

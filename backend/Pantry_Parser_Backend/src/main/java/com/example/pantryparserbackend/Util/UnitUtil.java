@@ -1,6 +1,7 @@
 package com.example.pantryparserbackend.Util;
 
 import java.util.Arrays;
+import java.util.List;
 
 public class UnitUtil {
     private static final String[] validUnits = {
@@ -19,6 +20,10 @@ public class UnitUtil {
 
     public static boolean isValidUnit(String unit) {
         return Arrays.asList(validUnits).contains(unit);
+    }
+
+    public static List<String> getValidUnits() {
+        return Arrays.asList(validUnits);
     }
 
 }

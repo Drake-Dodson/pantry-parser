@@ -254,7 +254,7 @@ public class RecipeController {
      */
     @ApiOperation(value = "Gets a list of ingredients and searches recipes based on that list")
     @PutMapping(path = "/pantry-parser")
-    Page<Recipe> recipesByIngrents(@RequestParam(defaultValue = "0") Integer pageNo, @RequestParam(defaultValue = "15") Integer perPage, @RequestBody PantryParserRequest request){
+    Page<Recipe> recipesByIngredients(@RequestParam(defaultValue = "0") Integer pageNo, @RequestParam(defaultValue = "15") Integer perPage, @RequestBody PantryParserRequest request){
         Pageable page = PageRequest.of(pageNo, perPage, Sort.by("rating"));
         return recipeRepository.getByIngredients(request.ingredients, page);
     }

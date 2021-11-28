@@ -1,10 +1,13 @@
 package com.example.pantryparserbackend.users;
 
+import com.example.pantryparserbackend.Passwords.OTPRepository;
+import com.example.pantryparserbackend.Requests.PasswordResetRequest;
+import com.example.pantryparserbackend.Util.EmailUtil;
 import com.example.pantryparserbackend.Requests.LoginRequest;
 import com.example.pantryparserbackend.Util.MessageUtil;
-
 import com.example.pantryparserbackend.Recipes.Recipe;
 import com.example.pantryparserbackend.Recipes.RecipeRepository;
+import com.example.pantryparserbackend.Util.PasswordUtil;
 import com.example.pantryparserbackend.Websockets.FavoriteSocket;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -26,6 +29,8 @@ public class UserController {
     private UserRepository userRepository;
     @Autowired
     private RecipeRepository recipeRepository;
+    @Autowired
+    private OTPRepository otpRepository;
     @Autowired
     private FavoriteSocket favoriteSocket;
 
@@ -116,6 +121,81 @@ public class UserController {
             // Password incorrect
             return MessageUtil.newResponseMessage(false, "password incorrect");
         }
+    }
+
+    /**
+     * A password reset route that takes in an email to find the user
+     * @param email email of the user
+     * @return string message success or failure
+     */
+    @GetMapping(path = "/user/email/{email}/password-reset/sendOTP")
+    public String sendResetOTP(@PathVariable String email) {
+        User user = userRepository.findByEmail(email);
+        if (user == null){
+            return MessageUtil.newResponseMessage(false, "account not found");
+        }
+        return this.sendChangeOTP(user.getId());
+    }
+
+    /**
+     * Route that performs a password reset by a user's email
+     * @param email the email of the user
+     * @param request the inputted values in the request
+     * @return string success or fail
+     */
+    @PostMapping(path = "/user/email/{email}/password-reset/")
+    public String resetPassword(@PathVariable String email, @RequestBody PasswordResetRequest request) {
+        User user = userRepository.findByEmail(email);
+        if (user == null){
+            return MessageUtil.newResponseMessage(false, "account not found");
+        }
+        return this.changePassword(user.getId(), request);
+    }
+
+    /**
+     * a route for simply changing a user's password
+     * @param user_id id of the user
+     * @return string success or fail
+     */
+    @GetMapping(path = "/user/{user_id}/password-change/sendOTP")
+    public String sendChangeOTP(@PathVariable int user_id) {
+        User user = userRepository.findById(user_id);
+        if (user == null){
+            return MessageUtil.newResponseMessage(false, "user not found");
+        }
+
+        String pass = PasswordUtil.generateOTP(6, user, otpRepository);
+        if (pass.contains("ERROR:")) {
+            return MessageUtil.newResponseMessage(false, pass);
+        }
+
+        try {
+            EmailUtil.sendPasswordResetEmail(user, pass);
+        } catch (Exception e) {
+            return MessageUtil.newResponseMessage(false, "There was an error sending you your OTP");
+        }
+
+        return MessageUtil.newResponseMessage(true, "check your email for your OTP");
+    }
+
+    /**
+     * A route that verifies the OTP then changes the password
+     * @param user_id id of the user
+     * @param request otp and new password
+     * @return string success or fail
+     */
+    @PostMapping(path = "/user/{user_id}/password-change")
+    public String changePassword(@PathVariable int user_id, @RequestBody PasswordResetRequest request) {
+        User user = userRepository.findById(user_id);
+        if(user == null) {
+            return MessageUtil.newResponseMessage(false, "user was not found");
+        }
+        if(PasswordUtil.useOTP(request.OTP, user, otpRepository)) {
+            user.setPassword(request.newPassword);
+            userRepository.save(user);
+            return MessageUtil.newResponseMessage(true, "successfully changed password");
+        }
+        return MessageUtil.newResponseMessage(false, "invalid OTP, please try again");
     }
 
     /**

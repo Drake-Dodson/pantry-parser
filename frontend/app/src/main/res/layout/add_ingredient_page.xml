@@ -45,20 +45,114 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <SearchView
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginStart="0dp"
-        android:layout_marginEnd="0dp"
-        android:layout_marginBottom="0dp"
-        android:background="@drawable/searchbar"
-        app:layout_constraintTop_toBottomOf="@+id/textView_Ingredients"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+    <Button
+        android:id="@+id/button_clearIngredients"
+        android:layout_width="75dp"
+        android:layout_height="50dp"
+        android:background="@android:color/transparent"
+        android:text="Clear"
+        android:textSize="16sp"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
     <EditText
+        android:id="@+id/editText_recipeIngredients"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="50dp"
-        android:gravity="top|left"/>
+        android:gravity="top|left"
+        android:layout_marginBottom="250dp"
+        android:hint="Please add in ingredients needed to make the recipe.
+        \nYou can add ingredients by typing directly here or adding them by using the helper below.
+        \n
+        \nExample:
+        \n 1 lb apples
+        \n 2 cups sugar
+        \n 1 oz vanilla"
+        tools:layout_editor_absoluteX="0dp" />
+
+    <TextView
+        android:id="@+id/textView_ingredientNameLabel"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:paddingLeft="8dp"
+        android:paddingTop="15dp"
+        android:text="INGREDIENT NAME"
+        android:textStyle="bold"
+        app:layout_constraintTop_toBottomOf="@id/editText_recipeIngredients"/>
+
+    <EditText
+        android:id="@+id/editText_ingredientName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginLeft="150dp"
+        android:layout_marginRight="20dp"
+        android:background="@drawable/border"
+        android:hint="Add ingredient"
+        android:minHeight="48dp"
+        android:paddingLeft="10dp"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+        android:textColor="#878787"
+        android:textSize="15sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/editText_recipeIngredients" />
+
+    <TextView
+        android:id="@+id/textView_ingredientAmountLabel"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:paddingLeft="8dp"
+        android:paddingTop="15dp"
+        android:layout_marginTop="20dp"
+        android:text="QUANTITY"
+        android:textStyle="bold"
+        app:layout_constraintTop_toBottomOf="@id/textView_ingredientNameLabel"/>
+
+    <EditText
+        android:id="@+id/editText_ingredientAmount"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginLeft="85dp"
+        android:layout_marginRight="180dp"
+        android:layout_marginTop="5dp"
+        android:background="@drawable/border"
+        android:hint="Add amount"
+        android:minHeight="48dp"
+        android:paddingLeft="10dp"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+        android:textColor="#878787"
+        android:textSize="15sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/editText_ingredientName" />
+
+    <EditText
+        android:id="@+id/editText_ingredientUnit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginLeft="240dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="5dp"
+        android:background="@drawable/border"
+        android:hint="Add unit"
+        android:minHeight="48dp"
+        android:paddingLeft="10dp"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+        android:textColor="#878787"
+        android:textSize="15sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/editText_ingredientName" />
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

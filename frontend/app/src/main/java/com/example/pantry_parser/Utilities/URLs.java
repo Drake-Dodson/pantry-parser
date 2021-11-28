@@ -6,9 +6,13 @@ public class URLs {
      */
     private static final String DOMAIN = "http://coms-309-032.cs.iastate.edu:8080";
     /*
-     * User route
+     * Register route
      */
     public static final String URL_REGISTER = DOMAIN + "/user/";
+    /*
+     * User route
+     */
+    public static final String URL_USER = DOMAIN + "/user/";
     /*
      * User login route
      */

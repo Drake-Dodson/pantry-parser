@@ -44,10 +44,4 @@ public class AddSteps_Page extends AppCompatActivity {
             }
         });
     }
-
-   private void createRecipe() {
-
-   }
-
-
 }

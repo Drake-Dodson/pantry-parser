@@ -1,5 +1,6 @@
-package com.example.pantryparserbackend.Recipes;
+package com.example.pantryparserbackend.Ingredients;
 
+import com.example.pantryparserbackend.Recipes.Recipe;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sun.istack.NotNull;
 import lombok.Getter;

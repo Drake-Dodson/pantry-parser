@@ -2,15 +2,17 @@ package com.example.pantryparserbackend.Recipes;
 
 import javax.persistence.*;
 
+import com.example.pantryparserbackend.Ingredients.Ingredient;
+import com.example.pantryparserbackend.Ingredients.IngredientRepository;
+import com.example.pantryparserbackend.Requests.RecipeRequest;
 import com.example.pantryparserbackend.Reviews.Review;
 import com.example.pantryparserbackend.users.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.sun.istack.NotNull;
 import lombok.Getter;
-import org.springframework.core.annotation.Order;
 import lombok.Setter;
-import org.springframework.lang.Nullable;
+import org.hibernate.annotations.Formula;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -26,14 +28,11 @@ public class Recipe {
     @Column(nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+
     @Getter
     @Setter
     @Column(nullable = false)
     private String name;
-    @Getter
-    @Setter
-    @Column(nullable = false)
-    private int time;
     @Getter
     @Setter
     @Column(nullable = false)
@@ -42,21 +41,44 @@ public class Recipe {
     @Setter
     @Column(nullable = false, columnDefinition = "text")
     private String description;
-    
-    // Used for recipe score
-    private int numberOfReviews;
-    private int totalStars;
-    private int currentPos;
-
     @Getter
     @Column(nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Date created_date;
     @Getter
-    private double rating;
+    @Setter
+    @Column(nullable = false, columnDefinition = "int default 0")
+    private int num_ingredients;
     @Getter
     @Setter
-    private int num_ingredients;
+    @Column(nullable = false, columnDefinition = "bool default false")
+    private boolean chef_verified;
+    @Getter
+    @Setter
+    private String nutrition_facts;
+    @Getter
+    @Setter
+    @Column(nullable = false, columnDefinition = "int default 0")
+    private int num_servings;
+
+    @Getter
+    @Setter
+    @Column(nullable = false, columnDefinition = "int default 0")
+    private int prep_time;
+    @Getter
+    @Setter
+    @Column(nullable = false, columnDefinition = "int default 0")
+    private int cook_time;
+    @Getter
+    @Formula("prep_time + cook_time")
+    private int time;
+
+    @Getter
+    @Column(nullable = false, columnDefinition = "int default 0")
+    private int num_reviews;
+    @Getter
+    @Column(nullable = false, columnDefinition = "double default 0.0")
+    private double rating;
 
     @Getter
     @Setter
@@ -68,16 +90,14 @@ public class Recipe {
     @JsonIgnore
     @JoinColumn(name = "creator_id")
     private User creator;
-
     @Setter
     @JsonIgnore
     @OneToMany(mappedBy = "recipe_reviewed")
     private List<Review> recipes_reviews;
-
     @JsonIgnore
     @ManyToMany(mappedBy = "favorites")
+    @Getter
     private List<User> favoritedBy;
-
     @Getter
     @JoinTable(
             name = "recipe_ingredient",
@@ -87,7 +107,6 @@ public class Recipe {
     )
     @ManyToMany(fetch = FetchType.LAZY)
     private List<Ingredient> ingredients;
-
     @Getter
     @OrderBy("num")
     @OneToMany(mappedBy = "recipe")
@@ -96,22 +115,31 @@ public class Recipe {
     /**
      * basic constructor for a recipe
      * @param name input name
-     * @param time input time estimate
+     * @param prep_time input time estimate
      * @param summary input summary
      * @param description input description
      */
-    public Recipe(String name, int time, String summary, String description) {
+    public Recipe(String name, int prep_time, String summary, String description) {
         this.name = name;
-        this.time = time;
+        this.prep_time = prep_time;
         this.summary = summary;
         this.description = description;
         this.created_date = new Date();
-        this.rating = 0;
+        this.steps = new ArrayList<>();
+        this.ingredients = new ArrayList<>();
+        this.num_reviews = 0;
+        this.num_ingredients = 0;
+        this.chef_verified = false;
+    }
 
-        // Used for recipe score
-        this.numberOfReviews = 0;
-        this.totalStars = 0;
-        this.currentPos = 0;
+    public Recipe(RecipeRequest request) {
+        this.created_date = new Date();
+        this.steps = new ArrayList<>();
+        this.ingredients = new ArrayList<>();
+        this.num_reviews = 0;
+        this.num_ingredients = 0;
+        this.chef_verified = false;
+        this.update(request);
     }
 
     public Recipe(){}
@@ -163,18 +191,17 @@ public class Recipe {
      */
     public void updateRating0N(){
         double total = 0;
+        this.num_reviews = recipes_reviews.size();
         for (Review recipes_review : recipes_reviews) {
             total += recipes_review.getStarNumber();
         }
         this.rating = total / recipes_reviews.size();
     }
 
-    // Not currently implemented
-
     /**
      * updates the rating based on the current rating, the
      * original number of stars a review had, and the updated number
-     * not currently working, but has a constant runtime
+     * has a constant runtime
      * @param oldRating the previous value for this review
      * @param newRating the new value for this review
      */
@@ -192,35 +219,39 @@ public class Recipe {
 
     /**
      * updates the rating based on the current overall rating and the
-     * number of stars in the new review. not currently working, but
+     * number of stars in the new review
      * has a constant runtime
      * @param newRating the new star value for the rating
      */
     public void addRating(int newRating){
-        if(recipes_reviews.size() == 0){
+        if(this.num_reviews == 0){
             this.rating = newRating;
+            this.num_reviews++;
         }
         else{
-            double total = this.rating * (recipes_reviews.size() - 1);
+            double total = this.rating * this.num_reviews;
             total += newRating;
-            this.rating = total / (recipes_reviews.size());
+            this.num_reviews++;
+            this.rating = total / this.num_reviews;
         }
     }
 
     /**
      * updates the rating based on the current overall rating and the
-     * number of stars in the removed review. not currently working, but
+     * number of stars in the removed review
      * has a constant runtime
-     * @param newRating the value of the removed rating
+     * @param removedRating the value of the removed rating
      */
-    public void removeRating(int newRating){
-        if(recipes_reviews.size() == 0){
+    public void removeRating(int removedRating){
+        if(this.num_reviews <= 1){
+            this.num_reviews--;
             this.rating = 0;
         }
         else {
-            double total = this.rating * recipes_reviews.size();
-            total -= newRating;
-            this.rating = total / (recipes_reviews.size() - 1);
+            double total = this.rating * this.num_reviews;
+            total -= removedRating;
+            this.num_reviews--;
+            this.rating = total / this.num_reviews;
         }
     }
 
@@ -271,10 +302,12 @@ public class Recipe {
      * Updates a recipe based on a batch of values
      * @param request the new recipe values
      */
-    public void update(Recipe request) {
-        this.setName(request.getName());
-        this.setTime(request.getTime());
-        this.setSummary(request.getSummary());
-        this.setDescription(request.getDescription());
+    public void update(RecipeRequest request) {
+        this.prep_time       = request.prep_time;
+        this.cook_time       = request.cook_time;
+        this.name            = request.name;
+        this.nutrition_facts = request.nutrition_facts;
+        this.summary         = request.summary;
+        this.description     = request.description;
     }
 }

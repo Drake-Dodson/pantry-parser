@@ -3,6 +3,7 @@ package com.example.pantryparserbackend.Ingredients;
 import com.example.pantryparserbackend.Recipes.Recipe;
 import com.example.pantryparserbackend.Recipes.RecipeRepository;
 import com.example.pantryparserbackend.Util.MessageUtil;
+import com.example.pantryparserbackend.Util.UnitUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * Controller that manages ingredients
@@ -71,5 +74,11 @@ public class IngredientController {
 			return null;
 		}
 		return recipeRepository.getByIngredient(i.getId(), page);
+	}
+
+	@ApiOperation("Returns a list of the units the server will accept for ingredients")
+	@GetMapping(path="/valid-units")
+	List<String> possibleQuantities() {
+		return UnitUtil.getValidUnits();
 	}
 }

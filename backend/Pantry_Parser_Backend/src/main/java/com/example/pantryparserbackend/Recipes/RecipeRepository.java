@@ -84,14 +84,12 @@ public interface RecipeRepository extends PagingAndSortingRepository<Recipe, Lon
      * @param ingredients array of strings
      * @return list of recipes matching ingredients
      */
-    @Query(value = "SELECT DISTINCT r.* FROM recipes r " +
-            "JOIN recipe_ingredient ri ON r.id = ri.recipe_id " +
-            "JOIN (SELECT * FROM ingredients " +
-                "WHERE name IN :ingredients) " +
-                "AS i ON i.id = ri.ingredient_id " +
-            "GROUP BY r.id " +
-            "ORDER BY count(*)/r.num_ingredients DESC",
-            nativeQuery  = true)
+    @Query(value = "SELECT DISTINCT r FROM Recipe r " +
+            "JOIN RecipeIngredient ri ON r = ri.recipe " +
+            "JOIN Ingredient i ON i = ri.ingredient " +
+            "WHERE i.name IN :ingredients " +
+            "GROUP BY r " +
+            "ORDER BY count(r)/r.num_ingredients DESC")
     Page<Recipe> getByIngredients(List<String> ingredients, Pageable pageable);
 
     /**
@@ -100,10 +98,9 @@ public interface RecipeRepository extends PagingAndSortingRepository<Recipe, Lon
      * @param pageable paginator settings
      * @return list of recipes containing the provided ingredient
      */
-    @Query(value = "SELECT r.* FROM recipes r " +
-            "JOIN recipe_ingredient ri ON ri.recipe_id = r.id " +
-            "WHERE ri.ingredient_id = :ingredient_id ",
-            nativeQuery = true)
+    @Query(value = "SELECT r FROM Recipe r " +
+            "JOIN RecipeIngredient ri ON ri.recipe = r " +
+            "WHERE ri.ingredient.id = :ingredient_id ")
     Page<Recipe> getByIngredient(Integer ingredient_id, Pageable pageable);
 
     /**

@@ -10,10 +10,10 @@ public class RecipeRequest {
 	public String summary;
 	public String description;
 	public int num_servings;
-	public List<String> ingredients;
+	public List<RecipeIngredientRequest> ingredients;
 	public List<String> steps;
 
-	public RecipeRequest(String name, int prep_time, int cook_time, int num_servings, String nutrition_facts, String summary, String description, List<String> ingredients, List<String> steps) {
+	public RecipeRequest(String name, int prep_time, int cook_time, int num_servings, String nutrition_facts, String summary, String description, List<RecipeIngredientRequest> ingredients, List<String> steps) {
 		this.name = name;
 		this.prep_time = prep_time;
 		this.cook_time = cook_time;
@@ -23,5 +23,14 @@ public class RecipeRequest {
 		this.description = description;
 		this.ingredients = ingredients;
 		this.steps = steps;
+	}
+
+	public boolean containsIngredient(String s) {
+		for (RecipeIngredientRequest ri: this.ingredients) {
+			if (ri.ingredient_name.equals(s)) {
+				return true;
+			}
+		}
+		return false;
 	}
 }

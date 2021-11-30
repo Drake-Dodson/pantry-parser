@@ -33,11 +33,11 @@ public class EmailUtil {
                 + "<h1>Your OTP is: " + otp + "</h1>" + "</br></br>"
                 + "<p> Please return to the app and type in this code! If this wasn't you, please disregard this email </p>";
 
-        return sendHTMLEmail(user.getEmail(), html);
+        return sendHTMLEmail(user.getEmail(), "Pantry Parser Password Reset", html);
     }
 
     /**
-     * The function that sends the email for password resetting
+     * Sends an email for new users
      * @param user user we are sending to
      * @param otp one time password we are sending
      * @return success or fail
@@ -48,7 +48,7 @@ public class EmailUtil {
                 + "<h1>Your OTP is: " + otp + "</h1>" + "</br></br>"
                 + "<p> Please return to the app and go to the settings page to find where to input this OTP </p>";
 
-        return sendHTMLEmail(user.getEmail(), html);
+        return sendHTMLEmail(user.getEmail(), "Welcome to Pantry Parser!", html);
     }
 
     /**
@@ -57,7 +57,7 @@ public class EmailUtil {
      * @param html html code for the email
      * @return success or fail
      */
-    private static boolean sendHTMLEmail(String address, String html) {
+    private static boolean sendHTMLEmail(String address, String subject, String html) {
         logger.info("HTML email sending start");
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
 
@@ -65,7 +65,7 @@ public class EmailUtil {
             // Set multipart mime message true
             MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
             mimeMessageHelper.setTo(address);
-            mimeMessageHelper.setSubject("Pantry Parser Password Reset");
+            mimeMessageHelper.setSubject(subject);
             mimeMessageHelper.setText(html, true);
 
             javaMailSender.send(mimeMessage);

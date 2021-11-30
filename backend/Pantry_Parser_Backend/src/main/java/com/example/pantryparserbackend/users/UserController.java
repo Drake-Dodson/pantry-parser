@@ -123,6 +123,43 @@ public class UserController {
         }
     }
 
+    @GetMapping(path = "/user/{user_id}/verify/sendOTP")
+    public String sendVerifyOTP(@PathVariable int user_id) {
+        User user = userRepository.findById(user_id);
+        if (user == null) {
+            return MessageUtil.newResponseMessage(false, "user not found");
+        }
+
+        String pass = PasswordUtil.generateOTP(6, user, otpRepository);
+        if (pass.contains("ERROR:")) {
+            return MessageUtil.newResponseMessage(false, pass);
+        }
+
+        try {
+            if (EmailUtil.sendRegistrationConfirmationEmail(user, pass)){
+                return MessageUtil.newResponseMessage(true, "check your email for your OTP");
+            } else {
+                return MessageUtil.newResponseMessage(false, "there was an error sending the email");
+            }
+        } catch (Exception e) {
+            return MessageUtil.newResponseMessage(false, "There was an error sending you your OTP");
+        }
+    }
+
+    @PostMapping(path = "/user/{user_id}/verify-email")
+    public String verifyEmail(@PathVariable int user_id, @RequestBody String OTP) {
+        User user = userRepository.findById(user_id);
+        if(user == null) {
+            return MessageUtil.newResponseMessage(false, "user was not found");
+        }
+        if(PasswordUtil.useOTP(OTP, user, otpRepository)) {
+            user.setEmail_verified(true);
+            userRepository.save(user);
+            return MessageUtil.newResponseMessage(true, "successfully changed password");
+        }
+        return MessageUtil.newResponseMessage(false, "invalid OTP, please try again");
+    }
+
     /**
      * A password reset route that takes in an email to find the user
      * @param email email of the user
@@ -170,12 +207,14 @@ public class UserController {
         }
 
         try {
-            EmailUtil.sendPasswordResetEmail(user, pass);
+            if (EmailUtil.sendPasswordResetEmail(user, pass)){
+                return MessageUtil.newResponseMessage(true, "check your email for your OTP");
+            } else {
+                return MessageUtil.newResponseMessage(false, "there was an error sending the email");
+            }
         } catch (Exception e) {
             return MessageUtil.newResponseMessage(false, "There was an error sending you your OTP");
         }
-
-        return MessageUtil.newResponseMessage(true, "check your email for your OTP");
     }
 
     /**

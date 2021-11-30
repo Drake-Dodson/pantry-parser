@@ -25,7 +25,7 @@ public class EmailUtil {
      * The function that sends the email for password resetting
      * @param user user we are sending to
      * @param otp one time password we are sending
-     * @return
+     * @return success or fail
      */
     public static boolean sendPasswordResetEmail(User user, String otp) {
         String html = "<h3>Dear " + user.getDisplayName() + ",</h3></br>"
@@ -37,10 +37,25 @@ public class EmailUtil {
     }
 
     /**
+     * The function that sends the email for password resetting
+     * @param user user we are sending to
+     * @param otp one time password we are sending
+     * @return success or fail
+     */
+    public static boolean sendRegistrationConfirmationEmail(User user, String otp) {
+        String html = "<h3>Hello " + user.getDisplayName() + ",</h3></br>"
+                + "<p>Welcome to Pantry Parser! Please verify your email! </p>" + "</br></br>"
+                + "<h1>Your OTP is: " + otp + "</h1>" + "</br></br>"
+                + "<p> Please return to the app and go to the settings page to find where to input this OTP </p>";
+
+        return sendHTMLEmail(user.getEmail(), html);
+    }
+
+    /**
      * The main email sending function
-     * @param address addreess to send the email too
+     * @param address address to send the email too
      * @param html html code for the email
-     * @return
+     * @return success or fail
      */
     private static boolean sendHTMLEmail(String address, String html) {
         logger.info("HTML email sending start");

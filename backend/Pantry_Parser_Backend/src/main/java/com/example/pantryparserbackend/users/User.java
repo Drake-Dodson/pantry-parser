@@ -33,6 +33,11 @@ public class User {
     @Column(nullable = false, unique = true)
     private String email;
 
+    @Getter
+    @Setter
+    @Column(nullable = false, columnDefinition = "bool default false")
+    private boolean email_verified;
+
     @Column(nullable = false)
     private String password;
 

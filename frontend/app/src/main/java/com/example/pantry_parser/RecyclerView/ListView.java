@@ -23,6 +23,7 @@ import com.example.pantry_parser.Pages.Settings_Page;
 import com.example.pantry_parser.R;
 import com.example.pantry_parser.Recipe;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -206,25 +207,30 @@ public class ListView extends AppCompatActivity implements RecyclerViewAdapter.O
 
     @NonNull
     private Recipe getRecipe(int i, JSONArray recipeArray) throws JSONException {
-        Recipe recipe = new Recipe(recipeArray.getJSONObject(i).getString("name"));
-        recipe.setRecipeID(recipeArray.getJSONObject(i).getInt("id"));
-        recipe.setTimeToMake(recipeArray.getJSONObject(i).getInt("time"));
-        recipe.setSummary(recipeArray.getJSONObject(i).getString("summary"));
-        recipe.setAuthor(recipeArray.getJSONObject(i).getString("creatorName"));
-        recipe.setRating((float) recipeArray.getJSONObject(i).getDouble("rating"));
+        JSONObject JSONRecipe = recipeArray.getJSONObject(i);
+        Recipe recipe = new Recipe(JSONRecipe.getString("name"));
+        recipe.setRecipeID(JSONRecipe.getString("id"));
+        recipe.setTimeToMake(JSONRecipe.getInt("time"));
+        recipe.setSummary(JSONRecipe.getString("summary"));
+        recipe.setAuthor(JSONRecipe.getString("creatorName"));
+        recipe.setChefVerified(JSONRecipe.getBoolean("chef_verified"));
+        recipe.setRating((float) JSONRecipe.getDouble("rating"));
         ArrayList<String> ingredients = new ArrayList<>();
-        JSONArray jsonIngredients = recipeArray.getJSONObject(i).getJSONArray("ingredients");
+        JSONArray jsonIngredients = JSONRecipe.getJSONArray("ingredients");
         for (int j = 0; j< jsonIngredients.length();j++){
             ingredients.add(jsonIngredients.getJSONObject(j).getString("name"));
         }
         recipe.setIngredients(ingredients);
 
         ArrayList<String> steps = new ArrayList<>();
-        JSONArray jsonSteps = recipeArray.getJSONObject(i).getJSONArray("steps");
+        JSONArray jsonSteps = JSONRecipe.getJSONArray("steps");
         for (int j = 0; j< jsonSteps.length();j++){
             steps.add(jsonSteps.getJSONObject(j).getString("name"));
         }
         recipe.setSteps(steps);
+        if (JSONRecipe.getString("imagePath") != "null") {
+            Picasso.get().load("http://coms-309-032.cs.iastate.edu:8080/recipe/" + recipe.getRecipeID() + "/image").into(recipe.getImage());
+        }
         return recipe;
     }
 

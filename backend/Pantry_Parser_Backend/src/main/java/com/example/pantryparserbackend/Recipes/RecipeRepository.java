@@ -58,6 +58,17 @@ public interface RecipeRepository extends PagingAndSortingRepository<Recipe, Lon
     Page<Recipe> getUserCreatedSearch(User user, String query, Pageable pageable);
 
     /**
+     * Gets the recipes that have been verified to be of quality by chefs by a search term
+     * @param pageable paginator settings
+     * @return list of recipes
+     */
+    @Query(value = "SELECT r FROM Recipe r WHERE " +
+            "r.chef_verified = true AND (" +
+            "lower(r.name) LIKE lower(CONCAT('%', :query, '%')) OR " +
+            "lower(r.summary) LIKE lower(CONCAT('%', :query, '%')))")
+    Page<Recipe> getChefVerifiedSearch(String query, Pageable pageable);
+
+    /**
      * Finds a specific user's favorite recipes
      * @param user_id id of the user
      * @param pageable paginator settings
@@ -78,6 +89,15 @@ public interface RecipeRepository extends PagingAndSortingRepository<Recipe, Lon
     @Query(value = "SELECT r FROM Recipe r WHERE " +
             "r.creator = ?1")
     Page<Recipe> getUserCreated(User user, Pageable pageable);
+
+    /**
+     * Gets the recipes that have been verified to be of quality by chefs
+     * @param pageable paginator settings
+     * @return list of recipes
+     */
+    @Query(value = "SELECT r FROM Recipe r WHERE " +
+            "r.chef_verified = true")
+    Page<Recipe> getChefVerified(Pageable pageable);
 
     /**
      * Does the pantry-parser functionality

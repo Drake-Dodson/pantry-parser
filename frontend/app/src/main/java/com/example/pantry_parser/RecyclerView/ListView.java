@@ -3,7 +3,9 @@ package com.example.pantry_parser.RecyclerView;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.CompoundButton;
 import android.widget.SearchView;
+import android.widget.Switch;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -43,6 +45,7 @@ public class ListView extends AppCompatActivity implements RecyclerViewAdapter.O
     private RequestQueue queue;
     FloatingActionButton newRecipe;
     SearchView searchView;
+    Switch toggle;
 
     /**
      *Create listview activity and instantiate elements
@@ -95,6 +98,22 @@ public class ListView extends AppCompatActivity implements RecyclerViewAdapter.O
     private void initializeElements(String viewType) throws JSONException{
         queue = Volley.newRequestQueue(this);
         searchView = findViewById(R.id.searchRecipe);
+        searchView.setQueryHint("Search by Recipe");
+        toggle = findViewById(R.id.toggle);
+
+        toggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked == true){
+                    searchView.setQueryHint("Search By Recipe");
+                }
+                else {
+                    searchView.setQueryHint("Search By Ingredient");
+                }
+            }
+        });
+
+
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {

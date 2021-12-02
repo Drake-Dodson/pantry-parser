@@ -1,12 +1,14 @@
 package com.example.pantry_parser;
 
 import android.graphics.drawable.Drawable;
+import android.media.Image;
+import android.widget.ImageView;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 
 public class Recipe implements Serializable {
-    private Integer recipeID;
+    private String recipeID;
     private String recipeName;
     private int timeToMake;
     private String summary;
@@ -14,7 +16,17 @@ public class Recipe implements Serializable {
     private ArrayList<String> steps;
     private String author;
     private float rating;
-    private Drawable image;
+    private ImageView image;
+
+    public Boolean getChefVerified() {
+        return chefVerified;
+    }
+
+    public void setChefVerified(Boolean chefVerified) {
+        this.chefVerified = chefVerified;
+    }
+
+    private Boolean chefVerified;
 
     /**
      *
@@ -30,7 +42,7 @@ public class Recipe implements Serializable {
      *
      * @return Returns recipe image
      */
-    public Drawable getImage() {
+    public ImageView getImage() {
         return image;
     }
 
@@ -38,7 +50,7 @@ public class Recipe implements Serializable {
      *
      * @param image Sets recipe image
      */
-    public void setImage(Drawable image) {
+    public void setImage(ImageView image) {
         this.image = image;
     }
 
@@ -122,13 +134,13 @@ public class Recipe implements Serializable {
      *
      * @param recipeID Sets recipe ID
      */
-    public void setRecipeID(Integer recipeID){this.recipeID = recipeID;}
+    public void setRecipeID(String recipeID){this.recipeID = recipeID;}
 
     /**
      *
      * @return Returns recipe's ID
      */
-    public Integer getRecipeID(){return recipeID;}
+    public String getRecipeID(){return recipeID;}
 
     /**
      *

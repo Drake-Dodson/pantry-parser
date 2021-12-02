@@ -2,6 +2,7 @@ package com.example.pantry_parser.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
@@ -85,6 +86,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     public class ItemViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         TextView recipeName;
         TextView minutesToMake;
+        ImageView chefVerified;
         RatingBar ratingBar;
         OnRecipeListener onRecipeListener;
 
@@ -98,6 +100,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             recipeName = itemView.findViewById(R.id.title);
             minutesToMake = itemView.findViewById(R.id.time);
             ratingBar = itemView.findViewById(R.id.ratingBar);
+            chefVerified = itemView.findViewById(R.id.Chef);
             itemView.setOnClickListener(this);
             this.onRecipeListener = onRecipeListener;
 
@@ -134,6 +137,9 @@ onRecipeListener.onRecipeClick(getAbsoluteAdapterPosition());
         viewHolder.recipeName.setText(item.getRecipeName());
         viewHolder.minutesToMake.setText(Integer.toString(item.getTimeToMake()));
         viewHolder.ratingBar.setRating((float) item.getRating());
+        if (item.getChefVerified() == false){
+            viewHolder.chefVerified.setVisibility(View.INVISIBLE);
+        }
     }
 
     public interface OnRecipeListener{

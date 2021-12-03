@@ -1,6 +1,10 @@
 package com.example.pantry_parser.Pages;
 
+import static com.example.pantry_parser.Utilities.URLs.URL_LOGIN;
+
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -8,13 +12,12 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.android.volley.Request;
+import com.example.pantry_parser.Network.RequestListener;
 import com.example.pantry_parser.Network.VolleyListener;
 import com.example.pantry_parser.R;
-import com.example.pantry_parser.Network.RequestListener;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -30,7 +33,10 @@ public class Login_Page extends AppCompatActivity implements View.OnClickListene
 
         private String adminUserName = "Admin";
         private String adminPassword = "2_do_8_comS_309";
+        private String user_id, email;
+        private static final String URL = URL_LOGIN;
 
+        boolean user_logged_in = false;
         boolean isAdmin = false;
         private int counter = 5;
 
@@ -54,6 +60,17 @@ public class Login_Page extends AppCompatActivity implements View.OnClickListene
 
             eGuest = findViewById(R.id.bt_Guest);
             eGuest.setOnClickListener(this);
+
+            SharedPreferences prefs = getSharedPreferences("user_info", Context.MODE_PRIVATE);
+            boolean login = prefs.getBoolean((String.valueOf(user_logged_in)), false);
+            String email = prefs.getString("email", "");
+            String user_id = prefs.getString("user_id", "");
+
+            if(login) {
+                Intent intent = new Intent(getApplicationContext(), Home_Page.class);
+                Toast.makeText(getApplicationContext(), "User id: " + user_id + "User email: " + email, Toast.LENGTH_SHORT).show();
+                startActivity(intent);
+            }
         }
 
     /**
@@ -67,14 +84,14 @@ public class Login_Page extends AppCompatActivity implements View.OnClickListene
 
             switch (view.getId()){
                 case R.id.button_Login:
-                    String inputName = eName.getText().toString();
+                    email = eName.getText().toString();
                     String inputPassword = ePassword.getText().toString();
 
-                    isAdmin = validateAdmin(inputName, inputPassword);
+                    isAdmin = validateAdmin(email, inputPassword);
                     if(isAdmin){
                         startActivity(intentLogin);
                     }
-                    else if (inputName.isEmpty() || inputPassword.isEmpty()) {
+                    else if (email.isEmpty() || inputPassword.isEmpty()) {
                         Toast.makeText(Login_Page.this, "Please enter username and password", Toast.LENGTH_SHORT).show();
                     } else {
                         try{
@@ -116,7 +133,15 @@ public class Login_Page extends AppCompatActivity implements View.OnClickListene
                     try{
 //                        intentLogin.putExtra("message", object.get("message").toString());
                         String message = object.get("success").toString();
+                        String user_id = object.get("message").toString();
                         if(message.equals("true")) {
+                            SharedPreferences prefs = getSharedPreferences("user_info", Context.MODE_PRIVATE);
+                            SharedPreferences.Editor editor = prefs.edit();
+                            editor.putString("user_id", user_id);
+                            editor.putString("email", email);
+                            editor.putBoolean("is_logged_in", true);
+                            editor.commit();
+                            editor.apply();
                             startActivity(intentLogin);
                             counter = 5;
                             eAttemptsInfo.setText("No. of attempts remaining: " + counter);
@@ -145,7 +170,7 @@ public class Login_Page extends AppCompatActivity implements View.OnClickListene
             data.put("email", eName);
             data.put("password", ePassword);
 
-            VolleyListener.makeRequest(getApplicationContext(), "/login", loginListener, data, Request.Method.POST);
+            VolleyListener.makeRequest(getApplicationContext(), URL, loginListener, data, Request.Method.POST);
         }
 
     /**

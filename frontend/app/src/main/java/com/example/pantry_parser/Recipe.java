@@ -15,6 +15,16 @@ public class Recipe implements Serializable {
     private ArrayList<String> ingredients;
     private ArrayList<String> steps;
     private String author;
+
+    public int getUserId() {
+        return UserId;
+    }
+
+    public void setUserId(int userId) {
+        UserId = userId;
+    }
+
+    private int UserId;
     private float rating;
     private ImageView image;
 

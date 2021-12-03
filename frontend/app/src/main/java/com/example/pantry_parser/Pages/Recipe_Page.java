@@ -2,6 +2,8 @@ package com.example.pantry_parser.Pages;
 
 import android.graphics.Point;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.Display;
 import android.view.View;
@@ -147,7 +149,7 @@ public class Recipe_Page extends AppCompatActivity {
              * To test the clientside without the backend, simply connect to an echo server such as:
              *  "ws://echo.websocket.org"
              */
-            uri = new URI("ws://coms-309-032.cs.iastate.edu:8080/websocket/1"); // 10.0.2.2 = localhost
+            uri = new URI("ws://coms-309-032.cs.iastate.edu:8080/websocket/2"); // 10.0.2.2 = localhost
             // uri = new URI("ws://echo.websocket.org");
         } catch (URISyntaxException e) {
             e.printStackTrace();
@@ -164,8 +166,11 @@ public class Recipe_Page extends AppCompatActivity {
             @Override
             public void onMessage(String msg) {
                 Log.i("Websocket", "Message Received");
+                new Handler(Looper.getMainLooper()).post(new Runnable() {
+                    public void run() {
                 Toast.makeText(Recipe_Page.this, msg, Toast.LENGTH_LONG).show();
-
+                    }
+                });
             }
 
             @Override

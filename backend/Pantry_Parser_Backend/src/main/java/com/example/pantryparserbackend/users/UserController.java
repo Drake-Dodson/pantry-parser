@@ -80,25 +80,25 @@ public class UserController {
 
     /**
      * creates a new user
-     * @param users new user input data
+     * @param user new user input data
      * @return either success or a failure message
      */
     @ApiOperation(value = "Creates a new user")
     @PostMapping(path = "/users")
-    String createUser(@RequestBody User users){
-        if (users == null)
+    String createUser(@RequestBody User user){
+        if (user == null)
             return MessageUtil.newResponseMessage(false, "User was null");
 
         try {
-            userRepository.save(users);
+            userRepository.save(user);
         }
         catch(Exception ex) {
-            if(userRepository.findByEmail(users.getEmail()) != null)
+            if(userRepository.findByEmail(user.getEmail()) != null)
                 return MessageUtil.newResponseMessage(false, "Email already used");
             return MessageUtil.newResponseMessage(false, "some fields were left empty");
         }
 
-        return MessageUtil.newResponseMessage(true, "User created");
+        return sendVerifyOTP(user.getId());
     }
 
     /**
@@ -121,6 +121,43 @@ public class UserController {
             // Password incorrect
             return MessageUtil.newResponseMessage(false, "password incorrect");
         }
+    }
+
+    @GetMapping(path = "/user/{user_id}/verify/sendOTP")
+    public String sendVerifyOTP(@PathVariable int user_id) {
+        User user = userRepository.findById(user_id);
+        if (user == null) {
+            return MessageUtil.newResponseMessage(false, "user not found");
+        }
+
+        String pass = PasswordUtil.generateOTP(6, user, otpRepository);
+        if (pass.contains("ERROR:")) {
+            return MessageUtil.newResponseMessage(false, pass);
+        }
+
+        try {
+            if (EmailUtil.sendRegistrationConfirmationEmail(user, pass)){
+                return MessageUtil.newResponseMessage(true, "check your email for your OTP");
+            } else {
+                return MessageUtil.newResponseMessage(false, "there was an error sending the email");
+            }
+        } catch (Exception e) {
+            return MessageUtil.newResponseMessage(false, "There was an error sending you your OTP");
+        }
+    }
+
+    @PostMapping(path = "/user/{user_id}/verify-email")
+    public String verifyEmail(@PathVariable int user_id, @RequestBody String OTP) {
+        User user = userRepository.findById(user_id);
+        if(user == null) {
+            return MessageUtil.newResponseMessage(false, "user was not found");
+        }
+        if(PasswordUtil.useOTP(OTP, user, otpRepository)) {
+            user.setEmail_verified(true);
+            userRepository.save(user);
+            return MessageUtil.newResponseMessage(true, "successfully changed password");
+        }
+        return MessageUtil.newResponseMessage(false, "invalid OTP, please try again or try to get a new OTP");
     }
 
     /**
@@ -170,12 +207,14 @@ public class UserController {
         }
 
         try {
-            EmailUtil.sendPasswordResetEmail(user, pass);
+            if (EmailUtil.sendPasswordResetEmail(user, pass)){
+                return MessageUtil.newResponseMessage(true, "check your email for your OTP");
+            } else {
+                return MessageUtil.newResponseMessage(false, "there was an error sending the email");
+            }
         } catch (Exception e) {
             return MessageUtil.newResponseMessage(false, "There was an error sending you your OTP");
         }
-
-        return MessageUtil.newResponseMessage(true, "check your email for your OTP");
     }
 
     /**

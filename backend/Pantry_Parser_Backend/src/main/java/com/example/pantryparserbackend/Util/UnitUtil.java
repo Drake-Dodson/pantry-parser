@@ -1,5 +1,7 @@
 package com.example.pantryparserbackend.Util;
 
+import com.example.pantryparserbackend.Requests.RecipeIngredientRequest;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -25,5 +27,4 @@ public class UnitUtil {
     public static List<String> getValidUnits() {
         return Arrays.asList(validUnits);
     }
-
 }

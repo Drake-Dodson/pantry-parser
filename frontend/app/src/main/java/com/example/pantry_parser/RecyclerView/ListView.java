@@ -3,6 +3,9 @@ package com.example.pantry_parser.RecyclerView;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.CompoundButton;
+import android.widget.SearchView;
+import android.widget.Switch;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -15,15 +18,18 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.pantry_parser.Pages.Recipe_Page;
 import com.example.pantry_parser.Pages.Settings_Page;
 import com.example.pantry_parser.R;
 import com.example.pantry_parser.Recipe;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 
@@ -32,12 +38,14 @@ public class ListView extends AppCompatActivity implements RecyclerViewAdapter.O
     RecyclerViewAdapter recyclerViewAdapter;
     ArrayList<Recipe> dataset = new ArrayList<>();
     boolean isLoading = false;
-    private static final String URL_RECIPES = "http://coms-309-032.cs.iastate.edu:8080/recipes/";
+    private static final String URL_RECIPES = "http://coms-309-032.cs.iastate.edu:8080/recipes?pageNo=0";
     private static final String URL_USER = "http://coms-309-032.cs.iastate.edu:8080/user/1/recipes/";
     private static final String URL_FAV = "http://coms-309-032.cs.iastate.edu:8080/user/1/favorites/";
     String URL_TO_USE;
     private RequestQueue queue;
     FloatingActionButton newRecipe;
+    SearchView searchView;
+    Switch toggle;
 
     /**
      *Create listview activity and instantiate elements
@@ -49,10 +57,15 @@ public class ListView extends AppCompatActivity implements RecyclerViewAdapter.O
         setContentView(R.layout.activity_list_view);
         String viewType = (String) getIntent().getSerializableExtra("SwitchView");
 
-        initializeElements(viewType);
+        try {
+            initializeElements(viewType);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
         setupRecycler();
-        popData();
         setupAdapter();
+        popData();
+
     }
 
     /**
@@ -71,7 +84,7 @@ public class ListView extends AppCompatActivity implements RecyclerViewAdapter.O
                 if (!isLoading) {
                     if (linearLayoutManager != null && linearLayoutManager.findLastCompletelyVisibleItemPosition() == dataset.size() - 1) {
                         isLoading = true;
-                        getMoreData();
+                        //getMoreData();
                     }
                 }
             }
@@ -82,8 +95,40 @@ public class ListView extends AppCompatActivity implements RecyclerViewAdapter.O
      *Inializes volley request queue and determines the dataset to fill list view with
      * @param viewType View to be initialized
      */
-    private void initializeElements(String viewType) {
+    private void initializeElements(String viewType) throws JSONException{
         queue = Volley.newRequestQueue(this);
+        searchView = findViewById(R.id.searchRecipe);
+        searchView.setQueryHint("Search by Recipe");
+        toggle = findViewById(R.id.toggle);
+
+        toggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked == true){
+                    searchView.setQueryHint("Search By Recipe");
+                }
+                else {
+                    searchView.setQueryHint("Search By Ingredient");
+                }
+            }
+        });
+
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                try {
+                    searchByIngredient(query);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                return true;
+            }
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
         newRecipe = findViewById(R.id.addRecipeButton);
         newRecipe.setOnClickListener(new View.OnClickListener() {
 
@@ -117,61 +162,45 @@ public class ListView extends AppCompatActivity implements RecyclerViewAdapter.O
     /**
      * Method to get more recipes once the user scrolls to the end of the current view
      */
-    private void getMoreData() {
-        if (URL_TO_USE == URL_RECIPES) {
-            dataset.add(null);
-            recyclerViewAdapter.notifyItemInserted(dataset.size() - 1);
-            dataset.remove(dataset.size() - 1);
-            int currentSize = dataset.size();
-            int nextSize = currentSize + 10;
-            while (currentSize < nextSize) {
-                Recipe recipe = new Recipe("Recipe " + currentSize);
-                recipe.setTimeToMake(currentSize);
-                recipe.setRating((float) currentSize / 5);
-                dataset.add(recipe);
-                currentSize++;
-            }
-            recyclerViewAdapter.notifyDataSetChanged();
-            isLoading = false;
-        }
-    }
+//    private void getMoreData() {
+//        if (URL_TO_USE == URL_RECIPES) {
+//            dataset.add(null);
+//            recyclerViewAdapter.notifyItemInserted(dataset.size() - 1);
+//            dataset.remove(dataset.size() - 1);
+//            int currentSize = dataset.size();
+//            int nextSize = currentSize + 10;
+//            while (currentSize < nextSize) {
+//                Recipe recipe = new Recipe("Recipe " + currentSize);
+//                recipe.setTimeToMake(currentSize);
+//                recipe.setRating((float) currentSize / 5);
+//                dataset.add(recipe);
+//                currentSize++;
+//            }
+//            recyclerViewAdapter.notifyDataSetChanged();
+//            isLoading = false;
+//        }
+//    }
 
     /**
      * Populates list view with recipes from selected database endpoint
      */
     private void popData() {
-        JsonArrayRequest recipeRequest = new JsonArrayRequest(Request.Method.GET, URL_TO_USE, null, new Response.Listener<JSONArray>() {
-            /**
-             *Adds recipes based on good request
-             * @param response
-             */
+        JsonObjectRequest recipeRequest = new JsonObjectRequest(Request.Method.GET, URL_TO_USE, null, new Response.Listener<JSONObject>() {
             @Override
-            public void onResponse(JSONArray response) {
+            public void onResponse(JSONObject response) {
+                int pageSize = 0;
                 if (response != null) {
                     int i = 0;
-                    while (!response.isNull(i) && i <=30) {
+                    JSONArray recipeArray = null;
+                    try {
+                        recipeArray = response.getJSONArray("content");
+                        pageSize = response.getInt("size");
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    while (!recipeArray.isNull(i) && i <=pageSize) {
                         try {
-                            Recipe recipe = new Recipe(response.getJSONObject(i).getString("name"));
-                            recipe.setRecipeID(response.getJSONObject(i).getInt("id"));
-                            recipe.setTimeToMake(response.getJSONObject(i).getInt("time"));
-                            recipe.setSummary(response.getJSONObject(i).getString("summary"));
-                            recipe.setAuthor(response.getJSONObject(i).getString("creatorName"));
-                            recipe.setRating((float) response.getJSONObject(i).getDouble("rating"));
-
-                            ArrayList<String> ingredients = new ArrayList<>();
-                            JSONArray jsonIngredients = response.getJSONObject(i).getJSONArray("ingredients");
-                            for (int j = 0; j< jsonIngredients.length();j++){
-                                ingredients.add(jsonIngredients.getJSONObject(j).getString("name"));
-                            }
-                            recipe.setIngredients(ingredients);
-
-                            ArrayList<String> steps = new ArrayList<>();
-                            JSONArray jsonSteps = response.getJSONObject(i).getJSONArray("steps");
-                            for (int j = 0; j< jsonSteps.length();j++){
-                                steps.add(jsonSteps.getJSONObject(j).getString("name"));
-                            }
-                            recipe.setSteps(steps);
-
+                            Recipe recipe = getRecipe(i, recipeArray);
                             dataset.add(recipe);
                             recyclerViewAdapter.notifyDataSetChanged();
                         } catch (JSONException e) {
@@ -195,6 +224,36 @@ public class ListView extends AppCompatActivity implements RecyclerViewAdapter.O
         queue.add(recipeRequest);
     }
 
+    @NonNull
+    private Recipe getRecipe(int i, JSONArray recipeArray) throws JSONException {
+        JSONObject JSONRecipe = recipeArray.getJSONObject(i);
+        Recipe recipe = new Recipe(JSONRecipe.getString("name"));
+        recipe.setRecipeID(JSONRecipe.getString("id"));
+        recipe.setTimeToMake(JSONRecipe.getInt("time"));
+        recipe.setSummary(JSONRecipe.getString("summary"));
+        recipe.setAuthor(JSONRecipe.getString("creatorName"));
+        recipe.setUserId(JSONRecipe.getInt("creatorId"));
+        recipe.setChefVerified(JSONRecipe.getBoolean("chef_verified"));
+        recipe.setRating((float) JSONRecipe.getDouble("rating"));
+        ArrayList<String> ingredients = new ArrayList<>();
+        JSONArray jsonIngredients = JSONRecipe.getJSONArray("ingredients");
+        for (int j = 0; j< jsonIngredients.length();j++){
+            ingredients.add(jsonIngredients.getJSONObject(j).getString("name"));
+        }
+        recipe.setIngredients(ingredients);
+
+        ArrayList<String> steps = new ArrayList<>();
+        JSONArray jsonSteps = JSONRecipe.getJSONArray("steps");
+        for (int j = 0; j< jsonSteps.length();j++){
+            steps.add(jsonSteps.getJSONObject(j).getString("name"));
+        }
+        recipe.setSteps(steps);
+        if (JSONRecipe.getString("imagePath") != "null") {
+            Picasso.get().load("http://coms-309-032.cs.iastate.edu:8080/recipe/" + recipe.getRecipeID() + "/image").into(recipe.getImage());
+        }
+        return recipe;
+    }
+
     /**
      * Initialize recyclerView adapter
      */
@@ -213,5 +272,53 @@ public class ListView extends AppCompatActivity implements RecyclerViewAdapter.O
         Intent intent = new Intent(this, Recipe_Page.class);
         intent.putExtra("Recipe", dataset.get(position));
         startActivity(intent);
+    }
+
+    public void searchByIngredient(String query) throws JSONException {
+        dataset.clear();
+        recyclerViewAdapter.notifyDataSetChanged();
+        JSONArray jsonArray = new JSONArray();
+        jsonArray.put(query);
+
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("ingredients", jsonArray);
+
+        JsonObjectRequest recipeByIng = new JsonObjectRequest(Request.Method.PUT, "http://coms-309-032.cs.iastate.edu:8080/pantry-parser", jsonObject, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                if (response != null) {
+                    int i = 0;
+                    JSONArray recipeArray = null;
+                    try {
+                        recipeArray = response.getJSONArray("content");
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    while (!recipeArray.isNull(i) && i < recipeArray.length()) {
+                        try {
+                            Recipe recipe = getRecipe(i, recipeArray);
+                            dataset.add(recipe);
+                            recyclerViewAdapter.notifyDataSetChanged();
+                        } catch (JSONException e) {
+                            Toast.makeText(ListView.this, e.toString(), Toast.LENGTH_SHORT).show();
+                        }
+                        i++;
+                    }
+
+                }
+
+            }
+
+        }, new Response.ErrorListener() {
+            /**
+             *Does not fill recipes if no data is returned from database
+             * @param error
+             */
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                System.out.println("Fail");
+            }
+        });
+        queue.add(recipeByIng);
     }
 }

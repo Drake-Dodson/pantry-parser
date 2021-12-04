@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -32,6 +33,11 @@ public class User {
     @Setter
     @Column(nullable = false, unique = true)
     private String email;
+
+    @Getter
+    @Setter
+    @Column(nullable = false, columnDefinition = "bool default false")
+    private boolean email_verified;
 
     @Column(nullable = false)
     private String password;
@@ -64,6 +70,7 @@ public class User {
         this.password = PasswordUtil.newHash(password);
         this.email = email;
         this.role = "Main";
+        this.created_recipes = new ArrayList<>();
     }
 
     public User() {}

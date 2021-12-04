@@ -1,7 +1,10 @@
 package com.example.pantryparserbackend.Recipes;
 
-import java.util.ArrayList;
-import java.util.Objects;
+import java.io.IOException;
+import java.io.Reader;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.*;
 
 import com.example.pantryparserbackend.Ingredients.Ingredient;
 import com.example.pantryparserbackend.Ingredients.IngredientRepository;
@@ -10,8 +13,11 @@ import com.example.pantryparserbackend.Ingredients.RecipeIngredientRepository;
 import com.example.pantryparserbackend.Requests.PantryParserRequest;
 import com.example.pantryparserbackend.Requests.RecipeIngredientRequest;
 import com.example.pantryparserbackend.Requests.RecipeRequest;
+import com.example.pantryparserbackend.Util.ImportUtil;
 import com.example.pantryparserbackend.Util.MessageUtil;
 import com.example.pantryparserbackend.Util.UnitUtil;
+import com.opencsv.CSVReader;
+import com.opencsv.exceptions.CsvValidationException;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -257,5 +263,86 @@ public class RecipeController {
     Page<Recipe> recipesByIngredients(@RequestParam(defaultValue = "0") Integer pageNo, @RequestParam(defaultValue = "15") Integer perPage, @RequestBody PantryParserRequest request){
         Pageable page = PageRequest.of(pageNo, perPage, Sort.by("rating"));
         return recipeRepository.getByIngredients(request.ingredients, page);
+    }
+
+    @GetMapping(path="/recipes/getFromExternal")
+    String importRecipes(@RequestParam String file) {
+        try {
+            Reader reader = Files.newBufferedReader(Paths.get("/servers/data.csv"));
+            CSVReader csvReader = new CSVReader(reader);
+
+            User user = userRepository.findByEmail("pantryparser@gmail.com");
+            if (user == null) {
+                 user = new User("coolpass", "pantryparser@gmail.com");
+                user.setDisplayName("AllRecipes import");
+                userRepository.save(user);
+            }
+            user = userRepository.findByEmail("pantryparser@gmail.com");
+
+            String[] headers = csvReader.readNext();
+            String[] record;
+            while((record = csvReader.readNext()) != null) {
+                Random random = new Random();
+                String summary = "Author: " + record[Arrays.asList(headers).indexOf("author")] + "\n" +
+                        "AllRecipes URL: " + record[Arrays.asList(headers).indexOf("url")];
+                String nutrition = record[Arrays.asList(headers).indexOf("calories")] + " calories";
+
+                String[] ingredientStrings = record[Arrays.asList(headers).indexOf("ingredients")].split(";");
+                String[] stepStrings = record[Arrays.asList(headers).indexOf("directions")].split("\\.");
+
+                int cook_time = ImportUtil.safeTimeParse(record[Arrays.asList(headers).indexOf("cook")]);
+                int prep_time = ImportUtil.safeTimeParse(record[Arrays.asList(headers).indexOf("prep")]);
+
+                Recipe recipe = new Recipe(
+                        record[Arrays.asList(headers).indexOf("name")],
+                        prep_time,
+                        cook_time,
+                        summary,
+                        record[Arrays.asList(headers).indexOf("summary")],
+                        new Date(),
+                        ImportUtil.safeParseInt(record[Arrays.asList(headers).indexOf("rating_count")]),
+                        ImportUtil.safeParseDouble(record[Arrays.asList(headers).indexOf("rating")]),
+                        ImportUtil.safeParseInt(record[Arrays.asList(headers).indexOf("servings")]),
+                        nutrition,
+                        random.nextBoolean()
+                );
+
+                int i = 1;
+                for (String s : stepStrings) {
+                    recipe.addStep(new Step(s, i, recipe));
+                    i++;
+                }
+
+                boolean all = true;
+                for (String st : ingredientStrings) {
+                    RecipeIngredientRequest s =  ImportUtil.safeIngredientParse(st);
+
+                    Ingredient ingredient = ingredientRepository.findByName(s.ingredient_name);
+                    if(ingredient == null) {
+                        all = false;
+                        ingredient = new Ingredient(s.ingredient_name);
+                        ingredientRepository.save(ingredient);
+                    }
+
+                    RecipeIngredient ri = new RecipeIngredient(ingredient, recipe, s.quantity, s.units);
+                    recipe.addIngredient(ri);
+                }
+
+                try {
+                    user.addRecipe(recipe);
+                    userRepository.save(user);
+                    recipeRepository.save(recipe);
+                    stepRepository.saveAll(recipe.getSteps());
+                    recipeIngredientRepository.saveAll(recipe.getIngredients());
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                    System.out.println("threw an error on this one, oops");
+                }
+            }
+        } catch (IOException | CsvValidationException e) {
+            e.printStackTrace();
+        }
+
+        return MessageUtil.newResponseMessage(true, "successfully created all recipes");
     }
 }

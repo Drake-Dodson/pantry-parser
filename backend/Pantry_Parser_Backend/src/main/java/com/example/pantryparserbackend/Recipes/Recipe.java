@@ -126,6 +126,34 @@ public class Recipe {
         this.chef_verified = false;
     }
 
+    public Recipe(String name,
+                  int prep_time,
+                  int cook_time,
+                  String summary,
+                  String description,
+                  Date created_date,
+                  int num_reviews,
+                  double rating,
+                  int num_servings,
+                  String nutrition_facts,
+                  boolean chef_verified)
+    {
+        this.name            = name;
+        this.prep_time       = prep_time;
+        this.summary         = summary;
+        this.description     = description;
+        this.created_date    = created_date;
+        this.steps           = new ArrayList<>();
+        this.ingredients     = new ArrayList<>();
+        this.num_reviews     = num_reviews;
+        this.num_ingredients = 0;
+        this.rating          = rating;
+        this.num_servings    = num_servings;
+        this.cook_time       = cook_time;
+        this.nutrition_facts = nutrition_facts;
+        this.chef_verified   = chef_verified;
+    }
+
     public Recipe(RecipeRequest request) {
         this.created_date = new Date();
         this.steps = new ArrayList<>();

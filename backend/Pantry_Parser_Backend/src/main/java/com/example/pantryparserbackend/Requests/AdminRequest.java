@@ -6,8 +6,8 @@ public class AdminRequest {
     public String role;
 
     public AdminRequest(String adminPassword, String adminEmail, String role){
-        this.adminEmail = adminPassword;
-        this.adminPassword = adminEmail;
+        this.adminEmail = adminEmail;
+        this.adminPassword = adminPassword;
         this.role = role;
     }
 }

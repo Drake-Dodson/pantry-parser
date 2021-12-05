@@ -93,7 +93,7 @@ public class UserController {
 
         if (userRequest == null)
             return MessageUtil.newResponseMessage(false, "UserRequest was null");
-        User user = new User(userRequest.password, userRequest.email);
+        User user = new User(userRequest.password, userRequest.email, userRequest.displayName);
 
         try {
             userRepository.save(user);
@@ -101,7 +101,7 @@ public class UserController {
         catch(Exception ex) {
             if(userRepository.findByEmail(user.getEmail()) != null)
                 return MessageUtil.newResponseMessage(false, "Email already used");
-            return MessageUtil.newResponseMessage(false, "some fields were left empty" + ex);
+            return MessageUtil.newResponseMessage(false, "some fields were left empty");
         }
 
         return sendVerifyOTP(user.getId());
@@ -356,8 +356,17 @@ public class UserController {
     @ApiOperation(value = "The route for a user to update a user role")
     @PatchMapping(path = "/user/{user_id}/assignrole")
     public String giveRole(@PathVariable int user_id, @RequestBody AdminRequest adminCreds){
+        if(adminCreds == null){
+            return MessageUtil.newResponseMessage(false, "adminCreds was null");
+        }
+
         User admin = userRepository.findByEmail(adminCreds.adminEmail);
         User user = userRepository.findById(user_id);
+
+        if(admin == null || user == null){
+            return MessageUtil.newResponseMessage(false, (admin == null ? "admin " : "user ") + "does not exist");
+        }
+
 
         if(!Objects.equals(admin.getRole(), "Admin") || !admin.authenticate(adminCreds.adminPassword)){
             return MessageUtil.newResponseMessage(false, "Invalid admin credentials");

@@ -41,7 +41,7 @@ public class ImageController {
             return MessageUtil.newResponseMessage(false, "Accepted file types are .jpg .jpeg and .png");
         }
 
-        String fileDirectory = "mainImageDirectory/recipes/" + recipe_id;
+        String fileDirectory = "../mainImageDirectory/recipes/" + recipe_id;
         String fileName = "Recipe" + recipe_id + "Image.png";
 
         // If file is a jpg
@@ -89,7 +89,7 @@ public class ImageController {
             return MessageUtil.newResponseMessage(false, "Accepted file types are .jpg .jpeg and .png");
         }
 
-        String fileDirectory = "mainImageDirectory/users/" + user_id;
+        String fileDirectory = "../mainImageDirectory/users/" + user_id;
         String fileName ="User" + user_id + "Image.png";
 
         // If file is a jpg

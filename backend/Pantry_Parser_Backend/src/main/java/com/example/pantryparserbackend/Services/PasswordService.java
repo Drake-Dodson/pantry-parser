@@ -3,6 +3,8 @@ package com.example.pantryparserbackend.Services;
 import com.example.pantryparserbackend.Passwords.OTP;
 import com.example.pantryparserbackend.Passwords.OTPRepository;
 import com.example.pantryparserbackend.Users.User;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,15 +18,18 @@ import java.security.spec.KeySpec;
 import java.util.List;
 
 @Service
+@Api(value = "Password Service", description = "Password and OTP handling and management")
 public class PasswordService {
 
     @Autowired
     private OTPRepository otpRepo;
+
     /**
      * generates an OTP of a specified length
      * @param length length of OTP
      * @return new OTP
      */
+    @ApiOperation(value = "Generates an OTP of the provided length")
     public String generateOTP(int length, User user) {
         SecureRandom random = new SecureRandom();
         String password = "";
@@ -44,6 +49,13 @@ public class PasswordService {
         return password;
     }
 
+    /**
+     * This function "uses" an OTP - verifies it and then removes it from the database
+     * @param password input OTP
+     * @param user user attempting to use OTP
+     * @return good OTP or not
+     */
+    @ApiOperation(value = "Operation that handles the comparing and deleting of OTPs - \"using\" OTPs")
     public boolean useOTP(String password, User user) {
         List<OTP> otps = otpRepo.findByUser(user);
 
@@ -63,8 +75,9 @@ public class PasswordService {
      * Compares a hash with the hash of a password
      * @param password input password
      * @param hash input hash
-     * @return
+     * @return equal or not
      */
+    @ApiOperation(value = "An operation that compares a password to a provided hash")
     public static boolean comparePasswords(String password, String hash) {
         String[] parts = hash.split(":");
         byte[] salt = PasswordService.fromHex(parts[1]);
@@ -78,6 +91,7 @@ public class PasswordService {
      * @param password input string for the new password
      * @return hashed value for the new password
      */
+    @ApiOperation(value = "Generates a new hash from an inputted password")
     public static String newHash(String password) {
         SecureRandom random = new SecureRandom();
         byte[] salt = new byte[16];
@@ -91,7 +105,7 @@ public class PasswordService {
      * @param salt input random salt
      * @return hexed value of hashed password
      */
-    public static String hash(String password, byte[] salt) {
+    private static String hash(String password, byte[] salt) {
         int iterations = 65536;
         KeySpec spec = new PBEKeySpec(password.toCharArray(), salt, iterations, 512);
         try{

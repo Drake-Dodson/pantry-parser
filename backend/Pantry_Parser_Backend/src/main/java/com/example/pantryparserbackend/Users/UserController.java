@@ -116,7 +116,7 @@ public class UserController {
             return MessageUtil.newResponseMessage(false, "some fields were left empty");
         }
 
-        return emailService.sendEmail("VerifyEmail", user);
+        return emailService.sendOTPEmail("VerifyEmail", user);
     }
 
     /**

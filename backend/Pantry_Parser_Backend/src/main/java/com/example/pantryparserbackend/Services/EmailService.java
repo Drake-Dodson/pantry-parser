@@ -5,6 +5,8 @@ import javax.mail.internet.MimeMessage;
 
 import com.example.pantryparserbackend.Users.User;
 import com.example.pantryparserbackend.Utils.MessageUtil;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +15,7 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
 @Service
+@Api(value = "Email Service", description = "Service for sending emails")
 public class EmailService {
     private static final Logger logger = LoggerFactory.getLogger(EmailService.class);
 
@@ -21,7 +24,14 @@ public class EmailService {
     @Autowired
     private PasswordService passwordService;
 
-    public String sendEmail(String type, User user) {
+    /**
+     * Sends an OTP email of specified type to the specified user
+     * @param type type of OTP (EX: password reset)
+     * @param user user to send to
+     * @return Success or failure message
+     */
+    @ApiOperation(value = "Sends an OTP email of a specified type to the specified user")
+    public String sendOTPEmail(String type, User user) {
         if(user == null) {
             return MessageUtil.newResponseMessage(false, "Invalid user");
         }

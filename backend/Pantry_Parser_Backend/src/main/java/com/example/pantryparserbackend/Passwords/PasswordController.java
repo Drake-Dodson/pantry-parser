@@ -28,7 +28,7 @@ public class PasswordController {
 			return MessageUtil.newResponseMessage(false, "user not found");
 		}
 
-		return emailService.sendEmail("VerifyEmail", user);
+		return emailService.sendOTPEmail("VerifyEmail", user);
 	}
 
 	@PostMapping(path = "/user/{user_id}/verify-email")
@@ -58,7 +58,7 @@ public class PasswordController {
 			return MessageUtil.newResponseMessage(false, "account not found");
 		}
 
-		return emailService.sendEmail("PasswordReset", user);
+		return emailService.sendOTPEmail("PasswordReset", user);
 	}
 
 	/**
@@ -88,7 +88,7 @@ public class PasswordController {
 			return MessageUtil.newResponseMessage(false, "user not found");
 		}
 
-		return emailService.sendEmail("PasswordChange", user);
+		return emailService.sendOTPEmail("PasswordChange", user);
 	}
 
 	/**

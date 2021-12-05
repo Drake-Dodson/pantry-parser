@@ -125,11 +125,15 @@ public class UserController {
         User user = userRepository.findById(user_id);
         if(user == null) {
             return MessageUtil.newResponseMessage(false, "User not found");
-        };
+        }
 
         if(user.authenticate(userRequest.password)){
             try {
-                user.setEmail(userRequest.email);
+                if(!Objects.equals(user.getEmail(), userRequest.email)){
+                    user.setEmail(userRequest.email);
+                    user.setEmail_verified(false);
+                }
+
                 user.setDisplayName(userRequest.displayName);
                 userRepository.save(user);
             }

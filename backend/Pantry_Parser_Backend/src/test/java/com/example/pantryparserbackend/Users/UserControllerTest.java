@@ -29,17 +29,17 @@ class UserControllerTest {
 
     @Test
     public void testRegister_Duplicate_ThenReturnFail() {
-//        MockitoAnnotations.openMocks(this);
-//
-//        UserRequest userRequest = new UserRequest("password", "pantryparser@gmail.com", "Name");
-//
-//        when(userRepository.save(mockUser)).thenThrow(new DataIntegrityViolationException("already exists"));
-//        when(userRepository.findByEmail(mockUser.getEmail())).thenReturn(mockUser);
-//
-//        String expected = MessageUtil.newResponseMessage(false, "Email already used");
-//        String actual = userController.createUser(userRequest);
-//
-//        assertEquals(expected, actual);
+        MockitoAnnotations.openMocks(this);
+
+        UserRequest userRequest = new UserRequest("password", "pantryparser@gmail.com", "Name");
+
+        when(userRepository.save(any())).thenThrow(new DataIntegrityViolationException("already exists"));
+        when(userRepository.findByEmail(anyString())).thenReturn(mockUser);
+
+        String expected = MessageUtil.newResponseMessage(false, "Email already used");
+        String actual = userController.createUser(userRequest);
+
+        assertEquals(expected, actual);
     }
 
     @Test

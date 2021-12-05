@@ -2,11 +2,9 @@ package com.example.pantryparserbackend.Websockets;
 
 import com.example.pantryparserbackend.Recipes.Recipe;
 import com.example.pantryparserbackend.Recipes.RecipeRepository;
-import com.example.pantryparserbackend.users.User;
-import com.example.pantryparserbackend.users.UserRepository;
+import com.example.pantryparserbackend.Users.User;
+import com.example.pantryparserbackend.Users.UserRepository;
 import io.swagger.annotations.Api;
-import io.swagger.annotations.Authorization;
-import org.hibernate.LazyInitializationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

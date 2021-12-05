@@ -23,15 +23,17 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
     public List<Recipe> mItemList;
     private OnRecipeListener mOnRecipeListener;
+    private String type;
 
     /**
      *Recycler View Adapter Constructor
      * @param recipeList
      * @param onRecipeListener
      */
-    public RecyclerViewAdapter(List<Recipe> recipeList, OnRecipeListener onRecipeListener) {
+    public RecyclerViewAdapter(List<Recipe> recipeList, OnRecipeListener onRecipeListener, String type) {
         mItemList = recipeList;
         this.mOnRecipeListener = onRecipeListener;
+        this.type = type;
     }
 
     /**
@@ -113,7 +115,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
          */
         @Override
         public void onClick(View view) {
-onRecipeListener.onRecipeClick(getAbsoluteAdapterPosition());
+            onRecipeListener.onRecipeClick(getAbsoluteAdapterPosition());
         }
     }
 

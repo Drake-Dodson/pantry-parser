@@ -17,7 +17,6 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.pantry_parser.Pages.Recipe_Page;
@@ -129,7 +128,7 @@ public class ListView extends AppCompatActivity implements RecyclerViewAdapter.O
                 return false;
             }
         });
-        newRecipe = findViewById(R.id.addRecipeButton);
+        newRecipe = findViewById(R.id.createRecipe);
         newRecipe.setOnClickListener(new View.OnClickListener() {
 
             /**
@@ -149,13 +148,20 @@ public class ListView extends AppCompatActivity implements RecyclerViewAdapter.O
                 break;
 
             case ("MY_RECIPES"):
-            URL_TO_USE = URL_USER;
+                URL_TO_USE = URL_USER;
                 newRecipe.show();
                 break;
 
             case ("FAV_RECIPES"):
                 URL_TO_USE = URL_FAV;
                 break;
+
+            default:
+                toggle.setChecked(true);
+                searchView.setQuery(viewType, true);
+                URL_TO_USE = URL_RECIPES;
+                break;
+
         }
     }
 
@@ -258,7 +264,7 @@ public class ListView extends AppCompatActivity implements RecyclerViewAdapter.O
      * Initialize recyclerView adapter
      */
     private void setupAdapter() {
-        recyclerViewAdapter = new RecyclerViewAdapter(dataset, this);
+        recyclerViewAdapter = new RecyclerViewAdapter(dataset, this, "r");
         recyclerView.setAdapter(recyclerViewAdapter);
     }
 

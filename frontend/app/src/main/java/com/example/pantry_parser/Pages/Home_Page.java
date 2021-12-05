@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.pantry_parser.R;
+import com.example.pantry_parser.RecyclerView.IngredientListView;
 import com.example.pantry_parser.RecyclerView.ListView;
 
 public class Home_Page extends AppCompatActivity implements View.OnClickListener{
@@ -65,8 +66,8 @@ public class Home_Page extends AppCompatActivity implements View.OnClickListener
                 startActivity(pantryParserIntent);
                 break;
             case R.id.bt_MyRecipes:
-                Intent myRecipesIntent = new Intent(getApplicationContext(), ListView.class);
-                myRecipesIntent.putExtra("SwitchView", "MY_RECIPES");
+                Intent myRecipesIntent = new Intent(getApplicationContext(), IngredientListView.class);
+               // myRecipesIntent.putExtra("SwitchView", "MY_RECIPES");
                 startActivity(myRecipesIntent);
                 break;
             case R.id.bt_Favorites:

@@ -2,7 +2,7 @@ package com.example.pantryparserbackend.Users;
 
 import com.example.pantryparserbackend.Recipes.Recipe;
 import com.example.pantryparserbackend.Reviews.Review;
-import com.example.pantryparserbackend.Utils.PasswordUtil;
+import com.example.pantryparserbackend.Services.PasswordService;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
@@ -82,7 +82,7 @@ public class User {
     private List<Review> userReviews;
 
     public User(String password, String email) {
-        this.password = PasswordUtil.newHash(password);
+        this.password = PasswordService.newHash(password);
         this.email = email;
         if(Arrays.asList(DEFAULT_ADMINS).contains(email)) {
             this.role = User.DESIGNATION_ADMIN;
@@ -103,7 +103,7 @@ public class User {
      * @param password input password
      */
     public void setPassword(String password) {
-        this.password = PasswordUtil.newHash(password);
+        this.password = PasswordService.newHash(password);
     }
 
     /**
@@ -136,7 +136,7 @@ public class User {
      * @return true if matching, false if not
      */
     public boolean authenticate(String password) {
-        return PasswordUtil.comparePasswords(password, this.password);
+        return PasswordService.comparePasswords(password, this.password);
     }
 
     public boolean hasRole(String role) {

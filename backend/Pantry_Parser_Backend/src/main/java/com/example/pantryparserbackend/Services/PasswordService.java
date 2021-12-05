@@ -1,8 +1,11 @@
-package com.example.pantryparserbackend.Utils;
+package com.example.pantryparserbackend.Services;
 
 import com.example.pantryparserbackend.Passwords.OTP;
 import com.example.pantryparserbackend.Passwords.OTPRepository;
 import com.example.pantryparserbackend.Users.User;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 import java.math.BigInteger;
@@ -12,14 +15,17 @@ import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
 import java.util.List;
 
-public class PasswordUtil {
+@Service
+public class PasswordService {
 
+    @Autowired
+    private OTPRepository otpRepo;
     /**
      * generates an OTP of a specified length
      * @param length length of OTP
      * @return new OTP
      */
-    public static String generateOTP(int length, User user, OTPRepository otpRepo) {
+    public String generateOTP(int length, User user) {
         SecureRandom random = new SecureRandom();
         String password = "";
         for(int i = 0; i < length; i++){
@@ -38,7 +44,7 @@ public class PasswordUtil {
         return password;
     }
 
-    public static boolean useOTP(String password, User user, OTPRepository otpRepo) {
+    public boolean useOTP(String password, User user) {
         List<OTP> otps = otpRepo.findByUser(user);
 
         for (int i = 0; i < otps.size(); i++) {
@@ -52,6 +58,7 @@ public class PasswordUtil {
         }
         return false;
     }
+
     /**
      * Compares a hash with the hash of a password
      * @param password input password
@@ -60,8 +67,8 @@ public class PasswordUtil {
      */
     public static boolean comparePasswords(String password, String hash) {
         String[] parts = hash.split(":");
-        byte[] salt = PasswordUtil.fromHex(parts[1]);
-        String passwordToTest = PasswordUtil.hash(password, salt);
+        byte[] salt = PasswordService.fromHex(parts[1]);
+        String passwordToTest = PasswordService.hash(password, salt);
 
         return hash.equals(passwordToTest);
     }
@@ -75,7 +82,7 @@ public class PasswordUtil {
         SecureRandom random = new SecureRandom();
         byte[] salt = new byte[16];
         random.nextBytes(salt);
-        return PasswordUtil.hash(password, salt);
+        return PasswordService.hash(password, salt);
     }
 
     /**
@@ -89,7 +96,7 @@ public class PasswordUtil {
         KeySpec spec = new PBEKeySpec(password.toCharArray(), salt, iterations, 512);
         try{
             SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
-            return iterations + ":" + PasswordUtil.toHex(salt) + ":" + PasswordUtil.toHex(factory.generateSecret(spec).getEncoded());
+            return iterations + ":" + PasswordService.toHex(salt) + ":" + PasswordService.toHex(factory.generateSecret(spec).getEncoded());
         }catch(NoSuchAlgorithmException | InvalidKeySpecException e){
             //probably will never happen since these are permanently set, so shouldn't have to handle this
             return "encryption error";

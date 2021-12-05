@@ -1,6 +1,6 @@
 package com.example.pantryparserbackend.Passwords;
 
-import com.example.pantryparserbackend.Utils.PasswordUtil;
+import com.example.pantryparserbackend.Services.PasswordService;
 import com.example.pantryparserbackend.Users.User;
 import lombok.Getter;
 import javax.persistence.*;
@@ -31,7 +31,7 @@ public class OTP {
     public OTP(){}
 
     public OTP(String password, User user) {
-        this.hash = PasswordUtil.newHash(password);
+        this.hash = PasswordService.newHash(password);
         this.user = user;
         this.created_date = new Date();
     }
@@ -41,6 +41,6 @@ public class OTP {
     }
 
     public boolean verify(String password) {
-        return PasswordUtil.comparePasswords(password, this.hash);
+        return PasswordService.comparePasswords(password, this.hash);
     }
 }

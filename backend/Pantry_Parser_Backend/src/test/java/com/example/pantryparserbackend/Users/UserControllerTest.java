@@ -46,7 +46,7 @@ class UserControllerTest {
     public void testRegister_onNullInput_thenReturnFail() {
         MockitoAnnotations.openMocks(this);
 
-        String expected = MessageUtil.newResponseMessage(false, "User was null");
+        String expected = MessageUtil.newResponseMessage(false, "UserRequest was null");
         String actual = userController.createUser(null);
 
         assertEquals(expected, actual);

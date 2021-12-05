@@ -2,7 +2,7 @@ package com.example.pantryparserbackend.Util;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
-import com.example.pantryparserbackend.users.User;
+import com.example.pantryparserbackend.Users.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

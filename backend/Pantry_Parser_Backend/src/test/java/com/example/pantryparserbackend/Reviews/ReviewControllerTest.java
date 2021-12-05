@@ -3,14 +3,12 @@ package com.example.pantryparserbackend.Reviews;
 import com.example.pantryparserbackend.Recipes.Recipe;
 import com.example.pantryparserbackend.Recipes.RecipeRepository;
 import com.example.pantryparserbackend.Util.MessageUtil;
-import com.example.pantryparserbackend.users.User;
-import com.example.pantryparserbackend.users.UserRepository;
+import com.example.pantryparserbackend.Users.User;
+import com.example.pantryparserbackend.Users.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.mockito.*;
-import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;

@@ -1,12 +1,8 @@
 package com.example.pantryparserbackend.Recipes;
 
 import com.example.pantryparserbackend.Reviews.Review;
-import com.example.pantryparserbackend.users.User;
-import org.junit.Before;
-import org.junit.jupiter.api.BeforeAll;
+import com.example.pantryparserbackend.Users.User;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 
 import java.util.ArrayList;
 import java.util.List;

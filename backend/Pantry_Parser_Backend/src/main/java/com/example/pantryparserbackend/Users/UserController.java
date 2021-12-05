@@ -1,4 +1,4 @@
-package com.example.pantryparserbackend.users;
+package com.example.pantryparserbackend.Users;
 
 import com.example.pantryparserbackend.Passwords.OTPRepository;
 import com.example.pantryparserbackend.Requests.PasswordResetRequest;

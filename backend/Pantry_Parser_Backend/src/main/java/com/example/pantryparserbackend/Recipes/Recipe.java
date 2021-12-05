@@ -6,7 +6,7 @@ import com.example.pantryparserbackend.Ingredients.Ingredient;
 import com.example.pantryparserbackend.Ingredients.RecipeIngredient;
 import com.example.pantryparserbackend.Requests.RecipeRequest;
 import com.example.pantryparserbackend.Reviews.Review;
-import com.example.pantryparserbackend.users.User;
+import com.example.pantryparserbackend.Users.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;

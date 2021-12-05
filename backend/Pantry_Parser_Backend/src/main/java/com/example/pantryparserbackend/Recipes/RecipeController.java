@@ -26,8 +26,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
-import com.example.pantryparserbackend.users.UserRepository;
-import com.example.pantryparserbackend.users.User;
+import com.example.pantryparserbackend.Users.UserRepository;
+import com.example.pantryparserbackend.Users.User;
 
 /**
  * Controller that manages all recipe stuff

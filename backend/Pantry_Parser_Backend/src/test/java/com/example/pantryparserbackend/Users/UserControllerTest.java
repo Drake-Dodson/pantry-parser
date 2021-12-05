@@ -3,6 +3,7 @@ package com.example.pantryparserbackend.Users;
 import com.example.pantryparserbackend.Recipes.Recipe;
 import com.example.pantryparserbackend.Recipes.RecipeRepository;
 import com.example.pantryparserbackend.Requests.LoginRequest;
+import com.example.pantryparserbackend.Requests.UserRequest;
 import com.example.pantryparserbackend.Util.MessageUtil;
 import com.example.pantryparserbackend.Websockets.FavoriteSocket;
 import org.junit.jupiter.api.Test;
@@ -30,21 +31,22 @@ class UserControllerTest {
     public void testRegister_Duplicate_ThenReturnFail() {
         MockitoAnnotations.openMocks(this);
 
-        User mockUser = new User("password", "pantryparser@gmail.com");
+        UserRequest userRequest = new UserRequest("password", "pantryparser@gmail.com", "Name");
 
-        when(userRepository.save(mockUser)).thenThrow(new DataIntegrityViolationException("already exists"));
-        when(userRepository.findByEmail(mockUser.getEmail())).thenReturn(mockUser);
+        when(userRepository.save(any())).thenThrow(new DataIntegrityViolationException("already exists"));
+        when(userRepository.findByEmail(anyString())).thenReturn(mockUser);
 
         String expected = MessageUtil.newResponseMessage(false, "Email already used");
-        String actual = userController.createUser(mockUser);
+        String actual = userController.createUser(userRequest);
 
         assertEquals(expected, actual);
     }
+
     @Test
     public void testRegister_onNullInput_thenReturnFail() {
         MockitoAnnotations.openMocks(this);
 
-        String expected = MessageUtil.newResponseMessage(false, "User was null");
+        String expected = MessageUtil.newResponseMessage(false, "UserRequest was null");
         String actual = userController.createUser(null);
 
         assertEquals(expected, actual);

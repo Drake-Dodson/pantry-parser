@@ -2,12 +2,12 @@ package com.example.pantryparserbackend.Requests;
 
 public class UserRequest {
     public String password;
-    public String displayName;
     public String email;
+    public String displayName;
 
-    public UserRequest(String password, String displayName, String email) {
+    public UserRequest(String password, String email, String displayName) {
         this.password = password;
-        this.displayName = displayName;
         this.email = email;
+        this.displayName = displayName;
     }
 }

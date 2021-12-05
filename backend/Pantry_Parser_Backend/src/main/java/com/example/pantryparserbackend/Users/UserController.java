@@ -1,6 +1,7 @@
 package com.example.pantryparserbackend.Users;
 
 import com.example.pantryparserbackend.Passwords.OTPRepository;
+import com.example.pantryparserbackend.Requests.AdminRequest;
 import com.example.pantryparserbackend.Requests.PasswordResetRequest;
 import com.example.pantryparserbackend.Requests.UserRequest;
 import com.example.pantryparserbackend.Util.EmailUtil;
@@ -18,6 +19,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Objects;
 
 /**
  * User controller, responsible for all user stuff
@@ -81,14 +84,23 @@ public class UserController {
 
     /**
      * creates a new user
-     * @param user new user input data
+     * @param userRequest new user input data
      * @return either success or a failure message
      */
     @ApiOperation(value = "Creates a new user")
     @PostMapping(path = "/users")
-    String createUser(@RequestBody User user){
-        if (user == null)
-            return MessageUtil.newResponseMessage(false, "User was null");
+    String createUser(@RequestBody UserRequest userRequest){
+
+        if (userRequest == null)
+            return MessageUtil.newResponseMessage(false, "UserRequest was null");
+
+        User user;
+
+        if(userRequest.displayName == null){
+            user = new User(userRequest.password, userRequest.email);
+        } else {
+            user = new User(userRequest.password, userRequest.email, userRequest.displayName);
+        }
 
         try {
             userRepository.save(user);
@@ -104,7 +116,7 @@ public class UserController {
 
     /**
      * Updates the user's information
-     * @param updateUser user object that is to be updated
+     * @param userRequest user object that is to be updated
      * @return either success or a failure message
      */
     @ApiOperation(value = "Updates a given user")
@@ -113,11 +125,15 @@ public class UserController {
         User user = userRepository.findById(user_id);
         if(user == null) {
             return MessageUtil.newResponseMessage(false, "User not found");
-        };
+        }
 
         if(user.authenticate(userRequest.password)){
             try {
-                user.setEmail(userRequest.email);
+                if(!Objects.equals(user.getEmail(), userRequest.email)){
+                    user.setEmail(userRequest.email);
+                    user.setEmail_verified(false);
+                }
+
                 user.setDisplayName(userRequest.displayName);
                 userRepository.save(user);
             }
@@ -321,6 +337,7 @@ public class UserController {
             return MessageUtil.newResponseMessage(true, "favorited");
         }
     }
+
     /**
      * the route for a user to unfavorite a recipe
      * @param user_id the id of the user
@@ -342,5 +359,40 @@ public class UserController {
         }
     }
 
+    /**
+     * the route for a giving a user a role. Must be an admin to do so
+     * @param user_id the id of the user to have their role changed
+     * @return either success or a failure message
+     */
+    @ApiOperation(value = "The route for a user to update a user role")
+    @PatchMapping(path = "/user/{user_id}/assignrole")
+    public String giveRole(@PathVariable int user_id, @RequestBody AdminRequest adminCreds){
+        if(adminCreds == null){
+            return MessageUtil.newResponseMessage(false, "adminCreds was null");
+        }
+
+        User admin = userRepository.findByEmail(adminCreds.adminEmail);
+        User user = userRepository.findById(user_id);
+
+        if(admin == null || user == null){
+            return MessageUtil.newResponseMessage(false, (admin == null ? "admin " : "user ") + "does not exist");
+        }
+
+
+        if(!Objects.equals(admin.getRole(), "Admin") || !admin.authenticate(adminCreds.adminPassword)){
+            return MessageUtil.newResponseMessage(false, "Invalid admin credentials");
+        }else if (user == null) {
+            return MessageUtil.newResponseMessage(false, "Invalid admin credentials");
+        }else {
+            try{
+                user.setRole(adminCreds.role);
+                userRepository.save(user);
+                return MessageUtil.newResponseMessage(true, "User role updated");
+            }
+            catch(Exception ex){
+                return MessageUtil.newResponseMessage(false, "Error saving to the database");
+            }
+        }
+    }
 
 }

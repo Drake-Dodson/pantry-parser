@@ -2,6 +2,7 @@ package com.example.pantryparserbackend.users;
 
 import com.example.pantryparserbackend.Passwords.OTPRepository;
 import com.example.pantryparserbackend.Requests.PasswordResetRequest;
+import com.example.pantryparserbackend.Requests.UserRequest;
 import com.example.pantryparserbackend.Util.EmailUtil;
 import com.example.pantryparserbackend.Requests.LoginRequest;
 import com.example.pantryparserbackend.Util.MessageUtil;
@@ -107,15 +108,17 @@ public class UserController {
      * @return either success or a failure message
      */
     @ApiOperation(value = "Updates a given user")
-    @PatchMapping(path = "/user/update")
-    String updateUser(@RequestBody User updateUser, @RequestParam String email, @RequestParam String password){
-        User user = userRepository.findByEmail(email);
+    @PatchMapping(path = "/user/{user_id}/update")
+    String updateUser(@RequestBody UserRequest userRequest, @PathVariable int user_id){
+        User user = userRepository.findById(user_id);
+        if(user == null) {
+            return MessageUtil.newResponseMessage(false, "User not found");
+        };
 
-        if(user.authenticate(password)){
+        if(user.authenticate(userRequest.password)){
             try {
-                user.setEmail(updateUser.getEmail());
-                user.setRole(updateUser.getRole());
-                user.setDisplayName(updateUser.getDisplayName());
+                user.setEmail(userRequest.email);
+                user.setDisplayName(userRequest.displayName);
                 userRepository.save(user);
             }
             catch(Exception ex) {

@@ -36,6 +36,10 @@ public class IP {
 		this.created_date = new Date();
 	}
 
+	/**
+	 * Checks if an IP has been stored for more than 24 hours
+	 * @return true or false
+	 */
 	public boolean outOfDate() {
 		return this.created_date.after(new Date(this.created_date.getTime() + (24 * 60 * 60 * 1000)));
 	}

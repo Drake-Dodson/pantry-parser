@@ -17,8 +17,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
-
 import javax.servlet.http.HttpServletRequest;
+import java.util.Objects;
 
 /**
  * User controller, responsible for all user stuff
@@ -88,17 +88,24 @@ public class UserController {
 
     /**
      * creates a new user
-     * @param user new user input data
+     * @param userRequest new user input data
      * @return either success or a failure message
      */
     @ApiOperation(value = "Creates a new user")
     @PostMapping(path = "/users")
-    String createUser(@RequestBody User user, HttpServletRequest request){
+    String createUser(@RequestBody UserRequest userRequest, HttpServletRequest request){
         if(!permissionService.canUser("Create", null, request))
             return MessageUtil.newResponseMessage(false, "You do not have permission to do that");
+        if (userRequest == null)
+            return MessageUtil.newResponseMessage(false, "UserRequest was null");
 
-        if (user == null)
-            return MessageUtil.newResponseMessage(false, "User was null");
+        User user;
+
+        if(userRequest.displayName == null){
+            user = new User(userRequest.password, userRequest.email);
+        } else {
+            user = new User(userRequest.password, userRequest.email, userRequest.displayName);
+        }
 
         try {
             userRepository.save(user);
@@ -128,7 +135,11 @@ public class UserController {
 
         if(user.authenticate(userRequest.password)){
             try {
-                user.setEmail(userRequest.email);
+                if(!Objects.equals(user.getEmail(), userRequest.email)){
+                    user.setEmail(userRequest.email);
+                    user.setEmail_verified(false);
+                }
+
                 user.setDisplayName(userRequest.displayName);
                 userRepository.save(user);
             }
@@ -229,6 +240,7 @@ public class UserController {
             return MessageUtil.newResponseMessage(true, "favorited");
         }
     }
+
     /**
      * the route for a user to unfavorite a recipe
      * @param user_id the id of the user
@@ -253,6 +265,4 @@ public class UserController {
             return MessageUtil.newResponseMessage(true, "successfully unfavorited");
         }
     }
-
-
 }

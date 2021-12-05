@@ -6,6 +6,8 @@ import com.example.pantryparserbackend.Recipes.RecipeRepository;
 import com.example.pantryparserbackend.Services.IPService;
 import com.example.pantryparserbackend.Services.PermissionService;
 import com.example.pantryparserbackend.Utils.MessageUtil;
+import com.example.pantryparserbackend.Requests.LoginRequest;
+import com.example.pantryparserbackend.Requests.UserRequest;
 import com.example.pantryparserbackend.Websockets.FavoriteSocket;
 import org.junit.jupiter.api.Test;
 import org.mockito.*;
@@ -42,25 +44,68 @@ class UserControllerTest {
     public void testRegister_Duplicate_ThenReturnFail() {
         MockitoAnnotations.openMocks(this);
 
-        User mockUser = new User("password", "pantryparser@gmail.com");
+        UserRequest userRequest = new UserRequest("password", "pantryparser@gmail.com", "Name");
 
-        when(userRepository.save(mockUser)).thenThrow(new DataIntegrityViolationException("already exists"));
-        when(userRepository.findByEmail(mockUser.getEmail())).thenReturn(mockUser);
+        when(userRepository.save(anyObject())).thenThrow(new DataIntegrityViolationException("already exists"));
+        when(userRepository.findByEmail(anyString())).thenReturn(mockUser);
         when(permissionService.canUser(anyString(), anyObject(), anyObject())).thenReturn(true);
 
         String expected = MessageUtil.newResponseMessage(false, "Email already used");
-        String actual = userController.createUser(mockUser, mockRequest);
+        String actual = userController.createUser(userRequest, mockRequest);
 
         assertEquals(expected, actual);
     }
+
     @Test
     public void testRegister_onNullInput_thenReturnFail() {
         MockitoAnnotations.openMocks(this);
 
         when(permissionService.canUser(anyString(), anyObject(), anyObject())).thenReturn(true);
-
-        String expected = MessageUtil.newResponseMessage(false, "User was null");
+        String expected = MessageUtil.newResponseMessage(false, "UserRequest was null");
         String actual = userController.createUser(null, mockRequest);
+
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void testLogin_WhenCorrect_ThenReturnSuccess() {
+        MockitoAnnotations.openMocks(this);
+
+        User mockUser = new User("password", "mockitoUserTest@email.com");
+        LoginRequest mockLogin = new LoginRequest("mockitoUserTest@email.com", "password");
+
+        when(userRepository.findByEmail(mockUser.getEmail())).thenReturn(mockUser);
+
+        String expected = MessageUtil.newResponseMessage(true, "" + mockUser.getId());
+        String actual = userController.login(mockLogin, mockRequest);
+
+        assertEquals(expected, actual);
+    }
+    @Test
+    public void testLogin_IncorrectEmail_ReturnFailedEmail() {
+        MockitoAnnotations.openMocks(this);
+
+        User mockUser = new User("password", "mockito1UserTest@email.com");
+        LoginRequest mockLogin = new LoginRequest("mockitoUserTest@email.com", "password");
+
+        when(userRepository.findByEmail(mockUser.getEmail())).thenReturn(mockUser);
+
+        String expected = MessageUtil.newResponseMessage(false, "email incorrect");
+        String actual = userController.login(mockLogin, mockRequest);
+
+        assertEquals(expected, actual);
+    }
+    @Test
+    public void testLogin_WhenNotAUser_ThenReturnFail() {
+        MockitoAnnotations.openMocks(this);
+
+        User mockUser = new User("password1", "mockitoUserTest@email.com");
+        LoginRequest mockLogin = new LoginRequest("mockitoUserTest@email.com", "password");
+
+        when(userRepository.findByEmail(mockUser.getEmail())).thenReturn(null);
+
+        String expected = MessageUtil.newResponseMessage(false, "email incorrect");
+        String actual = userController.login(mockLogin, mockRequest);
 
         assertEquals(expected, actual);
     }

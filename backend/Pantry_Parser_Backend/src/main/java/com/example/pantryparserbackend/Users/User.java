@@ -81,6 +81,18 @@ public class User {
     @OneToMany(mappedBy = "reviewer")
     private List<Review> userReviews;
 
+    public User(String password, String email, String displayName) {
+        this.password = PasswordUtil.newHash(password);
+        this.email = email;
+        this.displayName = displayName;
+        if(Arrays.asList(DEFAULT_ADMINS).contains(email)) {
+            this.role = User.DESIGNATION_ADMIN;
+        } else {
+            this.role = User.DESIGNATION_MAIN;
+        }
+        this.created_recipes = new ArrayList<>();
+    }
+
     public User(String password, String email) {
         this.password = PasswordService.newHash(password);
         this.email = email;
@@ -89,6 +101,7 @@ public class User {
         } else {
             this.role = User.DESIGNATION_MAIN;
         }
+        this.displayName = "New User";
         this.created_recipes = new ArrayList<>();
     }
 

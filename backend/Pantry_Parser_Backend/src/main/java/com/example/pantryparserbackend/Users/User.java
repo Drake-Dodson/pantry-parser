@@ -52,6 +52,10 @@ public class User {
     private List<Recipe> created_recipes;
 
     @Getter
+    @Setter
+    private String imagePath;
+
+    @Getter
     @JsonIgnore
     @JoinTable(
             name = "favorites",

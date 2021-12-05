@@ -43,6 +43,7 @@ public class ImageController {
 
         String fileDirectory = "/target/mainImageDirectory/recipes/" + recipe_id;
         String fileName = "Recipe" + recipe_id + "Image.png";
+        recipe.setImagePath(fileDirectory + fileName);
 
         // If file is a jpg
         if(image.getOriginalFilename().contains(".jpg") || image.getOriginalFilename().contains(".jpeg")){
@@ -91,6 +92,7 @@ public class ImageController {
 
         String fileDirectory = "/target/mainImageDirectory/users/" + user_id;
         String fileName ="User" + user_id + "Image.png";
+        user.setImagePath(fileDirectory + fileName);
 
         // If file is a jpg
         if(image.getOriginalFilename().contains(".jpg") || image.getOriginalFilename().contains(".jpeg")){

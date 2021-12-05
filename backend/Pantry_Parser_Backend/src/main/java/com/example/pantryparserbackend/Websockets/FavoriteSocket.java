@@ -84,11 +84,11 @@ public class FavoriteSocket {
      * @param user_id user id of client
      */
     @OnOpen
-    public void onOpen(Session session, @PathParam("user_id") int user_id, HttpServletRequest request) throws IOException {
+    public void onOpen(Session session, @PathParam("user_id") int user_id) throws IOException {
         logger.info("Opening a connection");
-        User user = ipService.getCurrentUser(request);
+        User user = userRepository.findById(user_id);
 
-        if(user == null || !permissionService.canUser("Update", user, request)) {
+        if(user == null) {
             session.getBasicRemote().sendText("Error: That is not a valid user, this is probably a bug");
             session.close();
         } else {

@@ -19,8 +19,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     final int VIEW_TYPE_LOADING = 0;
     final int VIEW_TYPE_ITEM = 1;
 
-
-
     public List<Recipe> mItemList;
     private OnRecipeListener mOnRecipeListener;
     private String type;
@@ -45,8 +43,11 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        if (viewType == VIEW_TYPE_ITEM) {
+        if (viewType == VIEW_TYPE_ITEM && type == "r") {
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_row, parent, false);
+            return new ItemViewHolder(view, mOnRecipeListener);
+        } else if (viewType == VIEW_TYPE_ITEM && type == "i") {
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.ingredient_item_row, parent, false);
             return new ItemViewHolder(view, mOnRecipeListener);
         } else {
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_loading, parent, false);
@@ -100,9 +101,11 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         public ItemViewHolder(@NonNull View itemView, OnRecipeListener onRecipeListener) {
             super(itemView);
             recipeName = itemView.findViewById(R.id.title);
-            minutesToMake = itemView.findViewById(R.id.time);
-            ratingBar = itemView.findViewById(R.id.ratingBar);
-            chefVerified = itemView.findViewById(R.id.Chef);
+            if(type != "i"){
+                minutesToMake = itemView.findViewById(R.id.time);
+                ratingBar = itemView.findViewById(R.id.ratingBar);
+                chefVerified = itemView.findViewById(R.id.Chef);
+            }
             itemView.setOnClickListener(this);
             this.onRecipeListener = onRecipeListener;
 
@@ -137,10 +140,12 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     private void populateItemRows(ItemViewHolder viewHolder, int position) {
         Recipe item = mItemList.get(position);
         viewHolder.recipeName.setText(item.getRecipeName());
-        viewHolder.minutesToMake.setText(Integer.toString(item.getTimeToMake()));
-        viewHolder.ratingBar.setRating((float) item.getRating());
-        if (item.getChefVerified() == false){
-            viewHolder.chefVerified.setVisibility(View.INVISIBLE);
+        if(type != "i"){
+            viewHolder.minutesToMake.setText(Integer.toString(item.getTimeToMake()));
+            viewHolder.ratingBar.setRating((float) item.getRating());
+            if (item.getChefVerified() == false){
+                viewHolder.chefVerified.setVisibility(View.INVISIBLE);
+            }
         }
     }
 

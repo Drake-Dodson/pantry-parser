@@ -23,7 +23,7 @@
         app:layout_constraintVertical_bias="1.0" />
 
     <SearchView
-        android:id="@+id/searchRecipe"
+        android:id="@+id/searchIngredient"
         android:layout_width="351dp"
         android:layout_height="55dp"
         android:background="@drawable/searchbar"
@@ -32,7 +32,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0"
+        app:layout_constraintVertical_bias="0.0"
         app:theme="@style/ActionBarThemeOverlay" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -49,16 +49,16 @@
         app:srcCompat="@drawable/search" />
 
     <TextView
-        android:id="@+id/textView2"
-        android:layout_width="wrap_content"
+        android:id="@+id/selectedText"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="3dp"
-        android:text="TextView"
-        app:layout_constraintBottom_toTopOf="@+id/searchRecipe"
+        android:text="Selected"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toTopOf="@+id/recyclerView"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.703"
-        app:layout_constraintStart_toEndOf="@+id/recyclerView"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/searchRecipe"
         app:layout_constraintVertical_bias="0.0" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

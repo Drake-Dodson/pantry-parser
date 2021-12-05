@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.SearchView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -34,11 +35,12 @@ public class IngredientListView extends AppCompatActivity implements RecyclerVie
     ArrayList<Recipe> dataset = new ArrayList<>();
     ArrayList<String> selected = new ArrayList<>();
     boolean isLoading = false;
-    String URL_INGREDIENTS = "coms-309-032.cs.iastate.edu:8080/ingredients";
+    String URL_INGREDIENTS = "http://coms-309-032.cs.iastate.edu:8080/ingredients";
     String URL_TO_USE = URL_INGREDIENTS;
     private RequestQueue queue;
     FloatingActionButton newRecipe;
     SearchView searchView;
+    TextView textView;
 
     /**
      *Create listview activity and instantiate elements
@@ -47,7 +49,7 @@ public class IngredientListView extends AppCompatActivity implements RecyclerVie
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_list_view);
+        setContentView(R.layout.activity_ingredient_list_view);
         String viewType = (String) getIntent().getSerializableExtra("SwitchView");
 
         try {
@@ -90,9 +92,8 @@ public class IngredientListView extends AppCompatActivity implements RecyclerVie
      */
     private void initializeElements(String viewType) throws JSONException{
         queue = Volley.newRequestQueue(this);
-        searchView = findViewById(R.id.searchRecipe);
+        searchView = findViewById(R.id.searchIngredient);
         searchView.setQueryHint("Search for ingredient");
-
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -109,10 +110,7 @@ public class IngredientListView extends AppCompatActivity implements RecyclerVie
             }
             @Override
             public boolean onQueryTextChange(String newText) {
-                dataset.clear();
-                URL_TO_USE = URL_INGREDIENTS + "?query=" + newText;
-                popData();
-                return true;
+                return false;
             }
         });
 
@@ -120,15 +118,15 @@ public class IngredientListView extends AppCompatActivity implements RecyclerVie
         newRecipe.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String q = "";
-                for(String s : selected) {
-                    q += s + ",";
-                }
+                String q = selectedToString();
                 Intent myRecipesIntent = new Intent(getApplicationContext(), ListView.class);
                 myRecipesIntent.putExtra("SwitchView", q);
                 startActivity(myRecipesIntent);
             }
         });
+
+        textView = findViewById(R.id.selectedText);
+
     }
 
     /**
@@ -150,10 +148,8 @@ public class IngredientListView extends AppCompatActivity implements RecyclerVie
                     }
                     while (!recipeArray.isNull(i) && i <=pageSize) {
                         try {
-                            if(!selected.contains(getIngredient(i, recipeArray))) {
-                                dataset.add(new Recipe(getIngredient(i, recipeArray)));
-                                recyclerViewAdapter.notifyDataSetChanged();
-                            }
+                            dataset.add(new Recipe(getIngredient(i, recipeArray)));
+                            recyclerViewAdapter.notifyDataSetChanged();
                         } catch (JSONException e) {
                             Toast.makeText(IngredientListView.this, e.toString(), Toast.LENGTH_SHORT).show();
                         }
@@ -196,6 +192,14 @@ public class IngredientListView extends AppCompatActivity implements RecyclerVie
     @Override
     public void onRecipeClick(int position) {
         selected.add(dataset.get(position).getRecipeName());
+        textView.setText(selectedToString());
     }
 
+    private String selectedToString(){
+        String q = "";
+        for(String s : selected) {
+            q += s + ",";
+        }
+        return q;
+    }
 }

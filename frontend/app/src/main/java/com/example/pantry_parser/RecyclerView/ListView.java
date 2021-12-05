@@ -56,15 +56,16 @@ public class ListView extends AppCompatActivity implements RecyclerViewAdapter.O
         setContentView(R.layout.activity_list_view);
         String viewType = (String) getIntent().getSerializableExtra("SwitchView");
 
+        setupRecycler();
+        setupAdapter();
+
         try {
             initializeElements(viewType);
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        setupRecycler();
-        setupAdapter();
-        popData();
 
+        popData();
     }
 
     /**

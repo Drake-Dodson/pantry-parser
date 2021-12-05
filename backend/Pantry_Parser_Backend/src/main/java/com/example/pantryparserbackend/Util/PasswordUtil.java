@@ -2,7 +2,7 @@ package com.example.pantryparserbackend.Util;
 
 import com.example.pantryparserbackend.Passwords.OTP;
 import com.example.pantryparserbackend.Passwords.OTPRepository;
-import com.example.pantryparserbackend.users.User;
+import com.example.pantryparserbackend.Users.User;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 import java.math.BigInteger;

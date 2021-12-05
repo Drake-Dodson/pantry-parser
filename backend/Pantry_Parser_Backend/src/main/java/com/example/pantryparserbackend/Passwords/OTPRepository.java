@@ -1,6 +1,6 @@
 package com.example.pantryparserbackend.Passwords;
 
-import com.example.pantryparserbackend.users.User;
+import com.example.pantryparserbackend.Users.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.transaction.annotation.Transactional;

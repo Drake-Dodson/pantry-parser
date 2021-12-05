@@ -1,4 +1,4 @@
-package com.example.pantryparserbackend.users;
+package com.example.pantryparserbackend.Users;
 
 import com.example.pantryparserbackend.Recipes.Recipe;
 import com.example.pantryparserbackend.Recipes.RecipeRepository;

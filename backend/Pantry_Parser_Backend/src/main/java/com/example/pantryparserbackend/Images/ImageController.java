@@ -3,8 +3,8 @@ package com.example.pantryparserbackend.Images;
 import com.example.pantryparserbackend.Recipes.Recipe;
 import com.example.pantryparserbackend.Recipes.RecipeRepository;
 import com.example.pantryparserbackend.Util.MessageUtil;
-import com.example.pantryparserbackend.users.User;
-import com.example.pantryparserbackend.users.UserRepository;
+import com.example.pantryparserbackend.Users.User;
+import com.example.pantryparserbackend.Users.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -41,7 +41,7 @@ public class ImageController {
             return MessageUtil.newResponseMessage(false, "Accepted file types are .jpg .jpeg and .png");
         }
 
-        String fileDirectory = "mainImageDirectory/recipes/" + recipe_id;
+        String fileDirectory = "/target/mainImageDirectory/recipes/" + recipe_id;
         String fileName = "Recipe" + recipe_id + "Image.png";
 
         // If file is a jpg
@@ -66,13 +66,13 @@ public class ImageController {
     @GetMapping(path = "/recipe/{recipe_id}/image", produces = MediaType.IMAGE_PNG_VALUE)
     public byte[] getRecipeImage( @PathVariable int recipe_id, @RequestParam(defaultValue = "false") boolean compressed) throws IOException{
         String compressionString = compressed ? "_compressed" : "";
-        Path filePath = Paths.get("mainImageDirectory/recipes/" + recipe_id + "/Recipe" + recipe_id + "Image" + compressionString + ".png");
+        Path filePath = Paths.get("/target/mainImageDirectory/recipes/" + recipe_id + "/Recipe" + recipe_id + "Image" + compressionString + ".png");
 
         if(Files.notExists(filePath)){
             throw new IOException("Image does not exist");
         }
 
-        return Files.readAllBytes(Paths.get("mainImageDirectory/recipes/" + recipe_id + "/Recipe" + recipe_id + "Image" + compressionString + ".png"));
+        return Files.readAllBytes(Paths.get("/target/mainImageDirectory/recipes/" + recipe_id + "/Recipe" + recipe_id + "Image" + compressionString + ".png"));
     }
 
     @PostMapping(path = "/user/{user_id}/image")
@@ -89,7 +89,7 @@ public class ImageController {
             return MessageUtil.newResponseMessage(false, "Accepted file types are .jpg .jpeg and .png");
         }
 
-        String fileDirectory = "mainImageDirectory/users/" + user_id;
+        String fileDirectory = "/target/mainImageDirectory/users/" + user_id;
         String fileName ="User" + user_id + "Image.png";
 
         // If file is a jpg
@@ -113,12 +113,12 @@ public class ImageController {
     @GetMapping(path = "/user/{user_id}/image", produces = MediaType.IMAGE_PNG_VALUE)
     public byte[] getUserProfileImage( @PathVariable int user_id, @RequestParam(defaultValue = "false") boolean compressed) throws IOException{
         String compressionString = compressed ? "_compressed" : "";
-        Path filePath = Paths.get("mainImageDirectory/users/" + user_id + "/Recipe" + user_id + "Image" + compressionString + ".png");
+        Path filePath = Paths.get("/target/mainImageDirectory/users/" + user_id + "/Recipe" + user_id + "Image" + compressionString + ".png");
 
         if(Files.notExists(filePath)){
             throw new IOException("Image does not exist");
         }
 
-        return Files.readAllBytes(Paths.get("mainImageDirectory/users/" + user_id + "/Recipe" + user_id + "Image" + compressionString + ".png"));
+        return Files.readAllBytes(Paths.get("/target/mainImageDirectory/users/" + user_id + "/Recipe" + user_id + "Image" + compressionString + ".png"));
     }
 }

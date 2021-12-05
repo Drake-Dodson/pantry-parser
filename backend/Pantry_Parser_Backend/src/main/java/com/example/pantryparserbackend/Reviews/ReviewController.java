@@ -4,8 +4,8 @@ import com.example.pantryparserbackend.Util.MessageUtil;
 
 import com.example.pantryparserbackend.Recipes.Recipe;
 import com.example.pantryparserbackend.Recipes.RecipeRepository;
-import com.example.pantryparserbackend.users.User;
-import com.example.pantryparserbackend.users.UserRepository;
+import com.example.pantryparserbackend.Users.User;
+import com.example.pantryparserbackend.Users.UserRepository;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,8 +14,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @Api(value = "Review Controller", description = "Contains all of the calls for writing reviews")
 @RestController

@@ -1,4 +1,4 @@
-package com.example.pantryparserbackend.configuration;
+package com.example.pantryparserbackend.Configuration;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;

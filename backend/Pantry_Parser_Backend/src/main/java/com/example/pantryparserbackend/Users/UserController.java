@@ -1,7 +1,8 @@
-package com.example.pantryparserbackend.users;
+package com.example.pantryparserbackend.Users;
 
 import com.example.pantryparserbackend.Passwords.OTPRepository;
 import com.example.pantryparserbackend.Requests.PasswordResetRequest;
+import com.example.pantryparserbackend.Requests.UserRequest;
 import com.example.pantryparserbackend.Util.EmailUtil;
 import com.example.pantryparserbackend.Requests.LoginRequest;
 import com.example.pantryparserbackend.Util.MessageUtil;
@@ -99,6 +100,36 @@ public class UserController {
         }
 
         return sendVerifyOTP(user.getId());
+    }
+
+    /**
+     * Updates the user's information
+     * @param updateUser user object that is to be updated
+     * @return either success or a failure message
+     */
+    @ApiOperation(value = "Updates a given user")
+    @PatchMapping(path = "/user/{user_id}/update")
+    String updateUser(@RequestBody UserRequest userRequest, @PathVariable int user_id){
+        User user = userRepository.findById(user_id);
+        if(user == null) {
+            return MessageUtil.newResponseMessage(false, "User not found");
+        };
+
+        if(user.authenticate(userRequest.password)){
+            try {
+                user.setEmail(userRequest.email);
+                user.setDisplayName(userRequest.displayName);
+                userRepository.save(user);
+            }
+            catch(Exception ex) {
+                return MessageUtil.newResponseMessage(false, "Error updating information");
+            }
+
+            return MessageUtil.newResponseMessage(true, "User updated");
+
+        }else {
+            return MessageUtil.newResponseMessage(false, "Incorrect Login");
+        }
     }
 
     /**
@@ -310,4 +341,6 @@ public class UserController {
             return MessageUtil.newResponseMessage(true, "successfully unfavorited");
         }
     }
+
+
 }

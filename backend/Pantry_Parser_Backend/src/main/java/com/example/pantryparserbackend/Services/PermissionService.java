@@ -28,6 +28,8 @@ public class PermissionService {
 
 		try {
 			switch(method) {
+				case "ViewAny":
+					return false;
 				case "View":
 					return true;
 				case "Create":
@@ -56,6 +58,8 @@ public class PermissionService {
 
 		try {
 			switch(method) {
+				case "ViewAny":
+					return true;
 				case "View":
 					return true;
 				case "Create":
@@ -84,6 +88,8 @@ public class PermissionService {
 
 		try {
 			switch(method) {
+				case "ViewAny":
+					return true;
 				case "View":
 					return true;
 				case "Create":
@@ -110,6 +116,8 @@ public class PermissionService {
 
 		try {
 			switch (method) {
+				case "ViewAny":
+					return true;
 				case "View":
 					return true;
 				case "Create":

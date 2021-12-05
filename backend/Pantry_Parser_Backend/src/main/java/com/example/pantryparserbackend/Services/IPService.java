@@ -49,28 +49,12 @@ public class IPService {
 		return ipAddress;
 	}
 
-	public boolean verifyIp(String inputIP, User user) {
-		IP ip = ipRepository.findByIP(inputIP);
-		if(ip != null){
-			if(!ip.outOfDate()) {
-				return ip.getUser() == user;
-			}
-			ipRepository.delete(ip);
-			return false;
-		}
-		return false;
-	}
-
-	public boolean verifyRole(String inputIP, String role) {
-		IP ip = ipRepository.findByIP(inputIP);
-		if(ip != null){
-			if(!ip.outOfDate()) {
-				return ip.getUser().hasRole(role);
-			}
-			ipRepository.delete(ip);
-			return false;
-		}
-		return false;
+	public void saveIP(User user, HttpServletRequest request) {
+		this.cleanOldIPs(user);
+		String address = this.getClientIp(request);
+		IP ip = new IP(user, address);
+		ipRepository.deleteByIP(address);
+		ipRepository.save(ip);
 	}
 
 	public User getCurrentUser(HttpServletRequest request) {

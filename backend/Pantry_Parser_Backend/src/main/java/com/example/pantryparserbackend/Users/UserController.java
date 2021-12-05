@@ -37,8 +37,6 @@ public class UserController {
     @Autowired
     private OTPRepository otpRepository;
     @Autowired
-    private IPRepository ipRepository;
-    @Autowired
     private FavoriteSocket favoriteSocket;
     @Autowired
     IPService ipService;
@@ -60,7 +58,9 @@ public class UserController {
      */
     @ApiOperation(value = "Gets all of the users in the database")
     @GetMapping(path = "/users")
-    public Page<User> getAllUsers(@RequestParam(defaultValue = "0") Integer pageNo, @RequestParam(defaultValue = "15") Integer perPage) {
+    public Page<User> getAllUsers(@RequestParam(defaultValue = "0") Integer pageNo, @RequestParam(defaultValue = "15") Integer perPage, HttpServletRequest request) {
+        if(!permissionService.canUser("ViewAny", null, request))
+            return null;
         Pageable page = PageRequest.of(pageNo, perPage, Sort.by("email"));
         return userRepository.findAll(page);
     }
@@ -97,9 +97,9 @@ public class UserController {
     @ApiOperation(value = "Creates a new user")
     @PostMapping(path = "/users")
     String createUser(@RequestBody User user, HttpServletRequest request){
-        if(!permissionService.canUser("Create", null, request)) {
+        if(!permissionService.canUser("Create", null, request))
             return MessageUtil.newResponseMessage(false, "You do not have permission to do that");
-        }
+
         if (user == null)
             return MessageUtil.newResponseMessage(false, "User was null");
 
@@ -124,13 +124,10 @@ public class UserController {
     @PatchMapping(path = "/user/{user_id}/update")
     String updateUser(@RequestBody UserRequest userRequest, @PathVariable int user_id, HttpServletRequest request){
         User user = userRepository.findById(user_id);
-        if(!permissionService.canUser("Update", user, request)) {
-            return MessageUtil.newResponseMessage(false, "You do not have permission to do that");
-        }
-
-        if(user == null) {
+        if(user == null)
             return MessageUtil.newResponseMessage(false, "User not found");
-        };
+        if(!permissionService.canUser("Update", user, request))
+            return MessageUtil.newResponseMessage(false, "You do not have permission to do that");
 
         if(user.authenticate(userRequest.password)){
             try {
@@ -165,10 +162,7 @@ public class UserController {
             return MessageUtil.newResponseMessage(false, "email incorrect");
         if(actual.authenticate(login.password)){
             try {
-                ipService.cleanOldIPs(actual);
-                String ip = ipService.getClientIp(request);
-                IP i = new IP(actual, ip);
-                ipRepository.save(i);
+                ipService.saveIP(actual, request);
                 return MessageUtil.newResponseMessage(true, "" + actual.getId());
             } catch (Exception ex) {
                 ex.printStackTrace();

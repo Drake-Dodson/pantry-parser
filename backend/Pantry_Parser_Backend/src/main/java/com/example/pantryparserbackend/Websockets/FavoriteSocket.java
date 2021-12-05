@@ -2,6 +2,8 @@ package com.example.pantryparserbackend.Websockets;
 
 import com.example.pantryparserbackend.Recipes.Recipe;
 import com.example.pantryparserbackend.Recipes.RecipeRepository;
+import com.example.pantryparserbackend.Services.IPService;
+import com.example.pantryparserbackend.Services.PermissionService;
 import com.example.pantryparserbackend.Users.User;
 import com.example.pantryparserbackend.Users.UserRepository;
 import io.swagger.annotations.Api;
@@ -11,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Controller;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.websocket.*;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
@@ -29,6 +32,8 @@ import java.util.Map;
 public class FavoriteSocket {
     private static RecipeRepository recipeRepository;
     private static UserRepository userRepository;
+    private static IPService ipService;
+    private static PermissionService permissionService;
     public static final String FAVORITE_CONS = "favorite";
     public static final String UNFAVORITE_CONS = "unfavorite";
 
@@ -50,6 +55,24 @@ public class FavoriteSocket {
         userRepository = repo;
     }
 
+    /**
+     * wires the ipService to the static variable
+     * @param service IPService
+     */
+    @Autowired
+    public void setIpService(IPService service) {
+        ipService = service;
+    }
+
+    /**
+     * wires the permissionService to the static variable
+     * @param service UserRepository
+     */
+    @Autowired
+    public void setPermissionService(PermissionService service) {
+        permissionService = service;
+    }
+
     private static Map<Session, Integer> sessionUserMap = new Hashtable<>();
     private static Map<Integer, Session> userSessionMap = new Hashtable<>();
 
@@ -61,11 +84,11 @@ public class FavoriteSocket {
      * @param user_id user id of client
      */
     @OnOpen
-    public void onOpen(Session session, @PathParam("user_id") int user_id) throws IOException {
+    public void onOpen(Session session, @PathParam("user_id") int user_id, HttpServletRequest request) throws IOException {
         logger.info("Opening a connection");
-        User user = userRepository.findById(user_id);
+        User user = ipService.getCurrentUser(request);
 
-        if(user == null) {
+        if(user == null || !permissionService.canUser("Update", user, request)) {
             session.getBasicRemote().sendText("Error: That is not a valid user, this is probably a bug");
             session.close();
         } else {

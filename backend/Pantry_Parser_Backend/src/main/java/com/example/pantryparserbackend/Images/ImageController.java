@@ -2,7 +2,9 @@ package com.example.pantryparserbackend.Images;
 
 import com.example.pantryparserbackend.Recipes.Recipe;
 import com.example.pantryparserbackend.Recipes.RecipeRepository;
-import com.example.pantryparserbackend.Util.MessageUtil;
+import com.example.pantryparserbackend.Services.IPService;
+import com.example.pantryparserbackend.Services.PermissionService;
+import com.example.pantryparserbackend.Utils.MessageUtil;
 import com.example.pantryparserbackend.Users.User;
 import com.example.pantryparserbackend.Users.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.imageio.*;
+import javax.servlet.http.HttpServletRequest;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.nio.file.*;
@@ -21,18 +24,23 @@ public class ImageController {
 
     @Autowired
     RecipeRepository recipeRepo;
-
     @Autowired
     UserRepository userRepo;
+    @Autowired
+    IPService ipService;
+    @Autowired
+    PermissionService permissionService;
 
     private final ImageUtil imageUtil = new ImageUtil();
 
     @PostMapping(path = "/recipe/{recipe_id}/image")
-    public String setRecipeImage(@RequestParam("image") MultipartFile image, @PathVariable int recipe_id) throws IOException {
+    public String setRecipeImage(@RequestParam("image") MultipartFile image, @PathVariable int recipe_id, HttpServletRequest request) throws IOException {
         Recipe recipe = recipeRepo.findById(recipe_id);
-
         if(recipe == null){
             return MessageUtil.newResponseMessage(false, "Recipe Id not found");
+        }
+        if(!permissionService.canRecipe("Update", recipe, request)) {
+            return MessageUtil.newResponseMessage(false, "You do not have adequite permissions");
         }
         if(image == null || image.getOriginalFilename() == null){
             return MessageUtil.newResponseMessage(false, "Image was null");
@@ -76,11 +84,14 @@ public class ImageController {
     }
 
     @PostMapping(path = "/user/{user_id}/image")
-    public String setUserProfileImage(@RequestParam("image") MultipartFile image, @PathVariable int user_id) throws IOException {
+    public String setUserProfileImage(@RequestParam("image") MultipartFile image, @PathVariable int user_id, HttpServletRequest request) throws IOException {
         User user = userRepo.findById(user_id);
 
         if(user == null){
             return MessageUtil.newResponseMessage(false, "User Id not found");
+        }
+        if(!permissionService.canUser("Update", user, request)) {
+            return MessageUtil.newResponseMessage(false, "You do not have adequite permissions");
         }
         if(image == null || image.getOriginalFilename() == null){
             return MessageUtil.newResponseMessage(false, "Image was null");

@@ -1,4 +1,4 @@
-package com.example.pantryparserbackend.Util;
+package com.example.pantryparserbackend.Utils;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;

@@ -339,7 +339,7 @@ public class UserController {
     @ApiOperation(value = "Route to favorite a recipe")
     @PatchMapping(path = "/user/{user_id}/favorite/{recipe_id}")
     public String favorite(@PathVariable int user_id, @PathVariable int recipe_id, HttpServletRequest request){
-        User u = userRepository.findById(user_id);
+        User u = ipService.getCurrentUser(request);
         Recipe r = recipeRepository.findById(recipe_id);
 
         if(!permissionService.canUser("Update", u, request)) {
@@ -364,7 +364,7 @@ public class UserController {
     @ApiOperation(value = "The route for a user to unfavorite a recipe")
     @DeleteMapping(path = "/user/{user_id}/favorite/{recipe_id}")
     public String unfavorite(@PathVariable int user_id, @PathVariable int recipe_id, HttpServletRequest request){
-        User u = userRepository.findById(user_id);
+        User u = ipService.getCurrentUser(request);
         Recipe r = recipeRepository.findById(recipe_id);
 
         if(!permissionService.canUser("Update", u, request)) {

@@ -18,12 +18,26 @@ public interface IPRepository extends JpaRepository<IP, Long> {
     @Transactional
     void deleteById(int id);
 
+    /**
+     * Finds the IPs associated with a user
+     * @param user input user
+     * @return list of IPs
+     */
     @Query(value = "SELECT i FROM IP i WHERE i.user = ?1")
     List<IP> findByUser(User user);
 
+    /**
+     * Finds an IP object by an ip address
+     * @param ip input address
+     * @return IP object
+     */
     @Query(value = "SELECT i FROM IP i WHERE i.ip = ?1")
     IP findByIP(String ip);
 
+    /**
+     * Deletes an IP by its address
+     * @param ip input address
+     */
     @Modifying
     @Transactional
     @Query(value = "DELETE FROM IP i WHERE i.ip = ?1")

@@ -384,41 +384,4 @@ public class UserController {
             return MessageUtil.newResponseMessage(true, "successfully unfavorited");
         }
     }
-
-    /**
-     * the route for a giving a user a role. Must be an admin to do so
-     * @param user_id the id of the user to have their role changed
-     * @return either success or a failure message
-     */
-    @ApiOperation(value = "The route for a user to update a user role")
-    @PatchMapping(path = "/user/{user_id}/assignrole")
-    public String giveRole(@PathVariable int user_id, @RequestBody AdminRequest adminCreds){
-        if(adminCreds == null){
-            return MessageUtil.newResponseMessage(false, "adminCreds was null");
-        }
-
-        User admin = userRepository.findByEmail(adminCreds.adminEmail);
-        User user = userRepository.findById(user_id);
-
-        if(admin == null || user == null){
-            return MessageUtil.newResponseMessage(false, (admin == null ? "admin " : "user ") + "does not exist");
-        }
-
-
-        if(!Objects.equals(admin.getRole(), "Admin") || !admin.authenticate(adminCreds.adminPassword)){
-            return MessageUtil.newResponseMessage(false, "Invalid admin credentials");
-        }else if (user == null) {
-            return MessageUtil.newResponseMessage(false, "Invalid admin credentials");
-        }else {
-            try{
-                user.setRole(adminCreds.role);
-                userRepository.save(user);
-                return MessageUtil.newResponseMessage(true, "User role updated");
-            }
-            catch(Exception ex){
-                return MessageUtil.newResponseMessage(false, "Error saving to the database");
-            }
-        }
-    }
-
 }

@@ -4,6 +4,8 @@ import com.example.pantryparserbackend.Permissions.IP;
 import com.example.pantryparserbackend.Permissions.IPRepository;
 import com.example.pantryparserbackend.Users.User;
 import io.micrometer.core.instrument.util.StringUtils;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +15,7 @@ import java.net.UnknownHostException;
 import java.util.List;
 
 @Service
+@Api(value = "IP Service", description = "A service for getting the IP and User from a provided request, as well as updating the IPs associated with a user")
 public class IPService {
 	@Autowired
 	IPRepository ipRepository;
@@ -20,6 +23,7 @@ public class IPService {
 	private final String LOCALHOST_IPV4 = "127.0.0.1";
 	private final String LOCALHOST_IPV6 = "0:0:0:0:0:0:0:1";
 
+	@ApiOperation(value = "Aquires the client IP address from a request")
 	public String getClientIp(HttpServletRequest request) {
 		String ipAddress = request.getHeader("X-Forwarded-For");
 		if(StringUtils.isEmpty(ipAddress) || "unknown".equalsIgnoreCase(ipAddress)) {
@@ -49,6 +53,7 @@ public class IPService {
 		return ipAddress;
 	}
 
+	@ApiOperation("Saves the IP from the provided request and associates it with the provided user")
 	public void saveIP(User user, HttpServletRequest request) {
 		this.cleanOldIPs(user);
 		String address = this.getClientIp(request);
@@ -57,6 +62,7 @@ public class IPService {
 		ipRepository.save(ip);
 	}
 
+	@ApiOperation(value = "Gets the user currently associated with the IP")
 	public User getCurrentUser(HttpServletRequest request) {
 		IP ip = ipRepository.findByIP(this.getClientIp(request));
 		if(ip == null) {
@@ -69,6 +75,7 @@ public class IPService {
 		return ip.getUser();
 	}
 
+	@ApiOperation(value = "Removes out of date IPs that are associated with a user")
 	public void cleanOldIPs(User user) {
 		List<IP> ips = ipRepository.findByUser(user);
 		for(IP ip : ips){

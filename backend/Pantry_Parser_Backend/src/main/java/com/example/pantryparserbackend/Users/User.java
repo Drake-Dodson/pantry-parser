@@ -82,7 +82,7 @@ public class User {
     private List<Review> userReviews;
 
     public User(String password, String email, String displayName) {
-        this.password = PasswordUtil.newHash(password);
+        this.password = PasswordService.newHash(password);
         this.email = email;
         this.displayName = displayName;
         if(Arrays.asList(DEFAULT_ADMINS).contains(email)) {

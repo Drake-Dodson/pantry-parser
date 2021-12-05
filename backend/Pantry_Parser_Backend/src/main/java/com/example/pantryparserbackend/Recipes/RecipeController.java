@@ -350,6 +350,13 @@ public class RecipeController {
         return MessageUtil.newResponseMessage(true, "successfully unverified the recipe");
     }
 
+    /**
+     * special route for importing recipes
+     * @param file not actually used
+     * @param request current session
+     * @return success or failure message
+     */
+    @ApiOperation(value = "imports recipes from a specified file on the server")
     @GetMapping(path="/recipes/getFromExternal")
     String importRecipes(@RequestParam String file, HttpServletRequest request) {
         if(!ipService.getCurrentUser(request).isAdmin()) {

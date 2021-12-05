@@ -1,8 +1,13 @@
-package com.example.pantryparserbackend.Utils;
+package com.example.pantryparserbackend.Services;
 
 import com.example.pantryparserbackend.Passwords.OTP;
 import com.example.pantryparserbackend.Passwords.OTPRepository;
 import com.example.pantryparserbackend.Users.User;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 import java.math.BigInteger;
@@ -12,14 +17,20 @@ import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
 import java.util.List;
 
-public class PasswordUtil {
+@Service
+@Api(value = "Password Service", description = "Password and OTP handling and management")
+public class PasswordService {
+
+    @Autowired
+    private OTPRepository otpRepo;
 
     /**
      * generates an OTP of a specified length
      * @param length length of OTP
      * @return new OTP
      */
-    public static String generateOTP(int length, User user, OTPRepository otpRepo) {
+    @ApiOperation(value = "Generates an OTP of the provided length")
+    public String generateOTP(int length, User user) {
         SecureRandom random = new SecureRandom();
         String password = "";
         for(int i = 0; i < length; i++){
@@ -38,7 +49,14 @@ public class PasswordUtil {
         return password;
     }
 
-    public static boolean useOTP(String password, User user, OTPRepository otpRepo) {
+    /**
+     * This function "uses" an OTP - verifies it and then removes it from the database
+     * @param password input OTP
+     * @param user user attempting to use OTP
+     * @return good OTP or not
+     */
+    @ApiOperation(value = "Operation that handles the comparing and deleting of OTPs - \"using\" OTPs")
+    public boolean useOTP(String password, User user) {
         List<OTP> otps = otpRepo.findByUser(user);
 
         for (int i = 0; i < otps.size(); i++) {
@@ -52,16 +70,18 @@ public class PasswordUtil {
         }
         return false;
     }
+
     /**
      * Compares a hash with the hash of a password
      * @param password input password
      * @param hash input hash
-     * @return
+     * @return equal or not
      */
+    @ApiOperation(value = "An operation that compares a password to a provided hash")
     public static boolean comparePasswords(String password, String hash) {
         String[] parts = hash.split(":");
-        byte[] salt = PasswordUtil.fromHex(parts[1]);
-        String passwordToTest = PasswordUtil.hash(password, salt);
+        byte[] salt = PasswordService.fromHex(parts[1]);
+        String passwordToTest = PasswordService.hash(password, salt);
 
         return hash.equals(passwordToTest);
     }
@@ -71,11 +91,12 @@ public class PasswordUtil {
      * @param password input string for the new password
      * @return hashed value for the new password
      */
+    @ApiOperation(value = "Generates a new hash from an inputted password")
     public static String newHash(String password) {
         SecureRandom random = new SecureRandom();
         byte[] salt = new byte[16];
         random.nextBytes(salt);
-        return PasswordUtil.hash(password, salt);
+        return PasswordService.hash(password, salt);
     }
 
     /**
@@ -84,12 +105,12 @@ public class PasswordUtil {
      * @param salt input random salt
      * @return hexed value of hashed password
      */
-    public static String hash(String password, byte[] salt) {
+    private static String hash(String password, byte[] salt) {
         int iterations = 65536;
         KeySpec spec = new PBEKeySpec(password.toCharArray(), salt, iterations, 512);
         try{
             SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
-            return iterations + ":" + PasswordUtil.toHex(salt) + ":" + PasswordUtil.toHex(factory.generateSecret(spec).getEncoded());
+            return iterations + ":" + PasswordService.toHex(salt) + ":" + PasswordService.toHex(factory.generateSecret(spec).getEncoded());
         }catch(NoSuchAlgorithmException | InvalidKeySpecException e){
             //probably will never happen since these are permanently set, so shouldn't have to handle this
             return "encryption error";

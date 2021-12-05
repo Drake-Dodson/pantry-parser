@@ -1,9 +1,7 @@
 package com.example.pantryparserbackend.Users;
 
-import com.example.pantryparserbackend.Passwords.OTPRepository;
-import com.example.pantryparserbackend.Requests.AdminRequest;
-import com.example.pantryparserbackend.Requests.PasswordResetRequest;
 import com.example.pantryparserbackend.Requests.UserRequest;
+import com.example.pantryparserbackend.Services.EmailService;
 import com.example.pantryparserbackend.Services.IPService;
 import com.example.pantryparserbackend.Services.PermissionService;
 import com.example.pantryparserbackend.Utils.*;
@@ -34,13 +32,13 @@ public class UserController {
     @Autowired
     private RecipeRepository recipeRepository;
     @Autowired
-    private OTPRepository otpRepository;
-    @Autowired
     private FavoriteSocket favoriteSocket;
     @Autowired
-    IPService ipService;
+    private IPService ipService;
     @Autowired
-    PermissionService permissionService;
+    private PermissionService permissionService;
+    @Autowired
+    private EmailService emailService;
 
     /**
      * this is just a test method to show us our server is up
@@ -118,7 +116,7 @@ public class UserController {
             return MessageUtil.newResponseMessage(false, "some fields were left empty");
         }
 
-        return sendVerifyOTP(user.getId());
+        return emailService.sendOTPEmail("VerifyEmail", user);
     }
 
     /**
@@ -185,123 +183,6 @@ public class UserController {
         }
     }
 
-    @GetMapping(path = "/user/{user_id}/verify/sendOTP")
-    public String sendVerifyOTP(@PathVariable int user_id) {
-        User user = userRepository.findById(user_id);
-
-        if (user == null) {
-            return MessageUtil.newResponseMessage(false, "user not found");
-        }
-
-        String pass = PasswordUtil.generateOTP(6, user, otpRepository);
-        if (pass.contains("ERROR:")) {
-            return MessageUtil.newResponseMessage(false, pass);
-        }
-
-        try {
-            if (EmailUtil.sendRegistrationConfirmationEmail(user, pass)){
-                return MessageUtil.newResponseMessage(true, "check your email for your OTP");
-            } else {
-                return MessageUtil.newResponseMessage(false, "there was an error sending the email");
-            }
-        } catch (Exception e) {
-            return MessageUtil.newResponseMessage(false, "There was an error sending you your OTP");
-        }
-    }
-
-    @PostMapping(path = "/user/{user_id}/verify-email")
-    public String verifyEmail(@PathVariable int user_id, @RequestBody String OTP) {
-        User user = userRepository.findById(user_id);
-
-        if(user == null) {
-            return MessageUtil.newResponseMessage(false, "user was not found");
-        }
-        if(PasswordUtil.useOTP(OTP, user, otpRepository)) {
-            user.setEmail_verified(true);
-            userRepository.save(user);
-            return MessageUtil.newResponseMessage(true, "successfully changed password");
-        }
-        return MessageUtil.newResponseMessage(false, "invalid OTP, please try again or try to get a new OTP");
-    }
-
-    /**
-     * A password reset route that takes in an email to find the user
-     * @param email email of the user
-     * @return string message success or failure
-     */
-    @GetMapping(path = "/user/email/{email}/password-reset/sendOTP")
-    public String sendResetOTP(@PathVariable String email) {
-        User user = userRepository.findByEmail(email);
-        if (user == null){
-            return MessageUtil.newResponseMessage(false, "account not found");
-        }
-        return this.sendChangeOTP(user.getId());
-    }
-
-    /**
-     * Route that performs a password reset by a user's email
-     * @param email the email of the user
-     * @param request the inputted values in the request
-     * @return string success or fail
-     */
-    @PostMapping(path = "/user/email/{email}/password-reset/")
-    public String resetPassword(@PathVariable String email, @RequestBody PasswordResetRequest request) {
-        User user = userRepository.findByEmail(email);
-        if (user == null){
-            return MessageUtil.newResponseMessage(false, "account not found");
-        }
-        return this.changePassword(user.getId(), request);
-    }
-
-    /**
-     * a route for simply changing a user's password
-     * @param user_id id of the user
-     * @return string success or fail
-     */
-    @GetMapping(path = "/user/{user_id}/password-change/sendOTP")
-    public String sendChangeOTP(@PathVariable int user_id) {
-        User user = userRepository.findById(user_id);
-
-        if (user == null){
-            return MessageUtil.newResponseMessage(false, "user not found");
-        }
-
-        String pass = PasswordUtil.generateOTP(6, user, otpRepository);
-        if (pass.contains("ERROR:")) {
-            return MessageUtil.newResponseMessage(false, pass);
-        }
-
-        try {
-            if (EmailUtil.sendPasswordResetEmail(user, pass)){
-                return MessageUtil.newResponseMessage(true, "check your email for your OTP");
-            } else {
-                return MessageUtil.newResponseMessage(false, "there was an error sending the email");
-            }
-        } catch (Exception e) {
-            return MessageUtil.newResponseMessage(false, "There was an error sending you your OTP");
-        }
-    }
-
-    /**
-     * A route that verifies the OTP then changes the password
-     * @param user_id id of the user
-     * @param request otp and new password
-     * @return string success or fail
-     */
-    @PostMapping(path = "/user/{user_id}/password-change")
-    public String changePassword(@PathVariable int user_id, @RequestBody PasswordResetRequest request) {
-        User user = userRepository.findById(user_id);
-        if(user == null) {
-            return MessageUtil.newResponseMessage(false, "user was not found");
-        }
-        if(PasswordUtil.useOTP(request.OTP, user, otpRepository)) {
-            user.setPassword(request.newPassword);
-            userRepository.save(user);
-            return MessageUtil.newResponseMessage(true, "successfully changed password");
-        }
-        return MessageUtil.newResponseMessage(false, "invalid OTP, please try again");
-    }
-
     /**
      * gets a list of recipes the provided user has created
      * @param user_id the id of the user
@@ -332,56 +213,5 @@ public class UserController {
         }
         Pageable page = PageRequest.of(pageNo, perPage, Sort.by("rating"));
         return query.equals("") ? recipeRepository.getUserFavorites(user_id, page) : recipeRepository.getUserFavoritesSearch(user_id, query, page);
-    }
-
-    /**
-     * the route for a user to favorite a recipe
-     * @param user_id the id of the user
-     * @param recipe_id the id of the recipe
-     * @return either success or a failure message
-     */
-    @ApiOperation(value = "Route to favorite a recipe")
-    @PatchMapping(path = "/user/{user_id}/favorite/{recipe_id}")
-    public String favorite(@PathVariable int user_id, @PathVariable int recipe_id, HttpServletRequest request){
-        User u = ipService.getCurrentUser(request);
-        Recipe r = recipeRepository.findById(recipe_id);
-
-        if(!permissionService.canUser("Update", u, request)) {
-            return MessageUtil.newResponseMessage(false, "You do not have permission to do that");
-        }
-
-        if(u == null || r == null){
-            return MessageUtil.newResponseMessage(false, (u == null ? "user " : "recipe ") + "does not exist");
-        } else if(u.getFavorites().contains(r)) {
-            return MessageUtil.newResponseMessage(false, "releationship already exists");
-        } else {
-            favoriteSocket.onFavorite(r, u);
-            return MessageUtil.newResponseMessage(true, "favorited");
-        }
-    }
-
-    /**
-     * the route for a user to unfavorite a recipe
-     * @param user_id the id of the user
-     * @param recipe_id the id of the recipe
-     * @return either success or a failure message
-     */
-    @ApiOperation(value = "The route for a user to unfavorite a recipe")
-    @DeleteMapping(path = "/user/{user_id}/favorite/{recipe_id}")
-    public String unfavorite(@PathVariable int user_id, @PathVariable int recipe_id, HttpServletRequest request){
-        User u = ipService.getCurrentUser(request);
-        Recipe r = recipeRepository.findById(recipe_id);
-
-        if(!permissionService.canUser("Update", u, request)) {
-            return MessageUtil.newResponseMessage(false, "You do not have permission to do that");
-        }
-        if(u == null || r == null){
-            return MessageUtil.newResponseMessage(false, (u == null ? "user " : "recipe ") + "does not exist");
-        } else if(!u.getFavorites().contains(r)) {
-            return MessageUtil.newResponseMessage(false, "relationship does not exist");
-        } else {
-            favoriteSocket.onUnfavorite(r, u);
-            return MessageUtil.newResponseMessage(true, "successfully unfavorited");
-        }
     }
 }

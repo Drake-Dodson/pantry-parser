@@ -1,6 +1,4 @@
-package com.example.pantryparserbackend.Util;
-
-import com.example.pantryparserbackend.Requests.RecipeIngredientRequest;
+package com.example.pantryparserbackend.Utils;
 
 import java.util.Arrays;
 import java.util.List;

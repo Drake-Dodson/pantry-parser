@@ -1,6 +1,6 @@
 package com.example.pantryparserbackend.Passwords;
 
-import com.example.pantryparserbackend.Util.PasswordUtil;
+import com.example.pantryparserbackend.Utils.PasswordUtil;
 import com.example.pantryparserbackend.Users.User;
 import lombok.Getter;
 import javax.persistence.*;

@@ -1,14 +1,16 @@
 package com.example.pantryparserbackend.Users;
 
 import com.example.pantryparserbackend.Passwords.OTPRepository;
+import com.example.pantryparserbackend.Permissions.IP;
+import com.example.pantryparserbackend.Permissions.IPRepository;
 import com.example.pantryparserbackend.Requests.PasswordResetRequest;
 import com.example.pantryparserbackend.Requests.UserRequest;
-import com.example.pantryparserbackend.Util.EmailUtil;
+import com.example.pantryparserbackend.Services.IPService;
+import com.example.pantryparserbackend.Services.PermissionService;
+import com.example.pantryparserbackend.Utils.*;
 import com.example.pantryparserbackend.Requests.LoginRequest;
-import com.example.pantryparserbackend.Util.MessageUtil;
 import com.example.pantryparserbackend.Recipes.Recipe;
 import com.example.pantryparserbackend.Recipes.RecipeRepository;
-import com.example.pantryparserbackend.Util.PasswordUtil;
 import com.example.pantryparserbackend.Websockets.FavoriteSocket;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -18,6 +20,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * User controller, responsible for all user stuff
@@ -33,7 +37,13 @@ public class UserController {
     @Autowired
     private OTPRepository otpRepository;
     @Autowired
+    private IPRepository ipRepository;
+    @Autowired
     private FavoriteSocket favoriteSocket;
+    @Autowired
+    IPService ipService;
+    @Autowired
+    PermissionService permissionService;
 
     /**
      * this is just a test method to show us our server is up
@@ -86,7 +96,10 @@ public class UserController {
      */
     @ApiOperation(value = "Creates a new user")
     @PostMapping(path = "/users")
-    String createUser(@RequestBody User user){
+    String createUser(@RequestBody User user, HttpServletRequest request){
+        if(!permissionService.canUser("Create", null, request)) {
+            return MessageUtil.newResponseMessage(false, "You do not have permission to do that");
+        }
         if (user == null)
             return MessageUtil.newResponseMessage(false, "User was null");
 
@@ -104,13 +117,17 @@ public class UserController {
 
     /**
      * Updates the user's information
-     * @param updateUser user object that is to be updated
+     * @param userRequest user object that is to be updated
      * @return either success or a failure message
      */
     @ApiOperation(value = "Updates a given user")
     @PatchMapping(path = "/user/{user_id}/update")
-    String updateUser(@RequestBody UserRequest userRequest, @PathVariable int user_id){
+    String updateUser(@RequestBody UserRequest userRequest, @PathVariable int user_id, HttpServletRequest request){
         User user = userRepository.findById(user_id);
+        if(!permissionService.canUser("Update", user, request)) {
+            return MessageUtil.newResponseMessage(false, "You do not have permission to do that");
+        }
+
         if(user == null) {
             return MessageUtil.newResponseMessage(false, "User not found");
         };
@@ -139,7 +156,7 @@ public class UserController {
      */
     @ApiOperation(value = "Logs in a user")
     @PostMapping(path = "/login")
-    public String login(@RequestBody LoginRequest login){
+    public String login(@RequestBody LoginRequest login, HttpServletRequest request){
         if (login == null)
             return MessageUtil.newResponseMessage(false, "no login info detected");
         User actual = userRepository.findByEmail(login.email);
@@ -147,7 +164,17 @@ public class UserController {
             // Email not found
             return MessageUtil.newResponseMessage(false, "email incorrect");
         if(actual.authenticate(login.password)){
-            return MessageUtil.newResponseMessage(true, "" + actual.getId());
+            try {
+                ipService.cleanOldIPs(actual);
+                String ip = ipService.getClientIp(request);
+                IP i = new IP(actual, ip);
+                ipRepository.save(i);
+                return MessageUtil.newResponseMessage(true, "" + actual.getId());
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                return MessageUtil.newResponseMessage(false, "Error getting the IP");
+            }
+
         }else {
             // Password incorrect
             return MessageUtil.newResponseMessage(false, "password incorrect");
@@ -157,6 +184,7 @@ public class UserController {
     @GetMapping(path = "/user/{user_id}/verify/sendOTP")
     public String sendVerifyOTP(@PathVariable int user_id) {
         User user = userRepository.findById(user_id);
+
         if (user == null) {
             return MessageUtil.newResponseMessage(false, "user not found");
         }
@@ -180,6 +208,7 @@ public class UserController {
     @PostMapping(path = "/user/{user_id}/verify-email")
     public String verifyEmail(@PathVariable int user_id, @RequestBody String OTP) {
         User user = userRepository.findById(user_id);
+
         if(user == null) {
             return MessageUtil.newResponseMessage(false, "user was not found");
         }
@@ -228,6 +257,7 @@ public class UserController {
     @GetMapping(path = "/user/{user_id}/password-change/sendOTP")
     public String sendChangeOTP(@PathVariable int user_id) {
         User user = userRepository.findById(user_id);
+
         if (user == null){
             return MessageUtil.newResponseMessage(false, "user not found");
         }
@@ -308,9 +338,13 @@ public class UserController {
      */
     @ApiOperation(value = "Route to favorite a recipe")
     @PatchMapping(path = "/user/{user_id}/favorite/{recipe_id}")
-    public String favorite(@PathVariable int user_id, @PathVariable int recipe_id){
+    public String favorite(@PathVariable int user_id, @PathVariable int recipe_id, HttpServletRequest request){
         User u = userRepository.findById(user_id);
         Recipe r = recipeRepository.findById(recipe_id);
+
+        if(!permissionService.canUser("Update", u, request)) {
+            return MessageUtil.newResponseMessage(false, "You do not have permission to do that");
+        }
 
         if(u == null || r == null){
             return MessageUtil.newResponseMessage(false, (u == null ? "user " : "recipe ") + "does not exist");
@@ -329,9 +363,13 @@ public class UserController {
      */
     @ApiOperation(value = "The route for a user to unfavorite a recipe")
     @DeleteMapping(path = "/user/{user_id}/favorite/{recipe_id}")
-    public String unfavorite(@PathVariable int user_id, @PathVariable int recipe_id){
+    public String unfavorite(@PathVariable int user_id, @PathVariable int recipe_id, HttpServletRequest request){
         User u = userRepository.findById(user_id);
         Recipe r = recipeRepository.findById(recipe_id);
+
+        if(!permissionService.canUser("Update", u, request)) {
+            return MessageUtil.newResponseMessage(false, "You do not have permission to do that");
+        }
         if(u == null || r == null){
             return MessageUtil.newResponseMessage(false, (u == null ? "user " : "recipe ") + "does not exist");
         } else if(!u.getFavorites().contains(r)) {

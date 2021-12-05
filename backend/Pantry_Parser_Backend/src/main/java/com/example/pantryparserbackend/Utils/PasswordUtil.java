@@ -1,4 +1,4 @@
-package com.example.pantryparserbackend.Util;
+package com.example.pantryparserbackend.Utils;
 
 import com.example.pantryparserbackend.Passwords.OTP;
 import com.example.pantryparserbackend.Passwords.OTPRepository;

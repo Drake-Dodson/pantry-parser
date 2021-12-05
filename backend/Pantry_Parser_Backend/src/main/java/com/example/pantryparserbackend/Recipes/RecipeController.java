@@ -10,12 +10,13 @@ import com.example.pantryparserbackend.Ingredients.Ingredient;
 import com.example.pantryparserbackend.Ingredients.IngredientRepository;
 import com.example.pantryparserbackend.Ingredients.RecipeIngredient;
 import com.example.pantryparserbackend.Ingredients.RecipeIngredientRepository;
+import com.example.pantryparserbackend.Permissions.IPRepository;
 import com.example.pantryparserbackend.Requests.PantryParserRequest;
 import com.example.pantryparserbackend.Requests.RecipeIngredientRequest;
 import com.example.pantryparserbackend.Requests.RecipeRequest;
-import com.example.pantryparserbackend.Util.ImportUtil;
-import com.example.pantryparserbackend.Util.MessageUtil;
-import com.example.pantryparserbackend.Util.UnitUtil;
+import com.example.pantryparserbackend.Services.IPService;
+import com.example.pantryparserbackend.Services.PermissionService;
+import com.example.pantryparserbackend.Utils.*;
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvValidationException;
 import io.swagger.annotations.Api;
@@ -28,6 +29,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 import com.example.pantryparserbackend.Users.UserRepository;
 import com.example.pantryparserbackend.Users.User;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * Controller that manages all recipe stuff
@@ -47,6 +50,12 @@ public class RecipeController {
     StepsRepository stepRepository;
     @Autowired
     RecipeIngredientRepository recipeIngredientRepository;
+    @Autowired
+    IPRepository ipRepository;
+    @Autowired
+    IPService ipService;
+    @Autowired
+    PermissionService permissionService;
 
     /**
      * gets a list of all the recipes
@@ -78,17 +87,20 @@ public class RecipeController {
      */
     @ApiOperation(value = "Create a new recipe with the given user ")
     @PostMapping(path = "/user/{user_id}/recipes")
-    String createRecipe(@PathVariable int user_id, @RequestBody RecipeRequest recipeRequest){
+    String createRecipe(@PathVariable int user_id, @RequestBody RecipeRequest recipeRequest, HttpServletRequest request){
         if(recipeRequest == null)
             return MessageUtil.newResponseMessage(false, "invalid input");
 
         Recipe recipe = new Recipe(recipeRequest);
         recipe.setCreatedDate();
-
-        User u = userRepository.findById(user_id);
+        User u = ipService.getCurrentUser(request);
         if(u == null){
-            return MessageUtil.newResponseMessage(false, "invalid user");
+            return MessageUtil.newResponseMessage(false, "no user, please log in again");
         }
+        if(!permissionService.canRecipe("Create", recipe, request)) {
+            return MessageUtil.newResponseMessage(false, "You don't have permission to do that");
+        }
+
         recipe.setCreator(u);
         u.addRecipe(recipe);
 
@@ -143,10 +155,13 @@ public class RecipeController {
      */
     @ApiOperation(value = "Updates the recipe of the given id")
     @PatchMapping(path = "/recipe/{recipe_id}")
-    String updateRecipe(@PathVariable int recipe_id, @RequestBody RecipeRequest recipeRequest) {
+    String updateRecipe(@PathVariable int recipe_id, @RequestBody RecipeRequest recipeRequest, HttpServletRequest request) {
         Recipe recipe = recipeRepository.findById(recipe_id);
         if(recipe == null)
             return MessageUtil.newResponseMessage(false, "recipe does not exist");
+        if(!permissionService.canRecipe("Update", recipe, request)) {
+            return MessageUtil.newResponseMessage(false, "You don't have permission to do that");
+        }
 
         recipe.update(recipeRequest);
         if (recipeRequest.steps == null) {
@@ -237,11 +252,15 @@ public class RecipeController {
      */
     @ApiOperation(value = "Deletes the recipe of the given id")
     @DeleteMapping(path = "/recipe/{recipe_id}")
-    String deleteRecipe(@PathVariable int recipe_id){
+    String deleteRecipe(@PathVariable int recipe_id, HttpServletRequest request){
         Recipe recipe = recipeRepository.findById(recipe_id);
         if (recipe == null){
             return MessageUtil.newResponseMessage(false, "recipe does not exist");
         }
+        if(!permissionService.canRecipe("Delete", recipe, request)) {
+            return MessageUtil.newResponseMessage(false, "You don't have permission to do that");
+        }
+
         stepRepository.deleteAll(recipe.getSteps());
         recipeIngredientRepository.deleteAll(recipe.getIngredients());
         recipeRepository.delete(recipe);
@@ -284,12 +303,14 @@ public class RecipeController {
      * @return success or failure message
      */
     @GetMapping(path = "/recipe/{recipe_id}/verify")
-    String verifyRecipe(@PathVariable int recipe_id) {
+    String verifyRecipe(@PathVariable int recipe_id, HttpServletRequest request) {
         Recipe recipe = recipeRepository.findById(recipe_id);
         if (recipe == null) {
             return MessageUtil.newResponseMessage(false, "that was not a recipe");
         } else if (recipe.isChef_verified()) {
             return MessageUtil.newResponseMessage(false, "this recipe is already verified");
+        } else if (!permissionService.canRecipe("Verify", recipe, request)) {
+            return MessageUtil.newResponseMessage(false, "You do not have adequite permissions to do this");
         }
         recipe.setChef_verified(true);
 
@@ -308,13 +329,16 @@ public class RecipeController {
      * @return success or failure message
      */
     @GetMapping(path = "/recipe/{recipe_id}/unverify")
-    String unverifyRecipe(@PathVariable int recipe_id) {
+    String unverifyRecipe(@PathVariable int recipe_id, HttpServletRequest request) {
         Recipe recipe = recipeRepository.findById(recipe_id);
         if (recipe == null) {
             return MessageUtil.newResponseMessage(false, "that was not a recipe");
         } else if (!recipe.isChef_verified()) {
             return MessageUtil.newResponseMessage(false, "this recipe was not verified already");
+        } else if (!permissionService.canRecipe("Verify", recipe, request)) {
+            return MessageUtil.newResponseMessage(false, "You do not have adequite permissions to do this");
         }
+
         recipe.setChef_verified(false);
 
         try {
@@ -327,7 +351,10 @@ public class RecipeController {
     }
 
     @GetMapping(path="/recipes/getFromExternal")
-    String importRecipes(@RequestParam String file) {
+    String importRecipes(@RequestParam String file, HttpServletRequest request) {
+        if(!ipService.getCurrentUser(request).isAdmin()) {
+            return MessageUtil.newResponseMessage(false, "You are not an admin");
+        }
         try {
             Reader reader = Files.newBufferedReader(Paths.get("/servers/data.csv"));
             CSVReader csvReader = new CSVReader(reader);

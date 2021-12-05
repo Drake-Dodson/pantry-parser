@@ -2,8 +2,10 @@ package com.example.pantryparserbackend.Ingredients;
 
 import com.example.pantryparserbackend.Recipes.Recipe;
 import com.example.pantryparserbackend.Recipes.RecipeRepository;
-import com.example.pantryparserbackend.Util.MessageUtil;
-import com.example.pantryparserbackend.Util.UnitUtil;
+import com.example.pantryparserbackend.Services.IPService;
+import com.example.pantryparserbackend.Services.PermissionService;
+import com.example.pantryparserbackend.Utils.MessageUtil;
+import com.example.pantryparserbackend.Utils.UnitUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
@@ -26,6 +29,9 @@ public class IngredientController {
 	IngredientRepository ingredientRepository;
 	@Autowired
 	RecipeRepository recipeRepository;
+	@Autowired
+	PermissionService permissionService;
+
 	/**
 	 * gets a list of all ingredients
 	 * @return a list of all ingredients in the database
@@ -39,21 +45,24 @@ public class IngredientController {
 
 	/**
 	 * creates a new ingredient
-	 * @param request the input values for the new ingredient
+	 * @param ing the input values for the new ingredient
 	 * @return either succsess or an error message
 	 */
 	@ApiOperation(value = "Creates a new ingredient")
 	@PostMapping(path = "/ingredients")
-	String createIngredient(@RequestBody Ingredient request){
-		if(request == null){
+	String createIngredient(@RequestBody Ingredient ing, HttpServletRequest request){
+		if(ing == null){
 			return MessageUtil.newResponseMessage(false, "request body was null");
 		}
-		request.nameToLower();
-		if(ingredientRepository.findByName(request.getName()) != null){
+		if(!permissionService.canIngredient("Create", null, request)){
+			return MessageUtil.newResponseMessage(false, "You don't have permission to do that");
+		}
+		ing.nameToLower();
+		if(ingredientRepository.findByName(ing.getName()) != null){
 			return MessageUtil.newResponseMessage(false, "ingredient already exists");
 		}
 		try {
-			ingredientRepository.save(request);
+			ingredientRepository.save(ing);
 		} catch (Exception ex) {
 			return MessageUtil.newResponseMessage(false, "you did not fill out all required fields");
 		}

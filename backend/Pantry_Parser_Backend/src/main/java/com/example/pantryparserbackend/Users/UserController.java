@@ -93,7 +93,14 @@ public class UserController {
 
         if (userRequest == null)
             return MessageUtil.newResponseMessage(false, "UserRequest was null");
-        User user = new User(userRequest.password, userRequest.email, userRequest.displayName);
+
+        User user;
+
+        if(userRequest.displayName == null){
+            user = new User(userRequest.password, userRequest.email);
+        } else {
+            user = new User(userRequest.password, userRequest.email, userRequest.displayName);
+        }
 
         try {
             userRepository.save(user);

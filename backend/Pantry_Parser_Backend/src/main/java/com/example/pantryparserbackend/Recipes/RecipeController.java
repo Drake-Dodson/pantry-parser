@@ -48,7 +48,6 @@ public class RecipeController {
     @Autowired
     RecipeIngredientRepository recipeIngredientRepository;
 
-    //generic recipe stuff
     /**
      * gets a list of all the recipes
      * @return a list of all the recipes in the database
@@ -263,6 +262,68 @@ public class RecipeController {
     Page<Recipe> recipesByIngredients(@RequestParam(defaultValue = "0") Integer pageNo, @RequestParam(defaultValue = "15") Integer perPage, @RequestBody PantryParserRequest request){
         Pageable page = PageRequest.of(pageNo, perPage, Sort.by("rating"));
         return recipeRepository.getByIngredients(request.ingredients, page);
+    }
+
+    /**
+     * a list of recipes that have been verified by chefs
+     * @param pageNo page specified
+     * @param perPage how many elements per page
+     * @param query search query
+     * @return list of recipes
+     */
+    @ApiOperation(value = "Get all of the recipes that have been verified by chefs")
+    @GetMapping(path = "/recipes/verified")
+    Page<Recipe> getVerifiedRecipes(@RequestParam(defaultValue = "0") Integer pageNo, @RequestParam(defaultValue = "15") Integer perPage, @RequestParam(defaultValue = "") String query){
+        Pageable page = PageRequest.of(pageNo, perPage, Sort.by("rating"));
+        return Objects.equals(query, "") ? recipeRepository.getChefVerified(page) : recipeRepository.getChefVerifiedSearch(query, page);
+    }
+
+    /**
+     * Verifies the recipe (should only be done as a chef)
+     * @param recipe_id the id of the recipe we are verifying
+     * @return success or failure message
+     */
+    @GetMapping(path = "/recipe/{recipe_id}/verify")
+    String verifyRecipe(@PathVariable int recipe_id) {
+        Recipe recipe = recipeRepository.findById(recipe_id);
+        if (recipe == null) {
+            return MessageUtil.newResponseMessage(false, "that was not a recipe");
+        } else if (recipe.isChef_verified()) {
+            return MessageUtil.newResponseMessage(false, "this recipe is already verified");
+        }
+        recipe.setChef_verified(true);
+
+        try {
+            recipeRepository.save(recipe);
+        } catch (Exception e) {
+            return MessageUtil.newResponseMessage(false, "error updating the recipe, this shouldn't have happened");
+        }
+
+        return MessageUtil.newResponseMessage(true, "successfully verified the recipe");
+    }
+
+    /**
+     * UnVerifies the recipe (should only be done as a chef)
+     * @param recipe_id the id of the recipe we are unverifying
+     * @return success or failure message
+     */
+    @GetMapping(path = "/recipe/{recipe_id}/unverify")
+    String unverifyRecipe(@PathVariable int recipe_id) {
+        Recipe recipe = recipeRepository.findById(recipe_id);
+        if (recipe == null) {
+            return MessageUtil.newResponseMessage(false, "that was not a recipe");
+        } else if (!recipe.isChef_verified()) {
+            return MessageUtil.newResponseMessage(false, "this recipe was not verified already");
+        }
+        recipe.setChef_verified(false);
+
+        try {
+            recipeRepository.save(recipe);
+        } catch (Exception e) {
+            return MessageUtil.newResponseMessage(false, "error updating the recipe, this shouldn't have happened");
+        }
+
+        return MessageUtil.newResponseMessage(true, "successfully unverified the recipe");
     }
 
     @GetMapping(path="/recipes/getFromExternal")

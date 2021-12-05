@@ -1,5 +1,6 @@
 package com.example.pantryparserbackend.Passwords;
 
+import com.example.pantryparserbackend.Requests.OTPRequest;
 import com.example.pantryparserbackend.Requests.PasswordResetRequest;
 import com.example.pantryparserbackend.Users.User;
 import com.example.pantryparserbackend.Users.UserRepository;
@@ -48,13 +49,13 @@ public class PasswordController {
 	 */
 	@ApiOperation(value = "Takes in an OTP and determines if it is valid. If so, verifies email")
 	@PostMapping(path = "/user/{user_id}/verify-email")
-	public String verifyEmail(@PathVariable int user_id, @RequestBody String OTP) {
+	public String verifyEmail(@PathVariable int user_id, @RequestBody OTPRequest OTP) {
 		User user = userRepository.findById(user_id);
 
 		if(user == null) {
 			return MessageUtil.newResponseMessage(false, "user was not found");
 		}
-		if(passwordService.useOTP(OTP, user)) {
+		if(passwordService.useOTP(OTP.OTP, user)) {
 			user.setEmail_verified(true);
 			userRepository.save(user);
 			return MessageUtil.newResponseMessage(true, "successfully changed password");

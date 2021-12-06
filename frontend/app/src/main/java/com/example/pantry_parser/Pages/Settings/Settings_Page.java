@@ -92,7 +92,7 @@ public class Settings_Page extends AppCompatActivity {
         changePassword.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                startActivity(new Intent(getApplicationContext(), ChangePassword_Page.class));
             }
         });
 

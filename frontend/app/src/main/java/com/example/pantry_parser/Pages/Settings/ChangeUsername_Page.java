@@ -115,7 +115,7 @@ public class ChangeUsername_Page extends AppCompatActivity {
             Toast.makeText(ChangeUsername_Page.this, "Error: " + e.toString(), Toast.LENGTH_SHORT).show();
         }
 
-        JsonObjectRequest updateRequest = new JsonObjectRequest(Request.Method.POST, URL + user_id + "/update/", updateObj,
+        JsonObjectRequest updateRequest = new JsonObjectRequest(Request.Method.PATCH, URL + user_id + "/update/", updateObj,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
@@ -124,6 +124,7 @@ public class ChangeUsername_Page extends AppCompatActivity {
                             String message = response.getString("message");
 
                             if (success.equals("true")) {
+                                startActivity(new Intent(getApplicationContext(), Settings_Page.class));
                                 Toast.makeText(ChangeUsername_Page.this, "Username successfully updated", Toast.LENGTH_SHORT).show();
                             } else {
                                 Toast.makeText(ChangeUsername_Page.this, message, Toast.LENGTH_SHORT).show();

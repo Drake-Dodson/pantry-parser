@@ -156,6 +156,7 @@
         android:layout_marginRight="50dp"
         android:background="#D9F35454"
         android:text="Submit"
+        android:textColor="@color/white"
         android:textAllCaps="false"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

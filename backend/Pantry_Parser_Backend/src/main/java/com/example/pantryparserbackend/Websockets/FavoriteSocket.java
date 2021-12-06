@@ -2,17 +2,18 @@ package com.example.pantryparserbackend.Websockets;
 
 import com.example.pantryparserbackend.Recipes.Recipe;
 import com.example.pantryparserbackend.Recipes.RecipeRepository;
-import com.example.pantryparserbackend.users.User;
-import com.example.pantryparserbackend.users.UserRepository;
+import com.example.pantryparserbackend.Services.IPService;
+import com.example.pantryparserbackend.Services.PermissionService;
+import com.example.pantryparserbackend.Users.User;
+import com.example.pantryparserbackend.Users.UserRepository;
 import io.swagger.annotations.Api;
-import io.swagger.annotations.Authorization;
-import org.hibernate.LazyInitializationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Controller;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.websocket.*;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
@@ -31,6 +32,8 @@ import java.util.Map;
 public class FavoriteSocket {
     private static RecipeRepository recipeRepository;
     private static UserRepository userRepository;
+    private static IPService ipService;
+    private static PermissionService permissionService;
     public static final String FAVORITE_CONS = "favorite";
     public static final String UNFAVORITE_CONS = "unfavorite";
 
@@ -50,6 +53,24 @@ public class FavoriteSocket {
     @Autowired
     public void setUserRepository(UserRepository repo) {
         userRepository = repo;
+    }
+
+    /**
+     * wires the ipService to the static variable
+     * @param service IPService
+     */
+    @Autowired
+    public void setIpService(IPService service) {
+        ipService = service;
+    }
+
+    /**
+     * wires the permissionService to the static variable
+     * @param service UserRepository
+     */
+    @Autowired
+    public void setPermissionService(PermissionService service) {
+        permissionService = service;
     }
 
     private static Map<Session, Integer> sessionUserMap = new Hashtable<>();
@@ -103,21 +124,20 @@ public class FavoriteSocket {
         if(recipe == null) {
             logger.info("provided recipe did not exist");
             sendToUser(user, "that recipe doesn't exist");
+        } else {
+            switch (chunks[0]) {
+                case FAVORITE_CONS:
+                    onFavorite(recipe, user);
+                    break;
+                case UNFAVORITE_CONS:
+                    onUnfavorite(recipe, user);
+                    break;
+                default:
+                    logger.info("provided operation did not exist");
+                    session.getBasicRemote().sendText("that operation doesn't exist");
+                    break;
+            }
         }
-
-        switch (chunks[0]) {
-            case FAVORITE_CONS:
-                onFavorite(recipe, user);
-                break;
-            case UNFAVORITE_CONS:
-                onUnfavorite(recipe, user);
-                break;
-            default:
-                logger.info("provided operation did not exist");
-                session.getBasicRemote().sendText("that operation doesn't exist");
-                break;
-        }
-
     }
 
     /**
@@ -141,6 +161,11 @@ public class FavoriteSocket {
      */
     @OnError
     public void onError(Session session, Throwable throwable) {
+        try {
+            session.getBasicRemote().sendText("There was an error");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         logger.info("Got an error");
         throwable.printStackTrace();
     }
@@ -218,8 +243,6 @@ public class FavoriteSocket {
             sendToUser(user, "You've already favorited that recipe!");
             e.printStackTrace();
         }
-
-
     }
 
     /**
@@ -241,7 +264,7 @@ public class FavoriteSocket {
             logger.info("Sending a unfavorite message");
             //we only want to send a message if the creator is on the app
             if(userSessionMap.containsKey(recipe.getCreator().getId())) {
-                String message = user.getDisplayName() + " thinks your " + recipe.getName() + " sucks!";
+                String message = (user.getDisplayName() == null ? "a user" : user.getDisplayName()) + " thinks your " + recipe.getName() + " sucks!";
                 sendToUser(recipe.getCreator(), message);
             }
         } else {

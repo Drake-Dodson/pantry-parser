@@ -17,7 +17,7 @@ import com.example.pantry_parser.RecyclerView.IngredientListView;
 import com.example.pantry_parser.RecyclerView.ListView;
 
 public class Home_Page extends AppCompatActivity implements View.OnClickListener{
-
+    String user_id;
 
     /**
      *Initializes home page elements

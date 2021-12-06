@@ -27,8 +27,10 @@ public class Registration_Page extends AppCompatActivity implements View.OnClick
 
     private EditText userName, userPassword, userConfirmPassword, userEmail;
     private Button  registerButton, alreadyRegbutton;
-    private static final String URL_REGIST = "http://coms-309-032.cs.iastate.edu:8080/user";
+    private static final String URL_REGIST = "http://coms-309-032.cs.iastate.edu:8080/users";
     private RequestQueue Queue;
+
+    private String user_Name;
 
     /**
      *
@@ -76,14 +78,14 @@ public class Registration_Page extends AppCompatActivity implements View.OnClick
      * Creates a new user from inputted username, email, password, and confirms passwords match.
      */
     private void Register() {
-        final String user_Name = userName.getText().toString().trim();
-        final String user_Email = userEmail.getText().toString().trim();
+        user_Name = userName.getText().toString().trim();
+        String user_Email = userEmail.getText().toString().trim();
         final String user_Password = userPassword.getText().toString().trim();
         Intent intentLogin = new Intent(getApplicationContext(), Home_Page.class);
 
         JSONObject params = new JSONObject();
         try {
-            params.put("displayname", user_Name);
+            params.put("displayName", user_Name);
             params.put("email", user_Email);
             params.put("password", user_Password);
         } catch (JSONException jsonException) {

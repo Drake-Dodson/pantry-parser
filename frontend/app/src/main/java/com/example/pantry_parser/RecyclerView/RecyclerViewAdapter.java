@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.pantry_parser.R;
 import com.example.pantry_parser.Recipe;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -92,6 +93,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         TextView recipeName;
         TextView minutesToMake;
         ImageView chefVerified;
+        ImageView recipeImage;
         RatingBar ratingBar;
         OnRecipeListener onRecipeListener;
 
@@ -107,6 +109,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                 minutesToMake = itemView.findViewById(R.id.time);
                 ratingBar = itemView.findViewById(R.id.ratingBar);
                 chefVerified = itemView.findViewById(R.id.Chef);
+                recipeImage = itemView.findViewById(R.id.RecipeImage);
             }
             itemView.setOnClickListener(this);
             this.onRecipeListener = onRecipeListener;
@@ -142,9 +145,11 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     private void populateItemRows(ItemViewHolder viewHolder, int position) {
         Recipe item = mItemList.get(position);
         viewHolder.recipeName.setText(item.getRecipeName());
+
         if(type != "i"){
             viewHolder.minutesToMake.setText(Integer.toString(item.getTimeToMake()));
             viewHolder.ratingBar.setRating((float) item.getRating());
+            Picasso.get().load("http://coms-309-032.cs.iastate.edu:8080/recipe/" + item.getRecipeID() + "/image").centerCrop().resize(600, 400).into(viewHolder.recipeImage);
             if (item.getChefVerified() == false){
                 viewHolder.chefVerified.setVisibility(View.INVISIBLE);
             }

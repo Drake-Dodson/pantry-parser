@@ -9,6 +9,8 @@ import com.example.pantryparserbackend.Utils.MessageUtil;
 import com.example.pantryparserbackend.Services.PasswordService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 public class PasswordController {
 
+	private static final Logger logger = LoggerFactory.getLogger(PasswordController.class);
 	@Autowired
 	private UserRepository userRepository;
 	@Autowired
@@ -123,10 +126,12 @@ public class PasswordController {
 			return MessageUtil.newResponseMessage(false, "user was not found");
 		}
 		if(passwordService.useOTP(request.OTP, user)) {
+			logger.info("OTP successfully used by " + user.getId());
 			user.setPassword(request.newPassword);
 			userRepository.save(user);
 			return MessageUtil.newResponseMessage(true, "successfully changed password");
 		}
+		logger.info("OTP attempt by " + user.getId() + " was unsuccessful");
 		return MessageUtil.newResponseMessage(false, "invalid OTP, please try again");
 	}
 }

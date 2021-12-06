@@ -5,6 +5,8 @@ import com.example.pantryparserbackend.Passwords.OTPRepository;
 import com.example.pantryparserbackend.Users.User;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +23,7 @@ import java.util.List;
 @Api(value = "Password Service", description = "Password and OTP handling and management")
 public class PasswordService {
 
+    private static final Logger logger = LoggerFactory.getLogger(PasswordService.class);
     @Autowired
     private OTPRepository otpRepo;
 
@@ -31,6 +34,7 @@ public class PasswordService {
      */
     @ApiOperation(value = "Generates an OTP of the provided length")
     public String generateOTP(int length, User user) {
+        logger.info("generating an OTP");
         SecureRandom random = new SecureRandom();
         String password = "";
         for(int i = 0; i < length; i++){
@@ -57,13 +61,16 @@ public class PasswordService {
      */
     @ApiOperation(value = "Operation that handles the comparing and deleting of OTPs - \"using\" OTPs")
     public boolean useOTP(String password, User user) {
+        logger.info("User " + user.getId() + " is attempting to use an OTP");
         List<OTP> otps = otpRepo.findByUser(user);
 
         for (int i = 0; i < otps.size(); i++) {
             OTP otp = otps.get(i);
             if (otp.outOfDate()) {
+                logger.info("User " + user.getId() + " had an out of date OTP");
                 otpRepo.delete(otp);
             } else if (otp.verify(password)){
+                logger.info("User " + user.getId() + " sent a good OTP");
                 otpRepo.delete(otp);
                 return true;
             }

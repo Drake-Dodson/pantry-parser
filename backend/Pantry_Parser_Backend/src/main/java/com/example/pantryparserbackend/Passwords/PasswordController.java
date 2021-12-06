@@ -121,6 +121,7 @@ public class PasswordController {
 	@ApiOperation(value = "Changes a user's password if they send in a valid OTP")
 	@PostMapping(path = "/user/{user_id}/password-change")
 	public String changePassword(@PathVariable int user_id, @RequestBody PasswordResetRequest request) {
+		logger.info("starting change otp request for " + user_id);
 		User user = userRepository.findById(user_id);
 		if(user == null) {
 			return MessageUtil.newResponseMessage(false, "user was not found");

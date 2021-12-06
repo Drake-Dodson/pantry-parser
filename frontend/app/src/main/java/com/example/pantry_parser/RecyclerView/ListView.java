@@ -164,13 +164,13 @@ public class ListView extends AppCompatActivity implements RecyclerViewAdapter.O
             case ("ALL_RECIPES"):
                 URL_TO_USE = URL_RECIPES;
                 origURL = URL_TO_USE;
+                newRecipe.show();
                 popData();
                 break;
 
             case ("MY_RECIPES"):
                 URL_TO_USE = URL_USER;
                 origURL = URL_TO_USE;
-                newRecipe.show();
                 popData();
                 break;
 

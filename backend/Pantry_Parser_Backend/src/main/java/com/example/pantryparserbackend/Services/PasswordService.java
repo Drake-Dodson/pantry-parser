@@ -71,7 +71,7 @@ public class PasswordService {
                 otpRepo.delete(otp);
             } else if (otp.verify(password)){
                 logger.info("User " + user.getId() + " sent a good OTP");
-                otpRepo.delete(otp);
+                //otpRepo.delete(otp);
                 return true;
             }
         }

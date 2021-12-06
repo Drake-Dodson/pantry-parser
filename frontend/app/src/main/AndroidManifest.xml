@@ -19,6 +19,9 @@
             android:name=".RecyclerView.ListView"
             android:exported="true" />
         <activity
+            android:name=".RecyclerView.IngredientListView"
+            android:exported="true" />
+        <activity
             android:name=".Pages.Registration_Page"
             android:exported="true" />
         <activity

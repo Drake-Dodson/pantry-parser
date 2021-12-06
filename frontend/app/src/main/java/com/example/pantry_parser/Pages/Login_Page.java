@@ -160,6 +160,7 @@ public class Login_Page extends AppCompatActivity implements View.OnClickListene
                  */
                 @Override
                 public void onFailure(String error) {
+                    System.out.println(error);
                     counter--;
                     Toast.makeText(Login_Page.this, "Incorrect Username or Password", Toast.LENGTH_SHORT).show();
                     eAttemptsInfo.setText("No. of attempts remaining: " + counter);
@@ -170,7 +171,7 @@ public class Login_Page extends AppCompatActivity implements View.OnClickListene
             data.put("email", eName);
             data.put("password", ePassword);
 
-            VolleyListener.makeRequest(getApplicationContext(), URL, loginListener, data, Request.Method.POST);
+            VolleyListener.makeRequest(getApplicationContext(), "/login/", loginListener, data, Request.Method.POST);
         }
 
     /**

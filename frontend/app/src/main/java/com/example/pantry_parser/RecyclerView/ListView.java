@@ -1,6 +1,8 @@
 package com.example.pantry_parser.RecyclerView;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.CompoundButton;
@@ -40,8 +42,8 @@ public class ListView extends AppCompatActivity implements RecyclerViewAdapter.O
     ArrayList<Recipe> dataset = new ArrayList<>();
     boolean isLoading = false;
     private static final String URL_RECIPES = "http://coms-309-032.cs.iastate.edu:8080/recipes?pageNo=0";
-    private static final String URL_USER = "http://coms-309-032.cs.iastate.edu:8080/user/1/recipes/";
-    private static final String URL_FAV = "http://coms-309-032.cs.iastate.edu:8080/user/1/favorites/";
+    private static final String URL_USER = "http://coms-309-032.cs.iastate.edu:8080/user/";
+    private static final String URL_FAV = "http://coms-309-032.cs.iastate.edu:8080/user/";
     private static final String URL_PARSER = "http://coms-309-032.cs.iastate.edu:8080/pantry-parser";
     String origURL;
     String URL_TO_USE;
@@ -158,6 +160,9 @@ public class ListView extends AppCompatActivity implements RecyclerViewAdapter.O
         });
         newRecipe.hide();
 
+        SharedPreferences prefs = getSharedPreferences("user_info", Context.MODE_PRIVATE);
+        String user_id = prefs.getString("user_id", "");
+
         switch (viewType){
             case ("ALL_RECIPES"):
                 URL_TO_USE = URL_RECIPES;
@@ -166,14 +171,14 @@ public class ListView extends AppCompatActivity implements RecyclerViewAdapter.O
                 break;
 
             case ("MY_RECIPES"):
-                URL_TO_USE = URL_USER;
+                URL_TO_USE = URL_USER + user_id + "/recipes";
                 origURL = URL_TO_USE;
                 newRecipe.show();
                 popData();
                 break;
 
             case ("FAV_RECIPES"):
-                URL_TO_USE = URL_FAV;
+                URL_TO_USE = URL_FAV + user_id + "/favorites";
                 origURL = URL_TO_USE;
                 popData();
                 break;

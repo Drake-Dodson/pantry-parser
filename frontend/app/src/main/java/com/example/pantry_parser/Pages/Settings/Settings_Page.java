@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.activity.result.ActivityResultCallback;
@@ -32,7 +33,8 @@ import org.json.JSONObject;
 
 public class Settings_Page extends AppCompatActivity {
 
-    TextView usernameDisplay, emailDisplay, changeUsername, changeEmail, changePassword;
+    TextView usernameDisplay, emailDisplay;
+    TextView changeUsername, changeEmail, changePassword, goMyRecipes;
     Button back, logout;
     ImageView profileImage;
 
@@ -53,6 +55,7 @@ public class Settings_Page extends AppCompatActivity {
         changeUsername = findViewById(R.id.TextView_changeUsername);
         changeEmail = findViewById(R.id.TextView_changeEmail);
         changePassword = findViewById(R.id.TextView_changePassword);
+        goMyRecipes = findViewById(R.id.TextView_goMyRecipes);
         usernameDisplay = findViewById(R.id.TextView_username);
         emailDisplay = findViewById(R.id.TextView_email);
         back = findViewById(R.id.button_backSettings);
@@ -93,6 +96,13 @@ public class Settings_Page extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(getApplicationContext(), ChangePassword_Page.class));
+            }
+        });
+
+        goMyRecipes.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getApplicationContext(), ListView.class));
             }
         });
 

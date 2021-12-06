@@ -224,6 +224,9 @@ public class ListView extends AppCompatActivity implements RecyclerViewAdapter.O
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
+                    if(recipeArray.length() <= 0) {
+                        Toast.makeText(ListView.this, "No recipes found!", Toast.LENGTH_SHORT).show();
+                    }
                     while (!recipeArray.isNull(i) && i <=pageSize) {
                         try {
                             Recipe recipe = getRecipe(i, recipeArray);

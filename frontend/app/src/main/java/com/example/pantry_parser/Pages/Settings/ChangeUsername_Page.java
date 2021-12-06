@@ -20,6 +20,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.pantry_parser.Network.FavoriteSocket;
 import com.example.pantry_parser.R;
 import com.google.android.material.textfield.TextInputEditText;
 
@@ -41,6 +42,7 @@ public class ChangeUsername_Page extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_change_username);
+        FavoriteSocket.changeContext(this);
 
         tv_username = findViewById(R.id.textView_currentUsername);
         idt_username = findViewById(R.id.textInput_username);

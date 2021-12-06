@@ -10,7 +10,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.activity.result.ActivityResultCallback;
@@ -24,9 +23,11 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.pantry_parser.Network.FavoriteSocket;
 import com.example.pantry_parser.Pages.Home_Page;
 import com.example.pantry_parser.Pages.Login_Page;
 import com.example.pantry_parser.R;
+import com.example.pantry_parser.RecyclerView.ListView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -61,7 +62,7 @@ public class Settings_Page extends AppCompatActivity {
         back = findViewById(R.id.button_backSettings);
         logout = findViewById(R.id.button_Logout);
         profileImage = findViewById(R.id.imageView_profileImage);
-
+        FavoriteSocket.changeContext(this);
         queue = Volley.newRequestQueue(this);
 
         SharedPreferences prefs = getSharedPreferences("user_info", Context.MODE_PRIVATE);
@@ -102,7 +103,9 @@ public class Settings_Page extends AppCompatActivity {
         goMyRecipes.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getApplicationContext(), ListView.class));
+                Intent intent = new Intent(getApplicationContext(), ListView.class);
+                intent.putExtra("SwitchView", "MY_RECIPES");
+                startActivity(intent);
             }
         });
 

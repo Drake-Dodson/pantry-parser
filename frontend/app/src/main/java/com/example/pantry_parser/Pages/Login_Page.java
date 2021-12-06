@@ -146,7 +146,7 @@ public class Login_Page extends AppCompatActivity implements View.OnClickListene
                             counter = 5;
                             eAttemptsInfo.setText("No. of attempts remaining: " + counter);
                         } else{
-                            Toast.makeText(Login_Page.this, "login error", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(Login_Page.this, message, Toast.LENGTH_SHORT).show();
                         }
                     }
                     catch(JSONException jsonException){
@@ -170,7 +170,7 @@ public class Login_Page extends AppCompatActivity implements View.OnClickListene
             data.put("email", eName);
             data.put("password", ePassword);
 
-            VolleyListener.makeRequest(getApplicationContext(), URL, loginListener, data, Request.Method.POST);
+            VolleyListener.makeRequest(getApplicationContext(), "/login/", loginListener, data, Request.Method.POST);
         }
 
     /**

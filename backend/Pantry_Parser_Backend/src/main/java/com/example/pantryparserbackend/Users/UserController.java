@@ -214,4 +214,27 @@ public class UserController {
         Pageable page = PageRequest.of(pageNo, perPage, Sort.by("rating"));
         return query.equals("") ? recipeRepository.getUserFavorites(user_id, page) : recipeRepository.getUserFavoritesSearch(user_id, query, page);
     }
+
+    /**
+     * Checks if the provided user has favorited the provided recipe
+     * @param user_id input user
+     * @param recipe_id input recipe
+     * @return true or false
+     */
+    @ApiOperation(value = "Checks if a user has favorited a recipe")
+    @GetMapping(path = "/user/{user_id}/favorited/{recipe_id}")
+    public String hasFavorited(@PathVariable int user_id, @PathVariable int recipe_id){
+        User user = userRepository.findById(user_id);
+        Recipe recipe = recipeRepository.findById(recipe_id);
+
+        if(user == null || recipe == null) {
+            return MessageUtil.newResponseMessage(false, (user == null ? "user" : "recipe") + " not found");
+        }
+
+        if(user.getFavorites().contains(recipe)){
+            return MessageUtil.newResponseMessage(true, "user has favorited");
+        } else {
+            return MessageUtil.newResponseMessage(false, "user has not favorited");
+        }
+    }
 }

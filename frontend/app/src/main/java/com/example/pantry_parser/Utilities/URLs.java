@@ -33,7 +33,7 @@ public class URLs {
             if(newUrl.charAt(newUrl.length()-1) != '?'){
                 newUrl += "&";
             }
-            newUrl += "pageNo=1";
+            newUrl += propertyToUpdate + "=" + newVal;
         }
         return newUrl;
     }
@@ -66,5 +66,10 @@ public class URLs {
             newUrl += "pageNo=1";
         }
         return newUrl;
+    }
+
+    public static String switchBaseUrl(String original, String newBase) {
+        String[] chunks = original.split("\\?");
+        return chunks.length > 1 ? newBase + "?" + chunks[1] : newBase;
     }
 }

@@ -102,6 +102,7 @@ public class IngredientListView extends AppCompatActivity implements RecyclerVie
             public boolean onQueryTextSubmit(String query) {
                 try {
                     URL_TO_USE = URLs.updatePaginatedQueryUrl(URL_TO_USE, "query", query);
+                    URL_TO_USE = URLs.updatePaginatedQueryUrl(URL_TO_USE, "pageNo", "0");
                     dataset.clear();
                     popData();
                 } catch (Exception e) {
@@ -132,7 +133,6 @@ public class IngredientListView extends AppCompatActivity implements RecyclerVie
     }
 
     private void getMoreData() {
-        pageNo++;
         URL_TO_USE = URLs.getNextPaginatedQueryPageUrl(URL_TO_USE);
         popData();
         isLoading = false;

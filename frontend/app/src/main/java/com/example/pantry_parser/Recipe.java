@@ -16,6 +16,16 @@ public class Recipe implements Serializable {
     private ArrayList<String> steps;
     private String author;
 
+    public String getImagePath() {
+        return imagePath;
+    }
+
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
+    }
+
+    private String imagePath;
+
     public int getUserId() {
         return UserId;
     }

@@ -7,9 +7,11 @@ import android.os.Looper;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.HorizontalScrollView;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -19,6 +21,7 @@ import androidx.viewpager.widget.ViewPager;
 import com.example.pantry_parser.R;
 import com.example.pantry_parser.Recipe;
 import com.google.android.material.tabs.TabLayout;
+import com.squareup.picasso.Picasso;
 
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
@@ -39,6 +42,7 @@ public class Recipe_Page extends AppCompatActivity {
         private HorizontalScrollView scrollView;
         private Button favButton;
         private WebSocketClient mWebSocketClient;
+        private ImageView recipePic;
 
 
     /**
@@ -50,7 +54,10 @@ public class Recipe_Page extends AppCompatActivity {
             super.onCreate(savedInstanceState);
             setContentView(R.layout.activity_view_recipe);
             recipe = (Recipe) getIntent().getSerializableExtra("Recipe");
-
+            recipePic = findViewById(R.id.RecipeImage);
+            if (recipe.getImagePath() != "null") {
+                Picasso.get().load("http://coms-309-032.cs.iastate.edu:8080/recipe/" + recipe.getRecipeID() + "/image").centerCrop().resize(600, 365).into(recipePic);
+            }
             NameRecipe = findViewById(R.id.RecipeName);
             NameRecipe.setText(recipe.getRecipeName());
             AuthorRecipe = findViewById(R.id.RecipeAuthor);

@@ -13,19 +13,19 @@
         android:theme="@style/Theme.Pantry_Parser"
         android:usesCleartextTraffic="true">
         <activity
-            android:name=".Pages.AddSteps_Page"
+            android:name=".Pages.RecipeCreator.AddSteps_Page"
             android:exported="true" />
         <activity
-            android:name=".Pages.AddIngredient_Page"
+            android:name=".Pages.RecipeCreator.AddIngredient_Page"
             android:exported="true" />
         <activity
-            android:name=".Pages.RecipeCreator_Page"
+            android:name=".Pages.RecipeCreator.RecipeCreator_Page"
             android:exported="true" />
         <activity
             android:name=".Pages.Recipe_Page"
             android:exported="true" />
         <activity
-            android:name=".Pages.ListView"
+            android:name=".RecyclerView.ListView"
             android:exported="true" />
         <activity
             android:name=".Pages.Registration_Page"

@@ -4,13 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Pages.AddSteps_Page">
+    tools:context=".Pages.RecipeCreator.AddSteps_Page">
 
     <TextView
         android:id="@+id/textView_Steps"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:background="@color/orange"
+        android:background="@color/light_blue"
         android:text="Steps"
         android:textStyle="bold"
         android:textColor="@color/white"

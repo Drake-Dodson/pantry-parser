@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        tools:context=".Pages.RecipeCreator_Page">
+        tools:context=".Pages.RecipeCreator.RecipeCreator_Page">
 
         <Button
             android:id="@+id/button_cancelRecipe"
@@ -40,7 +40,7 @@
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_gravity="center_horizontal"
-            android:background="@color/orange"
+            android:background="@color/light_blue"
             android:paddingTop="10dp"
             android:text="Create a Recipe"
             android:textAlignment="center"

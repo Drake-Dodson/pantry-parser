@@ -1,4 +1,4 @@
-package com.example.pantry_parser.Pages;
+package com.example.pantry_parser.Pages.RecipeCreator;
 
 import android.content.Context;
 import android.content.Intent;
@@ -25,6 +25,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.pantry_parser.RecyclerView.ListView;
 import com.example.pantry_parser.R;
 
 import org.json.JSONArray;
@@ -57,6 +58,7 @@ public class RecipeCreator_Page extends AppCompatActivity implements View.OnClic
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recipe_creator_page);
+//        FavoriteSocket.changeContext(this);
 
         rName = findViewById(R.id.editText_recipeName);
         rSummary = findViewById(R.id.editText_recipeSummary);

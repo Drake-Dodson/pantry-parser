@@ -1,4 +1,4 @@
-package com.example.pantry_parser.Pages;
+package com.example.pantry_parser.Pages.RecipeCreator;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -20,6 +20,7 @@ public class AddSteps_Page extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_steps_page);
+//        FavoriteSocket.changeContext(this);
 
         addSteps = findViewById(R.id.editText_recipeSteps);
         back = findViewById(R.id.button_backSteps);

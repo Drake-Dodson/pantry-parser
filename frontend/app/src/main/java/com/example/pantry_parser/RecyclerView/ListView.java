@@ -1,4 +1,4 @@
-package com.example.pantry_parser.Pages;
+package com.example.pantry_parser.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -17,14 +17,13 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.pantry_parser.Pages.RecipeCreator.RecipeCreator_Page;
+import com.example.pantry_parser.Pages.Recipe_Page;
 import com.example.pantry_parser.R;
 import com.example.pantry_parser.Recipe;
-import com.example.pantry_parser.RecyclerView.RecyclerViewAdapter;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONException;

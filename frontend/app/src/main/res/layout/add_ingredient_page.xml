@@ -4,13 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Pages.AddIngredient_Page">
+    tools:context=".Pages.RecipeCreator.AddIngredient_Page">
 
     <TextView
         android:id="@+id/textView_Ingredients"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:background="@color/orange"
+        android:background="@color/light_blue"
         android:text="Ingredients"
         android:textStyle="bold"
         android:textColor="@color/white"
@@ -159,11 +159,11 @@
         android:layout_width="100dp"
         android:layout_height="50dp"
         android:layout_marginTop="13dp"
+        android:background="#FF7373"
         android:gravity="center"
-        android:background="@color/orange"
         android:text="Add"
-        android:textSize="16sp"
         android:textAllCaps="false"
+        android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

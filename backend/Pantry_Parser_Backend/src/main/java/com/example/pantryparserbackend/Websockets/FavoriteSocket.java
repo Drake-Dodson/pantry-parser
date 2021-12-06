@@ -235,7 +235,7 @@ public class FavoriteSocket {
 
             logger.info("Sending a favorite message");
             //we only want to send a message if the creator is on the app
-            if(userSessionMap.containsKey(recipe.getCreator().getId())) {
+            if(recipe.getCreator() != null && userSessionMap.containsKey(recipe.getCreator().getId())) {
                 String message = user.getDisplayName() + " has just favorited your recipe " + recipe.getName() + "!";
                 sendToUser(recipe.getCreator(), message);
             }
@@ -265,7 +265,7 @@ public class FavoriteSocket {
 
             logger.info("Sending a unfavorite message");
             //we only want to send a message if the creator is on the app
-            if(userSessionMap.containsKey(recipe.getCreator().getId())) {
+            if(recipe.getCreator() != null && userSessionMap.containsKey(recipe.getCreator().getId())) {
                 String message = (user.getDisplayName() == null ? "a user" : user.getDisplayName()) + " thinks your " + recipe.getName() + " sucks!";
                 sendToUser(recipe.getCreator(), message);
             }

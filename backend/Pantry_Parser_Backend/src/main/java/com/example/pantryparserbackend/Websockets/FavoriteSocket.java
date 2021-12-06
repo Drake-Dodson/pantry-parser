@@ -222,6 +222,7 @@ public class FavoriteSocket {
      */
     public void onFavorite(Recipe recipe, User user) {
         try {
+            logger.info("user " + user.getId() + " is attempting to favorite recipe " + recipe.getId());
             userRepository.addFavorite(user.getId(), recipe.getId());
             user.favorite(recipe);
 
@@ -252,6 +253,7 @@ public class FavoriteSocket {
      */
     public void onUnfavorite(Recipe recipe, User user) {
         List<Integer> favorites = recipeRepository.getUserFavoriteIds(user.getId());
+        logger.info("user " + user.getId() + " is attempting to unfavorite recipe " + recipe.getId());
         if (favorites.contains(recipe.getId())) {
             userRepository.deleteFavorite(user.getId(), recipe.getId());
             user.unfavorite(recipe);

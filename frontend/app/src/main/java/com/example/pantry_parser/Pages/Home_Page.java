@@ -12,6 +12,7 @@ import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.pantry_parser.Network.FavoriteSocket;
 import com.example.pantry_parser.R;
 import com.example.pantry_parser.RecyclerView.IngredientListView;
 import com.example.pantry_parser.RecyclerView.ListView;
@@ -50,7 +51,7 @@ public class Home_Page extends AppCompatActivity implements View.OnClickListener
         a.setDuration(30000);
         a.setInterpolator(new LinearInterpolator());
         rotatingDonut.startAnimation(a);
-
+        FavoriteSocket.changeContext(this);
     }
 
     /**

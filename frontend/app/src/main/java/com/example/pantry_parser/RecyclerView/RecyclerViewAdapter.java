@@ -1,4 +1,5 @@
 package com.example.pantry_parser.RecyclerView;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -6,6 +7,7 @@ import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
+import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -145,6 +147,10 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             viewHolder.ratingBar.setRating((float) item.getRating());
             if (item.getChefVerified() == false){
                 viewHolder.chefVerified.setVisibility(View.INVISIBLE);
+            }
+        } else {
+            if (((IngredientListView) mOnRecipeListener).selected.contains(item.getRecipeName())){
+                viewHolder.recipeName.setTextColor(Color.RED);
             }
         }
     }

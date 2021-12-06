@@ -64,8 +64,6 @@ public class ListView extends AppCompatActivity implements RecyclerViewAdapter.O
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
-        popData();
     }
 
     /**
@@ -146,15 +144,18 @@ public class ListView extends AppCompatActivity implements RecyclerViewAdapter.O
         switch (viewType){
             case ("ALL_RECIPES"):
                 URL_TO_USE = URL_RECIPES;
+                popData();
                 break;
 
             case ("MY_RECIPES"):
                 URL_TO_USE = URL_USER;
                 newRecipe.show();
+                popData();
                 break;
 
             case ("FAV_RECIPES"):
                 URL_TO_USE = URL_FAV;
+                popData();
                 break;
 
             default:
@@ -284,8 +285,11 @@ public class ListView extends AppCompatActivity implements RecyclerViewAdapter.O
     public void searchByIngredient(String query) throws JSONException {
         dataset.clear();
         recyclerViewAdapter.notifyDataSetChanged();
+        String[] arr = query.split(",");
         JSONArray jsonArray = new JSONArray();
-        jsonArray.put(query);
+        for(int i = 0; i < arr.length; i++) {
+            jsonArray.put(arr[i]);
+        }
 
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("ingredients", jsonArray);

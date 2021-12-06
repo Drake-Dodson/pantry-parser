@@ -21,6 +21,7 @@ import com.android.volley.toolbox.Volley;
 import com.example.pantry_parser.Pages.Settings_Page;
 import com.example.pantry_parser.R;
 import com.example.pantry_parser.Recipe;
+import com.example.pantry_parser.Utilities.URLs;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import org.json.JSONArray;
@@ -33,7 +34,7 @@ public class IngredientListView extends AppCompatActivity implements RecyclerVie
     RecyclerView recyclerView;
     RecyclerViewAdapter recyclerViewAdapter;
     ArrayList<Recipe> dataset = new ArrayList<>();
-    ArrayList<String> selected = new ArrayList<>();
+    public ArrayList<String> selected = new ArrayList<>();
     boolean isLoading = false;
     String URL_INGREDIENTS = "http://coms-309-032.cs.iastate.edu:8080/ingredients";
     String URL_TO_USE = URL_INGREDIENTS;
@@ -41,6 +42,7 @@ public class IngredientListView extends AppCompatActivity implements RecyclerVie
     FloatingActionButton newRecipe;
     SearchView searchView;
     TextView textView;
+    int pageNo;
 
     /**
      *Create listview activity and instantiate elements
@@ -79,7 +81,7 @@ public class IngredientListView extends AppCompatActivity implements RecyclerVie
                 if (!isLoading) {
                     if (linearLayoutManager != null && linearLayoutManager.findLastCompletelyVisibleItemPosition() == dataset.size() - 1) {
                         isLoading = true;
-                        //getMoreData();
+                        getMoreData();
                     }
                 }
             }
@@ -99,8 +101,8 @@ public class IngredientListView extends AppCompatActivity implements RecyclerVie
             @Override
             public boolean onQueryTextSubmit(String query) {
                 try {
+                    URL_TO_USE = URLs.updatePaginatedQueryUrl(URL_TO_USE, "query", query);
                     dataset.clear();
-                    URL_TO_USE = URL_INGREDIENTS + "?query=" + query;
                     popData();
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -127,6 +129,13 @@ public class IngredientListView extends AppCompatActivity implements RecyclerVie
 
         textView = findViewById(R.id.selectedText);
 
+    }
+
+    private void getMoreData() {
+        pageNo++;
+        URL_TO_USE = URLs.getNextPaginatedQueryPageUrl(URL_TO_USE);
+        popData();
+        isLoading = false;
     }
 
     /**
@@ -191,8 +200,15 @@ public class IngredientListView extends AppCompatActivity implements RecyclerVie
      */
     @Override
     public void onRecipeClick(int position) {
-        selected.add(dataset.get(position).getRecipeName());
+        String ingredient = dataset.get(position).getRecipeName();
+        if(selected.contains(ingredient)) {
+            selected.remove(ingredient);
+        } else {
+            selected.add(ingredient);
+        }
+
         textView.setText(selectedToString());
+        recyclerViewAdapter.notifyDataSetChanged();
     }
 
     private String selectedToString(){

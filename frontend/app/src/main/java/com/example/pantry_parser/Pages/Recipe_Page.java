@@ -23,6 +23,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.pantry_parser.Network.FavoriteSocket;
 import com.example.pantry_parser.R;
 import com.example.pantry_parser.Recipe;
 import com.google.android.material.tabs.TabLayout;
@@ -58,6 +59,7 @@ public class Recipe_Page extends AppCompatActivity {
      */
     @Override
         protected void onCreate(Bundle savedInstanceState) {
+            FavoriteSocket.changeContext(this);
             queue = Volley.newRequestQueue(this);
             super.onCreate(savedInstanceState);
             setContentView(R.layout.activity_view_recipe);
@@ -65,14 +67,13 @@ public class Recipe_Page extends AppCompatActivity {
             hasUserFavorited = false;
 
             String user_id = getSharedPreferences("user_info", Context.MODE_PRIVATE).getString("user_id", "");
-            String url = "http://coms-309-032.cs.iastate.edu:8080/user/" + user_id + "/recipe/" + recipe.getRecipeID();
+            String url = "http://coms-309-032.cs.iastate.edu:8080/user/" + user_id + "/favorited/" + recipe.getRecipeID();
             getIsFavorited(url);
 
             NameRecipe = findViewById(R.id.RecipeName);
             NameRecipe.setText(recipe.getRecipeName());
             AuthorRecipe = findViewById(R.id.RecipeAuthor);
             AuthorRecipe.setText(recipe.getAuthor());
-            connectWebSocket();
             scrollView = findViewById(R.id.RecipeScrollView);
             tabLayout = findViewById(R.id.tablayout);
             tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
@@ -155,20 +156,18 @@ public class Recipe_Page extends AppCompatActivity {
             favButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    try {
+                    if(FavoriteSocket.mWebSocketClient.isOpen()) {
                         if(!hasUserFavorited) {
-                            mWebSocketClient.send("favorite:" + recipe.getRecipeID());
+                            FavoriteSocket.mWebSocketClient.send("favorite:" + recipe.getRecipeID());
                             hasUserFavorited = true;
                         } else {
-                            mWebSocketClient.send("unfavorite:" + recipe.getRecipeID());
+                            FavoriteSocket.mWebSocketClient.send("unfavorite:" + recipe.getRecipeID());
                             hasUserFavorited = false;
                         }
                         updateFaveButton();
-                    } catch (Exception e) {
-                        e.printStackTrace();
+                    } else {
                         Toast.makeText(Recipe_Page.this, "cannot favorite as a guest", Toast.LENGTH_LONG).show();
                     }
-
                 }
             });
 
@@ -177,10 +176,10 @@ public class Recipe_Page extends AppCompatActivity {
     private void updateFaveButton() {
         if(hasUserFavorited) {
             favButton.setText("unfavorite");
-            favButton.setBackgroundColor(Color.RED);
+            favButton.setTextColor(Color.RED);
         } else {
             favButton.setText("favorite");
-            favButton.setBackgroundColor(Color.BLUE);
+            favButton.setTextColor(Color.BLACK);
         }
     }
     private void getIsFavorited(String url) {
@@ -207,60 +206,8 @@ public class Recipe_Page extends AppCompatActivity {
         queue.add(recipeRequest);
     };
 
-    private void connectWebSocket() {
-        URI uri;
-        try {
-            /*
-             * To test the clientside without the backend, simply connect to an echo server such as:
-             *  "ws://echo.websocket.org"
-             */
-            String user_id = getSharedPreferences("user_info", Context.MODE_PRIVATE).getString("user_id", "");
-            if(user_id == "") {
-                throw new NullPointerException("No user logged in");
-            }
-            uri = new URI("ws://coms-309-032.cs.iastate.edu:8080/websocket/" + user_id); // 10.0.2.2 = localhost
-            // uri = new URI("ws://echo.websocket.org");
-        } catch (URISyntaxException | NullPointerException e) {
-            e.printStackTrace();
-            return;
-        }
-
-        mWebSocketClient = new WebSocketClient(uri) {
-
-            @Override
-            public void onOpen(ServerHandshake serverHandshake) {
-                Log.i("Websocket", "Opened");
-            }
-
-            @Override
-            public void onMessage(String msg) {
-                Log.i("Websocket", "Message Received");
-                new Handler(Looper.getMainLooper()).post(new Runnable() {
-                    public void run() {
-                        Toast.makeText(Recipe_Page.this, msg, Toast.LENGTH_LONG).show();
-                    }
-                });
-            }
-
-            @Override
-            public void onClose(int errorCode, String reason, boolean remote) {
-                Log.i("Websocket", "Closed " + reason);
-            }
-
-            @Override
-            public void onError(Exception e) {
-                Log.i("Websocket", "Error " + e.getMessage());
-            }
-        };
-        mWebSocketClient.connect();
-    }
     @Override
     public void onBackPressed() {
-        String user_id = getSharedPreferences("user_info", Context.MODE_PRIVATE).getString("user_id", "");
-        if(user_id != "") {
-            mWebSocketClient.close();
-        }
-
         super.onBackPressed();
     }
 

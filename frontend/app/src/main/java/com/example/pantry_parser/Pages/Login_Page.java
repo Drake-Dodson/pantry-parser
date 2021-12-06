@@ -15,12 +15,16 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.android.volley.Request;
+import com.example.pantry_parser.Network.FavoriteSocket;
 import com.example.pantry_parser.Network.RequestListener;
 import com.example.pantry_parser.Network.VolleyListener;
 import com.example.pantry_parser.R;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.net.URI;
+import java.net.URISyntaxException;
 
 public class Login_Page extends AppCompatActivity implements View.OnClickListener{
 
@@ -142,6 +146,9 @@ public class Login_Page extends AppCompatActivity implements View.OnClickListene
                             editor.putBoolean("is_logged_in", true);
                             editor.commit();
                             editor.apply();
+
+                            connectWebSocket();
+
                             startActivity(intentLogin);
                             counter = 5;
                             eAttemptsInfo.setText("No. of attempts remaining: " + counter);
@@ -186,5 +193,24 @@ public class Login_Page extends AppCompatActivity implements View.OnClickListene
             }
             return false;
         }
+
+    private void connectWebSocket() {
+        URI uri;
+        try {
+
+            String user_id = getSharedPreferences("user_info", Context.MODE_PRIVATE).getString("user_id", "");
+            if(user_id == "") {
+                throw new NullPointerException("No user logged in");
+            }
+            uri = new URI("ws://coms-309-032.cs.iastate.edu:8080/websocket/" + user_id);
+
+            FavoriteSocket.connectFavoriteSocket(uri);
+            FavoriteSocket.changeContext(this);
+        } catch (URISyntaxException | NullPointerException e) {
+            e.printStackTrace();
+            return;
+        }
+
     }
+}
 

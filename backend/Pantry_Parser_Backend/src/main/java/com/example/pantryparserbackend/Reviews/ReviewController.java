@@ -1,11 +1,14 @@
 package com.example.pantryparserbackend.Reviews;
 
-import com.example.pantryparserbackend.Util.MessageUtil;
+import com.example.pantryparserbackend.Permissions.IPRepository;
+import com.example.pantryparserbackend.Services.IPService;
+import com.example.pantryparserbackend.Services.PermissionService;
+import com.example.pantryparserbackend.Utils.MessageUtil;
 
 import com.example.pantryparserbackend.Recipes.Recipe;
 import com.example.pantryparserbackend.Recipes.RecipeRepository;
-import com.example.pantryparserbackend.users.User;
-import com.example.pantryparserbackend.users.UserRepository;
+import com.example.pantryparserbackend.Users.User;
+import com.example.pantryparserbackend.Users.UserRepository;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +18,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import javax.servlet.http.HttpServletRequest;
 
 @Api(value = "Review Controller", description = "Contains all of the calls for writing reviews")
 @RestController
@@ -23,12 +26,14 @@ public class ReviewController {
 
     @Autowired
     RecipeRepository recipeRepository;
-
     @Autowired
     UserRepository userRepository;
-
     @Autowired
     ReviewRepository reviewRepository;
+    @Autowired
+    IPService ipService;
+    @Autowired
+    PermissionService permissionService;
 
     /**
      * returns all the reviews the provided user has written
@@ -82,11 +87,14 @@ public class ReviewController {
      */
     @ApiOperation(value = "Creates a review object by a given user on a recipe")
     @PostMapping(path = "/user/{user_id}/recipe/{recipe_id}/review")
-    public String writeReview(@PathVariable int user_id, @PathVariable int recipe_id, @RequestBody Review review)
+    public String writeReview(@PathVariable int user_id, @PathVariable int recipe_id, @RequestBody Review review, HttpServletRequest request)
     {
-        User reviewer = userRepository.findById(user_id);
+        User reviewer = ipService.getCurrentUser(request);
         Recipe recipeReviewed = recipeRepository.findById(recipe_id);
 
+        if(!permissionService.canReview("Create", null, request)) {
+            return MessageUtil.newResponseMessage(false, "You don't have permission to do that");
+        }
         // Verify that the users and recipes exist
         if(reviewer == null) {
             return MessageUtil.newResponseMessage(false, "User Not Found");
@@ -137,12 +145,15 @@ public class ReviewController {
      */
     @ApiOperation(value = "Updates a given review")
     @PatchMapping(path = "/review/{review_id}")
-    public String updateReview(@PathVariable int review_id, @RequestBody Review reviewChanges)
+    public String updateReview(@PathVariable int review_id, @RequestBody Review reviewChanges, HttpServletRequest request)
     {
         Review review = reviewRepository.findById(review_id);
 
         if(review == null) {
             return MessageUtil.newResponseMessage(false, "Review not found");
+        }
+        if(!permissionService.canReview("Update", review, request)) {
+            return MessageUtil.newResponseMessage(false, "You don't have permission to do that");
         }
 
         int oldRating = review.getStarNumber();
@@ -176,12 +187,16 @@ public class ReviewController {
      */
     @ApiOperation(value = "Deletes a given review")
     @DeleteMapping(path = "/review/{review_id}")
-    public String deleteReview(@PathVariable int review_id)
+    public String deleteReview(@PathVariable int review_id, HttpServletRequest request)
     {
         Review review = reviewRepository.findById(review_id);
 
         if(review == null) {
             return MessageUtil.newResponseMessage(false, "Review not found");
+        }
+
+        if(!permissionService.canReview("Delete", review, request)) {
+            return MessageUtil.newResponseMessage(false, "You don't have permission to do that");
         }
 
         Recipe recipeStore = review.getRecipe_reviewed();

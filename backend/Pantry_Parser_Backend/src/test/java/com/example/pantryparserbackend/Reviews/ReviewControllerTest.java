@@ -1,16 +1,18 @@
 package com.example.pantryparserbackend.Reviews;
 
+import com.example.pantryparserbackend.Permissions.IPRepository;
 import com.example.pantryparserbackend.Recipes.Recipe;
 import com.example.pantryparserbackend.Recipes.RecipeRepository;
-import com.example.pantryparserbackend.Util.MessageUtil;
-import com.example.pantryparserbackend.users.User;
-import com.example.pantryparserbackend.users.UserRepository;
+import com.example.pantryparserbackend.Services.IPService;
+import com.example.pantryparserbackend.Services.PermissionService;
+import com.example.pantryparserbackend.Utils.MessageUtil;
+import com.example.pantryparserbackend.Users.User;
+import com.example.pantryparserbackend.Users.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.mockito.*;
-import org.springframework.boot.test.mock.mockito.MockBean;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -23,19 +25,23 @@ class ReviewControllerTest {
 
     @Mock
     private ReviewRepository reviewRepository;
-
     @Mock
     private UserRepository userRepository;
-
     @Mock
     private RecipeRepository recipeRepository;
+	@Mock
+	private IPRepository ipRepository;
+	@Mock
+	private IPService ipService;
+	@Mock
+	private PermissionService permissionService;
 
+	@Mock
+	private HttpServletRequest mockRequest;
     @Mock
     private Recipe mockRecipe;
-
     @Mock
     private Review mockReview;
-
     @Mock
     private List<Review> mockReviewList;
 
@@ -50,11 +56,13 @@ class ReviewControllerTest {
         Review mockReview = new Review(5, "Amazing!", "The best thing I've ever made!", mockUser, mockRecipe);
         mockReview.setReviewer(mockReviewer);
         when(userRepository.findById(user_id)).thenReturn(mockUser);
+		when(ipService.getCurrentUser(mockRequest)).thenReturn(mockUser);
         when(recipeRepository.findById(recipe_id)).thenReturn(mockRecipe);
         when(mockRecipe.getRecipeReviews()).thenReturn(null);
+		when(permissionService.canReview(anyString(), anyObject(), anyObject())).thenReturn(true);
 
         String expected = MessageUtil.newResponseMessage(true, "Review created");
-        String actual = reviewController.writeReview(user_id, recipe_id, mockReview);
+        String actual = reviewController.writeReview(user_id, recipe_id, mockReview, mockRequest);
 
         assertEquals(expected, actual);
         Mockito.verify(reviewRepository).save(mockReview);
@@ -78,9 +86,11 @@ class ReviewControllerTest {
         when(userRepository.findById(user_id)).thenReturn(mockUser);
         when(recipeRepository.findById(recipe_id)).thenReturn(mockRecipe);
         when(mockRecipe.getRecipeReviews()).thenReturn(mockReviewList);
+		when(permissionService.canReview(anyString(), anyObject(), anyObject())).thenReturn(true);
+		when(ipService.getCurrentUser(mockRequest)).thenReturn(mockUser);
 
         String expected =  MessageUtil.newResponseMessage(false, "Users can't review their own recipes");
-        String actual = reviewController.writeReview(user_id, recipe_id, mockReview);
+        String actual = reviewController.writeReview(user_id, recipe_id, mockReview, mockRequest);
 
         assertEquals(expected, actual);
     }
@@ -104,9 +114,11 @@ class ReviewControllerTest {
         when(mockRecipe.getRecipeReviews()).thenReturn(mockReviewList);
         when(mockReview.getUserId()).thenReturn(1);
         when(mockRecipe.getCreatorId()).thenReturn(2);
+		when(permissionService.canReview(anyString(), anyObject(), anyObject())).thenReturn(true);
+		when(ipService.getCurrentUser(mockRequest)).thenReturn(mockUser);
 
         String expected = MessageUtil.newResponseMessage(false, "User has already reviewed this recipe");
-        String actual = reviewController.writeReview(user_id, recipe_id, mockReview);
+        String actual = reviewController.writeReview(user_id, recipe_id, mockReview, mockRequest);
 
         assertEquals(expected, actual);
     }
@@ -125,13 +137,15 @@ class ReviewControllerTest {
 
         when(mockRecipe.getRecipeReviews()).thenReturn(mockReviewList);
         when(userRepository.findById(user_id)).thenReturn(null);
+		when(ipService.getCurrentUser(mockRequest)).thenReturn(null);
         when(recipeRepository.findById(recipe_id)).thenReturn(mockRecipe);
         when(mockRecipe.getRecipeReviews()).thenReturn(mockReviewList);
         when(mockReview.getUserId()).thenReturn(1);
         when(mockRecipe.getCreatorId()).thenReturn(2);
+		when(permissionService.canReview(anyString(), anyObject(), anyObject())).thenReturn(true);
 
         String expected = MessageUtil.newResponseMessage(false, "User Not Found");
-        String actual = reviewController.writeReview(user_id, recipe_id, mockReview);
+        String actual = reviewController.writeReview(user_id, recipe_id, mockReview, mockRequest);
 
         assertEquals(expected, actual);
     }
@@ -151,13 +165,15 @@ class ReviewControllerTest {
 
         when(mockRecipe.getRecipeReviews()).thenReturn(mockReviewList);
         when(userRepository.findById(user_id)).thenReturn(mockUser);
+		when(ipService.getCurrentUser(mockRequest)).thenReturn(mockUser);
         when(recipeRepository.findById(recipe_id)).thenReturn(null);
         when(mockRecipe.getRecipeReviews()).thenReturn(mockReviewList);
         when(mockReview.getUserId()).thenReturn(1);
         when(mockRecipe.getCreatorId()).thenReturn(2);
+		when(permissionService.canReview(anyString(), anyObject(), anyObject())).thenReturn(true);
 
         String expected = MessageUtil.newResponseMessage(false, "Recipe Not Found");
-        String actual = reviewController.writeReview(user_id, recipe_id, mockReview);
+        String actual = reviewController.writeReview(user_id, recipe_id, mockReview, mockRequest);
 
         assertEquals(expected, actual);
     }
@@ -176,14 +192,16 @@ class ReviewControllerTest {
 
         when(mockRecipe.getRecipeReviews()).thenReturn(mockReviewList);
         when(userRepository.findById(user_id)).thenReturn(mockUser);
+		when(ipService.getCurrentUser(mockRequest)).thenReturn(mockUser);
         when(recipeRepository.findById(recipe_id)).thenReturn(mockRecipe);
         when(mockRecipe.getRecipeReviews()).thenReturn(mockReviewList);
         when(mockReview.getUserId()).thenReturn(1);
         when(mockReview.getStarNumber()).thenReturn(8);
         when(mockRecipe.getCreatorId()).thenReturn(2);
+		when(permissionService.canReview(anyString(), anyObject(), anyObject())).thenReturn(true);
 
         String expected = MessageUtil.newResponseMessage(false, "Invalid Star number. Try 0 - 5");
-        String actual = reviewController.writeReview(user_id, recipe_id, mockReview);
+        String actual = reviewController.writeReview(user_id, recipe_id, mockReview, mockRequest);
 
         assertEquals(expected, actual);
     }
@@ -200,9 +218,10 @@ class ReviewControllerTest {
         Review mockUpdateReview = new Review(new_stars, "Amazing!", "The best thing I've ever made!", mockUser, mockRecipe);
 
         when(reviewRepository.findById(review_id)).thenReturn(mockReview1);
+		when(permissionService.canReview(anyString(), anyObject(), anyObject())).thenReturn(true);
 
         String expected = MessageUtil.newResponseMessage(true, "Review updated");
-        String actual = reviewController.updateReview(review_id, mockUpdateReview);
+        String actual = reviewController.updateReview(review_id, mockUpdateReview, mockRequest);
 
         assertEquals(expected, actual);
         assertEquals(4, mockReview1.getStarNumber());
@@ -221,9 +240,10 @@ class ReviewControllerTest {
         Review mockUpdateReview = new Review(new_stars, "Amazing!", "The best thing I've ever made!", mockUser, mockRecipe);
 
         when(reviewRepository.findById(review_id)).thenReturn(null);
+		when(permissionService.canReview(anyString(), anyObject(), anyObject())).thenReturn(true);
 
         String expected = MessageUtil.newResponseMessage(false, "Review not found");
-        String actual = reviewController.updateReview(review_id, mockUpdateReview);
+        String actual = reviewController.updateReview(review_id, mockUpdateReview, mockRequest);
 
         assertEquals(expected, actual);
     }
@@ -237,9 +257,10 @@ class ReviewControllerTest {
         Review mockReview1 = new Review(5, "Amazing!", "The best thing I've ever made!", mockUser, mockRecipe);
 
         when(reviewRepository.findById(review_id)).thenReturn(mockReview1);
+		when(permissionService.canReview(anyString(), anyObject(), anyObject())).thenReturn(true);
 
         String expected = MessageUtil.newResponseMessage(true, "Review deleted");
-        String actual = reviewController.deleteReview(review_id);
+        String actual = reviewController.deleteReview(review_id, mockRequest);
 
         assertEquals(expected, actual);
         Mockito.verify(reviewRepository).delete(mockReview1);
@@ -254,9 +275,10 @@ class ReviewControllerTest {
         int review_id = 3;
 
         when(reviewRepository.findById(review_id)).thenReturn(null);
+		when(permissionService.canReview(anyString(), anyObject(), anyObject())).thenReturn(true);
 
         String expected = MessageUtil.newResponseMessage(false, "Review not found");
-        String actual = reviewController.deleteReview(review_id);
+        String actual = reviewController.deleteReview(review_id, mockRequest);
 
         assertEquals(expected, actual);
     }

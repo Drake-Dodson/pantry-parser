@@ -1,5 +1,7 @@
 package com.example.pantry_parser.Pages;
 
+import android.content.Context;
+import android.graphics.Color;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.os.Handler;
@@ -16,12 +18,21 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.ViewPager;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
+import com.example.pantry_parser.Network.FavoriteSocket;
 import com.example.pantry_parser.R;
 import com.example.pantry_parser.Recipe;
 import com.google.android.material.tabs.TabLayout;
 
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -39,6 +50,8 @@ public class Recipe_Page extends AppCompatActivity {
         private HorizontalScrollView scrollView;
         private Button favButton;
         private WebSocketClient mWebSocketClient;
+        private boolean hasUserFavorited;
+        private RequestQueue queue;
 
 
     /**
@@ -47,15 +60,21 @@ public class Recipe_Page extends AppCompatActivity {
      */
     @Override
         protected void onCreate(Bundle savedInstanceState) {
+            FavoriteSocket.changeContext(this);
+            queue = Volley.newRequestQueue(this);
             super.onCreate(savedInstanceState);
             setContentView(R.layout.activity_view_recipe);
             recipe = (Recipe) getIntent().getSerializableExtra("Recipe");
+            hasUserFavorited = false;
+
+            String user_id = getSharedPreferences("user_info", Context.MODE_PRIVATE).getString("user_id", "");
+            String url = "http://coms-309-032.cs.iastate.edu:8080/user/" + user_id + "/favorited/" + recipe.getRecipeID();
+            getIsFavorited(url);
 
             NameRecipe = findViewById(R.id.RecipeName);
             NameRecipe.setText(recipe.getRecipeName());
             AuthorRecipe = findViewById(R.id.RecipeAuthor);
             AuthorRecipe.setText(recipe.getAuthor());
-            connectWebSocket();
             scrollView = findViewById(R.id.RecipeScrollView);
             tabLayout = findViewById(R.id.tablayout);
             tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
@@ -138,62 +157,63 @@ public class Recipe_Page extends AppCompatActivity {
             }
 
             favButton = findViewById(R.id.FavButton);
+            updateFaveButton();
             favButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mWebSocketClient.send("favorite:" + recipe.getRecipeID());
+                    if(FavoriteSocket.mWebSocketClient.isOpen()) {
+                        if(!hasUserFavorited) {
+                            FavoriteSocket.mWebSocketClient.send("favorite:" + recipe.getRecipeID());
+                            hasUserFavorited = true;
+                        } else {
+                            FavoriteSocket.mWebSocketClient.send("unfavorite:" + recipe.getRecipeID());
+                            hasUserFavorited = false;
+                        }
+                        updateFaveButton();
+                    } else {
+                        Toast.makeText(Recipe_Page.this, "cannot favorite as a guest", Toast.LENGTH_LONG).show();
+                    }
                 }
             });
 
         }
 
-    private void connectWebSocket() {
-        URI uri;
-        try {
-            /*
-             * To test the clientside without the backend, simply connect to an echo server such as:
-             *  "ws://echo.websocket.org"
-             */
-            uri = new URI("ws://coms-309-032.cs.iastate.edu:8080/websocket/2"); // 10.0.2.2 = localhost
-            // uri = new URI("ws://echo.websocket.org");
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-            return;
+    private void updateFaveButton() {
+        if(hasUserFavorited) {
+            favButton.setText("unfavorite");
+            favButton.setTextColor(Color.RED);
+        } else {
+            favButton.setText("favorite");
+            favButton.setTextColor(Color.BLACK);
         }
-
-        mWebSocketClient = new WebSocketClient(uri) {
-
-            @Override
-            public void onOpen(ServerHandshake serverHandshake) {
-                Log.i("Websocket", "Opened");
-            }
-
-            @Override
-            public void onMessage(String msg) {
-                Log.i("Websocket", "Message Received");
-                new Handler(Looper.getMainLooper()).post(new Runnable() {
-                    public void run() {
-                Toast.makeText(Recipe_Page.this, msg, Toast.LENGTH_LONG).show();
-                    }
-                });
-            }
-
-            @Override
-            public void onClose(int errorCode, String reason, boolean remote) {
-                Log.i("Websocket", "Closed " + reason);
-            }
-
-            @Override
-            public void onError(Exception e) {
-                Log.i("Websocket", "Error " + e.getMessage());
-            }
-        };
-        mWebSocketClient.connect();
     }
+    private void getIsFavorited(String url) {
+
+        JsonObjectRequest recipeRequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                try {
+                    hasUserFavorited = response.getString("success").contains("true");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            /**
+             *Does not fill recipes if no data is returned from database
+             * @param error
+             */
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        });
+        queue.add(recipeRequest);
+    };
+
     @Override
     public void onBackPressed() {
-        mWebSocketClient.close();
         super.onBackPressed();
     }
 
-    }
+}

@@ -222,6 +222,7 @@ public class FavoriteSocket {
      */
     public void onFavorite(Recipe recipe, User user) {
         try {
+            logger.info("user " + user.getId() + " is attempting to favorite recipe " + recipe.getId());
             userRepository.addFavorite(user.getId(), recipe.getId());
             user.favorite(recipe);
 
@@ -234,7 +235,7 @@ public class FavoriteSocket {
 
             logger.info("Sending a favorite message");
             //we only want to send a message if the creator is on the app
-            if(userSessionMap.containsKey(recipe.getCreator().getId())) {
+            if(recipe.getCreator() != null && userSessionMap.containsKey(recipe.getCreator().getId())) {
                 String message = user.getDisplayName() + " has just favorited your recipe " + recipe.getName() + "!";
                 sendToUser(recipe.getCreator(), message);
             }
@@ -252,6 +253,7 @@ public class FavoriteSocket {
      */
     public void onUnfavorite(Recipe recipe, User user) {
         List<Integer> favorites = recipeRepository.getUserFavoriteIds(user.getId());
+        logger.info("user " + user.getId() + " is attempting to unfavorite recipe " + recipe.getId());
         if (favorites.contains(recipe.getId())) {
             userRepository.deleteFavorite(user.getId(), recipe.getId());
             user.unfavorite(recipe);
@@ -263,7 +265,7 @@ public class FavoriteSocket {
 
             logger.info("Sending a unfavorite message");
             //we only want to send a message if the creator is on the app
-            if(userSessionMap.containsKey(recipe.getCreator().getId())) {
+            if(recipe.getCreator() != null && userSessionMap.containsKey(recipe.getCreator().getId())) {
                 String message = (user.getDisplayName() == null ? "a user" : user.getDisplayName()) + " thinks your " + recipe.getName() + " sucks!";
                 sendToUser(recipe.getCreator(), message);
             }

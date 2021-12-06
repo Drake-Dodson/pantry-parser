@@ -19,6 +19,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.pantry_parser.Network.FavoriteSocket;
 import com.example.pantry_parser.Pages.Recipe_Page;
 import com.example.pantry_parser.Pages.Settings.Settings_Page;
 import com.example.pantry_parser.R;
@@ -67,6 +68,8 @@ public class ListView extends AppCompatActivity implements RecyclerViewAdapter.O
         } catch (JSONException e) {
             e.printStackTrace();
         }
+
+        FavoriteSocket.changeContext(this);
     }
 
     /**

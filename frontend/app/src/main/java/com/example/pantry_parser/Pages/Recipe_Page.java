@@ -4,6 +4,7 @@ import android.graphics.Point;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
 import android.view.View;
@@ -65,15 +66,19 @@ public class Recipe_Page extends AppCompatActivity {
                  */
                 @Override
                 public void onTabSelected(TabLayout.Tab tab) {
+                    DisplayMetrics displayMetrics = new DisplayMetrics();
+                    getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+                    int width = displayMetrics.widthPixels;
                     switch (tab.getPosition()){
                         case (0):
                             scrollView.post(() -> scrollView.setScrollX(0));
                             break;
                         case (1):
-                            scrollView.post(() -> scrollView.setScrollX(1440));
+                            scrollView.post(() -> scrollView.setScrollX(width));
+
                             break;
                         case (2):
-                            scrollView.post(() -> scrollView.setScrollX(1440*2));
+                            scrollView.post(() -> scrollView.setScrollX(width * 2));
                             break;
                     }
                 }

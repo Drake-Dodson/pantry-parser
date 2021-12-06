@@ -1,13 +1,15 @@
-package com.example.pantryparserbackend.users;
+package com.example.pantryparserbackend.Users;
 
 import com.example.pantryparserbackend.Recipes.Recipe;
 import com.example.pantryparserbackend.Reviews.Review;
-import com.example.pantryparserbackend.Util.PasswordUtil;
+import com.example.pantryparserbackend.Services.PasswordService;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -16,6 +18,20 @@ import java.util.List;
 @Entity
 @Table(name = "users")
 public class User {
+    public static String DESIGNATION_ADMIN = "admin";
+    public static String DESIGNATION_CHEF = "chef";
+    public static String DESIGNATION_MAIN = "main";
+    public static String[] ROLES = {
+            DESIGNATION_ADMIN,
+            DESIGNATION_CHEF,
+            DESIGNATION_MAIN
+    };
+    private static String[] DEFAULT_ADMINS = {
+            "pbrink21@iastate.edu",
+            "adang@iastate.edu",
+            "dwdodson@iastate.edu",
+            "jvandrie@iastate.edu"
+    };
 
     @Id
     @Getter
@@ -33,6 +49,11 @@ public class User {
     @Column(nullable = false, unique = true)
     private String email;
 
+    @Getter
+    @Setter
+    @Column(nullable = false, columnDefinition = "bool default false")
+    private boolean email_verified;
+
     @Column(nullable = false)
     private String password;
 
@@ -44,6 +65,10 @@ public class User {
     @JsonIgnore
     @OneToMany(mappedBy = "creator")
     private List<Recipe> created_recipes;
+
+    @Getter
+    @Setter
+    private String imagePath;
 
     @Getter
     @JsonIgnore
@@ -60,10 +85,28 @@ public class User {
     @OneToMany(mappedBy = "reviewer")
     private List<Review> userReviews;
 
-    public User(String password, String email) {
-        this.password = PasswordUtil.newHash(password);
+    public User(String password, String email, String displayName) {
+        this.password = PasswordService.newHash(password);
         this.email = email;
-        this.role = "Main";
+        this.displayName = displayName;
+        if(Arrays.asList(DEFAULT_ADMINS).contains(email)) {
+            this.role = User.DESIGNATION_ADMIN;
+        } else {
+            this.role = User.DESIGNATION_MAIN;
+        }
+        this.created_recipes = new ArrayList<>();
+    }
+
+    public User(String password, String email) {
+        this.password = PasswordService.newHash(password);
+        this.email = email;
+        if(Arrays.asList(DEFAULT_ADMINS).contains(email)) {
+            this.role = User.DESIGNATION_ADMIN;
+        } else {
+            this.role = User.DESIGNATION_MAIN;
+        }
+        this.displayName = "New User";
+        this.created_recipes = new ArrayList<>();
     }
 
     public User() {}
@@ -77,7 +120,7 @@ public class User {
      * @param password input password
      */
     public void setPassword(String password) {
-        this.password = PasswordUtil.newHash(password);
+        this.password = PasswordService.newHash(password);
     }
 
     /**
@@ -110,6 +153,22 @@ public class User {
      * @return true if matching, false if not
      */
     public boolean authenticate(String password) {
-        return PasswordUtil.comparePasswords(password, this.password);
+        return PasswordService.comparePasswords(password, this.password);
+    }
+
+    public boolean hasRole(String role) {
+        return this.role.equals(role);
+    }
+
+    public boolean isAdmin() {
+        return this.hasRole(User.DESIGNATION_ADMIN);
+    }
+
+    public boolean isChef() {
+        return this.hasRole(User.DESIGNATION_CHEF);
+    }
+
+    public boolean equals(User user) {
+        return this.id == user.getId();
     }
 }

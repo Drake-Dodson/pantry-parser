@@ -15,7 +15,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.pantry_parser.R;
 
 public class Home_Page extends AppCompatActivity implements View.OnClickListener{
-
+    String user_id;
 
     /**
      *Initializes home page elements

@@ -43,14 +43,14 @@
                 android:textSize="23dp" />
 
             <Button
-                android:id="@+id/button"
+                android:id="@+id/FavButton"
                 android:layout_width="65dp"
                 android:layout_height="34dp"
                 android:backgroundTint="@color/light_blue"
                 android:layout_gravity="center"
                 android:background="@drawable/searchbar"
                 android:fontFamily="@font/robotobold"
-                android:text="Save" />
+                android:text="Favorite" />
         </LinearLayout>
 
         <LinearLayout

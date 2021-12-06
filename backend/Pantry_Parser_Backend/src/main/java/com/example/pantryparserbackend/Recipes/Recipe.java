@@ -3,10 +3,10 @@ package com.example.pantryparserbackend.Recipes;
 import javax.persistence.*;
 
 import com.example.pantryparserbackend.Ingredients.Ingredient;
-import com.example.pantryparserbackend.Ingredients.IngredientRepository;
+import com.example.pantryparserbackend.Ingredients.RecipeIngredient;
 import com.example.pantryparserbackend.Requests.RecipeRequest;
 import com.example.pantryparserbackend.Reviews.Review;
-import com.example.pantryparserbackend.users.User;
+import com.example.pantryparserbackend.Users.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
@@ -99,14 +99,8 @@ public class Recipe {
     @Getter
     private List<User> favoritedBy;
     @Getter
-    @JoinTable(
-            name = "recipe_ingredient",
-            joinColumns = @JoinColumn(name = "recipe_id"),
-            inverseJoinColumns = @JoinColumn(name = "ingredient_id"),
-            uniqueConstraints = @UniqueConstraint(columnNames = {"recipe_id", "ingredient_id"})
-    )
-    @ManyToMany(fetch = FetchType.LAZY)
-    private List<Ingredient> ingredients;
+    @OneToMany(mappedBy = "recipe")
+    private List<RecipeIngredient> ingredients;
     @Getter
     @OrderBy("num")
     @OneToMany(mappedBy = "recipe")
@@ -130,6 +124,34 @@ public class Recipe {
         this.num_reviews = 0;
         this.num_ingredients = 0;
         this.chef_verified = false;
+    }
+
+    public Recipe(String name,
+                  int prep_time,
+                  int cook_time,
+                  String summary,
+                  String description,
+                  Date created_date,
+                  int num_reviews,
+                  double rating,
+                  int num_servings,
+                  String nutrition_facts,
+                  boolean chef_verified)
+    {
+        this.name            = name;
+        this.prep_time       = prep_time;
+        this.summary         = summary;
+        this.description     = description;
+        this.created_date    = created_date;
+        this.steps           = new ArrayList<>();
+        this.ingredients     = new ArrayList<>();
+        this.num_reviews     = num_reviews;
+        this.num_ingredients = 0;
+        this.rating          = rating;
+        this.num_servings    = num_servings;
+        this.cook_time       = cook_time;
+        this.nutrition_facts = nutrition_facts;
+        this.chef_verified   = chef_verified;
     }
 
     public Recipe(RecipeRequest request) {
@@ -260,7 +282,7 @@ public class Recipe {
      * this recipe
      * @param i input ingredient
      */
-    public void addIngredient(Ingredient i){
+    public void addIngredient(RecipeIngredient i){
         this.num_ingredients++;
         this.ingredients.add(i);
     }
@@ -269,7 +291,7 @@ public class Recipe {
      * this recipe
      * @param i input ingredient
      */
-    public void removeIngredient(Ingredient i){
+    public void removeIngredient(RecipeIngredient i){
         this.num_ingredients--;
         this.ingredients.remove(i);
     }
@@ -309,5 +331,19 @@ public class Recipe {
         this.nutrition_facts = request.nutrition_facts;
         this.summary         = request.summary;
         this.description     = request.description;
+    }
+
+    /**
+     * returns index of ingredient i if it has it, otherwise null
+     * @param i
+     * @return
+     */
+    public RecipeIngredient getIngredient(Ingredient i) {
+        for (RecipeIngredient ri : this.ingredients) {
+            if(ri.getIngredient().equals(i)) {
+                return ri;
+            }
+        }
+        return null;
     }
 }

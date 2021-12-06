@@ -8,6 +8,7 @@ import android.widget.EditText;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.pantry_parser.Network.FavoriteSocket;
 import com.example.pantry_parser.R;
 
 public class AddSteps_Page extends AppCompatActivity {
@@ -20,7 +21,7 @@ public class AddSteps_Page extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_steps_page);
-//        FavoriteSocket.changeContext(this);
+        FavoriteSocket.changeContext(this);
 
         addSteps = findViewById(R.id.editText_recipeSteps);
         back = findViewById(R.id.button_backSteps);

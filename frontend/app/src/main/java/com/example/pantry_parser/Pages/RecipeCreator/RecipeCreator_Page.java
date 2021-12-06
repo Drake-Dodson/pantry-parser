@@ -25,8 +25,10 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.example.pantry_parser.RecyclerView.ListView;
+import com.example.pantry_parser.Network.FavoriteSocket;
+import com.example.pantry_parser.Pages.Home_Page;
 import com.example.pantry_parser.R;
+import com.example.pantry_parser.RecyclerView.ListView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -39,7 +41,7 @@ public class RecipeCreator_Page extends AppCompatActivity implements View.OnClic
 
     private static final String URL_USER = "http://coms-309-032.cs.iastate.edu:8080/user/";
 
-    EditText rName, rSummary, rDescription, rPreptime, rCooktime, rServings, rNutrition;
+    EditText rName, rSummary, rDescription, rPrepTime, rCookTime, rServings, rNutrition;
     TextView addIngredients, addSteps;
     Button createRecipe, cancelRecipe;
     ImageView rImage;
@@ -47,10 +49,13 @@ public class RecipeCreator_Page extends AppCompatActivity implements View.OnClic
     String recipeName, recipeSummary, recipeDescription, recipeNutrition;
     String recipeIngredientsDisplay, recipeStepsDisplay = "";
     String sData, user_id;
-    int recipePreptime, recipeCooktime, recipeTotaltime, recipeServings;
+    int recipePrepTime, recipeCookTime, recipeServings;
 
+    ArrayList<String> lData = new ArrayList<>();
     ArrayList<String> recipeIngredients = new ArrayList<>();
     ArrayList<String> recipeSteps = new ArrayList<>();
+
+    JSONArray ingredients;
 
     private RequestQueue Queue;
 
@@ -58,13 +63,13 @@ public class RecipeCreator_Page extends AppCompatActivity implements View.OnClic
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recipe_creator_page);
-//        FavoriteSocket.changeContext(this);
+        FavoriteSocket.changeContext(this);
 
         rName = findViewById(R.id.editText_recipeName);
         rSummary = findViewById(R.id.editText_recipeSummary);
         rDescription = findViewById(R.id.editText_recipeDescription);
-        rPreptime = findViewById(R.id.editText_recipePrepTime);
-        rCooktime = findViewById(R.id.editText_recipeCookTime);
+        rPrepTime = findViewById(R.id.editText_recipePrepTime);
+        rCookTime = findViewById(R.id.editText_recipeCookTime);
         rServings = findViewById(R.id.editText_recipeServings);
         rNutrition = findViewById(R.id.editText_recipeNutrition);
 
@@ -96,25 +101,20 @@ public class RecipeCreator_Page extends AppCompatActivity implements View.OnClic
                         if (result != null && result.getResultCode() == RESULT_OK) {
                             if (result.getData() != null) {
                                 Intent data = result.getData();
-                                sData = data.getStringExtra("result");
-
-                                if(sData.isEmpty()){
+                                lData = data.getStringArrayListExtra("result");
+                                if(lData.isEmpty()){
                                     recipeIngredientsDisplay = "";
                                     recipeIngredients.clear();
                                 }
                                 else {
                                     recipeIngredientsDisplay = "";
                                     recipeIngredients.clear();
-                                    Scanner scanner = new Scanner(sData);
-                                    while(scanner.hasNextLine()){
-                                        String nextIngredient = scanner.nextLine();
-                                        recipeIngredients.add(nextIngredient);
-                                    }
-                                    recipeIngredientsDisplay = recipeIngredients.get(0) + "\n";
-                                    for(int i = 1; i < recipeIngredients.size(); i++) {
-                                        recipeStepsDisplay += recipeIngredients.get(i) + "\n";
+
+                                    for(int i = 0; i < lData.size(); i++) {
+                                        recipeIngredientsDisplay += lData.get(i) + "\n";
                                     }
                                 }
+                                recipeIngredientsDisplay.trim();
                                 addIngredients.setText(recipeIngredientsDisplay);
                             }
                         }
@@ -168,7 +168,7 @@ public class RecipeCreator_Page extends AppCompatActivity implements View.OnClic
             @Override
             public void onClick(View v) {
                 Intent addIngredients = new Intent(getApplicationContext(), AddIngredient_Page.class);
-                addIngredients.putExtra("ingredients", sData);
+                addIngredients.putExtra("ingredients", lData);
                 ingredientsActivityResultLauncher.launch(addIngredients);
             }
         });
@@ -185,20 +185,20 @@ public class RecipeCreator_Page extends AppCompatActivity implements View.OnClic
         createRecipe.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(TextUtils.isEmpty(recipeName)){
+                if(TextUtils.isEmpty(rName.getText())){
                     rName.setError("All great recipes deserve a name!");
                 }
-                if(TextUtils.isEmpty(recipeSummary)){
+                if(TextUtils.isEmpty(rSummary.getText())){
                     rSummary.setError("Please add in a recipe summary!");
                 }
-                if(TextUtils.isEmpty(recipeDescription)){
+                if(TextUtils.isEmpty(rDescription.getText())){
                     rDescription.setError("Please add in a recipe description!");
                 }
-                if(TextUtils.isEmpty(rPreptime.getText())){
-                    rPreptime.setError("Please add in recipe prep time!");
+                if(TextUtils.isEmpty(rPrepTime.getText())){
+                    rPrepTime.setError("Please add in recipe prep time!");
                 }
-                if(TextUtils.isEmpty(rCooktime.getText())){
-                    rCooktime.setError("Please add in recipe cook time!");
+                if(TextUtils.isEmpty(rCookTime.getText())){
+                    rCookTime.setError("Please add in recipe cook time!");
                 }
                 if(TextUtils.isEmpty(rServings.getText())){
                     rServings.setError("Please add in how many servings the recipe makes!");
@@ -209,15 +209,18 @@ public class RecipeCreator_Page extends AppCompatActivity implements View.OnClic
                 if(TextUtils.isEmpty(addSteps.getText())){
                     addSteps.setError("You haven't added any steps yet!");
                 }
-                if(!TextUtils.isEmpty(recipeName)
-                        && !TextUtils.isEmpty(recipeSummary)
-                        && !TextUtils.isEmpty(recipeDescription)
-                        && !TextUtils.isEmpty(rPreptime.getText())
-                        && !TextUtils.isEmpty(rCooktime.getText())
+                if(!TextUtils.isEmpty(rName.getText())
+                        && !TextUtils.isEmpty(rSummary.getText())
+                        && !TextUtils.isEmpty(rDescription.getText())
+                        && !TextUtils.isEmpty(rPrepTime.getText())
+                        && !TextUtils.isEmpty(rCookTime.getText())
                         && !TextUtils.isEmpty(rServings.getText())
                         && !TextUtils.isEmpty(addIngredients.getText())
                         && !TextUtils.isEmpty(addSteps.getText())){
                     createRecipe();
+                }
+                else{
+                    Toast.makeText(getApplicationContext(), "A field is empty", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -238,20 +241,19 @@ public class RecipeCreator_Page extends AppCompatActivity implements View.OnClic
     public void createRecipe(){
         recipeName = rName.getText().toString();
         recipeSummary = rSummary.getText().toString();
-        recipePreptime = Integer.parseInt(rPreptime.getText().toString());
-        recipeCooktime = Integer.parseInt(rCooktime.getText().toString());
-        recipeTotaltime = recipePreptime + recipeCooktime;
+        recipePrepTime = Integer.parseInt(rPrepTime.getText().toString());
+        recipeCookTime = Integer.parseInt(rCookTime.getText().toString());
         recipeDescription = rDescription.getText().toString();
         recipeNutrition = rNutrition.getText().toString();
         recipeServings = Integer.parseInt(rServings.getText().toString());
-        JSONArray ingredients = new JSONArray((recipeIngredients));
+        convertArrayTOJSONArray();
         JSONArray steps = new JSONArray(recipeSteps);
 
         JSONObject recipe = new JSONObject();
         try{
             recipe.put("name", recipeName);
-            recipe.put("prep_time", recipePreptime);
-            recipe.put("cook_time", recipeCooktime);
+            recipe.put("prep_time", recipePrepTime);
+            recipe.put("cook_time", recipeCookTime);
             recipe.put("summary", recipeSummary);
             recipe.put("description", recipeDescription);
             recipe.put("nutrition_facts", recipeNutrition);
@@ -262,16 +264,32 @@ public class RecipeCreator_Page extends AppCompatActivity implements View.OnClic
         } catch (JSONException e){
             e.printStackTrace();
         }
+        System.out.println(recipeName);
+        System.out.println(recipePrepTime);
+        System.out.println(recipeCookTime);
+        System.out.println(recipeSummary);
+        System.out.println(recipeDescription);
+        System.out.println(recipeNutrition);
+        System.out.println(recipeServings);
+        System.out.println(ingredients);
+        System.out.println(steps);
 
         JsonObjectRequest recipeRequest = new JsonObjectRequest(Request.Method.POST, URL_USER + user_id + "/recipes/", recipe,
            new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 try{
-                    JSONObject jsonObject = new JSONObject();
-                    String message = jsonObject.getString("success");
+                    String success = response.getString("success");
+                    String message = response.getString("message");
+                    if(success.equals("true")){
+                        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+                        startActivity(new Intent(getApplicationContext(), Home_Page.class));
+                    } else {
+                        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+                    }
                 } catch (Exception e){
                     e.printStackTrace();
+                    Toast.makeText(getApplicationContext(), e.toString(), Toast.LENGTH_SHORT).show();
                 }
             }
         }, new Response.ErrorListener() {
@@ -283,5 +301,33 @@ public class RecipeCreator_Page extends AppCompatActivity implements View.OnClic
             }
         });
        Queue.add(recipeRequest);
+    }
+
+    public void convertArrayTOJSONArray(){
+        ingredients = new JSONArray();
+        try{
+            for(int i = 0; i < lData.size(); i++){
+                String listString = lData.get(i);
+                String[] splitString = listString.split(" ");
+
+                JSONObject list = new JSONObject();
+                if(splitString.length > 3){
+                    String ingredientNameLong = "";
+                    for(int j = 2; j < splitString.length; j++){
+                        ingredientNameLong += splitString[j] + " ";
+                    }
+                    ingredientNameLong.trim();
+                    list.put("ingredient_name", ingredientNameLong);
+                } else {
+                    list.put("ingredient_name", splitString[2]);
+                }
+                list.put("quantity", Double.parseDouble(splitString[0]));
+                list.put("units", splitString[1]);
+                ingredients.put(list);
+            }
+        } catch (JSONException e){
+            e.printStackTrace();
+            Toast.makeText(getApplicationContext(), "Error: " + e.toString(), Toast.LENGTH_SHORT).show();
+        }
     }
 }

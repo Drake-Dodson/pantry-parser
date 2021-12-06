@@ -85,7 +85,7 @@ public class Registration_Page extends AppCompatActivity implements View.OnClick
 
         JSONObject params = new JSONObject();
         try {
-            params.put("name", user_Name);
+            params.put("displayName", user_Name);
             params.put("email", user_Email);
             params.put("password", user_Password);
         } catch (JSONException jsonException) {

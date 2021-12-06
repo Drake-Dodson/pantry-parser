@@ -249,9 +249,6 @@ public class ListView extends AppCompatActivity implements RecyclerViewAdapter.O
             steps.add(jsonSteps.getJSONObject(j).getString("name"));
         }
         recipe.setSteps(steps);
-        if (JSONRecipe.getString("imagePath") != "null") {
-            Picasso.get().load("http://coms-309-032.cs.iastate.edu:8080/recipe/" + recipe.getRecipeID() + "/image").into(recipe.getImage());
-        }
         return recipe;
     }
 

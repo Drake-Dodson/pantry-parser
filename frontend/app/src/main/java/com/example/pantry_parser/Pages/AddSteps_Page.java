@@ -25,6 +25,10 @@ public class AddSteps_Page extends AppCompatActivity {
         back = findViewById(R.id.button_backSteps);
         clear = findViewById(R.id.button_clearSteps);
 
+        Bundle extras = getIntent().getExtras();
+        stringSteps = extras.getString("steps");
+        addSteps.setText(stringSteps);
+
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -39,8 +43,7 @@ public class AddSteps_Page extends AppCompatActivity {
         clear.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                stringSteps = "";
-                addSteps.setText("");
+                addSteps.getText().clear();
             }
         });
     }

@@ -27,6 +27,7 @@
         android:layout_height="50dp"
         android:src="@drawable/ic_arrow_back_24"
         android:paddingLeft="10dp"
+
         android:layout_gravity="center_vertical"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -69,7 +70,7 @@
         \n
         \nExample:
         \n 1 lb apples
-        \n 2 cups sugar
+        \n 2.5 cups sugar
         \n 1 oz vanilla"
         tools:layout_editor_absoluteX="0dp" />
 
@@ -119,8 +120,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginLeft="85dp"
-        android:layout_marginRight="180dp"
         android:layout_marginTop="5dp"
+        android:layout_marginRight="180dp"
         android:background="@drawable/border"
         android:hint="Add amount"
         android:minHeight="48dp"
@@ -153,6 +154,21 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/editText_ingredientName" />
 
+    <Button
+        android:id="@+id/button_addIngredient"
+        android:layout_width="100dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="13dp"
+        android:gravity="center"
+        android:background="@color/orange"
+        android:text="Add"
+        android:textSize="16sp"
+        android:textAllCaps="false"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editText_ingredientAmount"
+        app:layout_constraintVertical_bias="0.050" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

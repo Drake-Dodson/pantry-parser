@@ -1,6 +1,8 @@
 package com.example.pantry_parser.Pages;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -37,13 +39,13 @@ public class RecipeCreator_Page extends AppCompatActivity implements View.OnClic
     private static final String URL_USER = "http://coms-309-032.cs.iastate.edu:8080/user/";
 
     EditText rName, rSummary, rDescription, rPreptime, rCooktime, rServings, rNutrition;
-    EditText rPreptimeUnit, rCooktimeUnit;
     TextView addIngredients, addSteps;
     Button createRecipe, cancelRecipe;
     ImageView rImage;
 
-    String recipeName, recipeSummary, recipeDescription, recipeNutrition, prepUnit, cookUnit;
-    String recipeIngredientsDisplay, recipeStepsDisplay;
+    String recipeName, recipeSummary, recipeDescription, recipeNutrition;
+    String recipeIngredientsDisplay, recipeStepsDisplay = "";
+    String sData, user_id;
     int recipePreptime, recipeCooktime, recipeTotaltime, recipeServings;
 
     ArrayList<String> recipeIngredients = new ArrayList<>();
@@ -60,9 +62,7 @@ public class RecipeCreator_Page extends AppCompatActivity implements View.OnClic
         rSummary = findViewById(R.id.editText_recipeSummary);
         rDescription = findViewById(R.id.editText_recipeDescription);
         rPreptime = findViewById(R.id.editText_recipePrepTime);
-        rPreptimeUnit = findViewById(R.id.editText_recipePrepTimeUnit);
         rCooktime = findViewById(R.id.editText_recipeCookTime);
-        rCooktimeUnit = findViewById(R.id.editText_recipeCookTimeUnit);
         rServings = findViewById(R.id.editText_recipeServings);
         rNutrition = findViewById(R.id.editText_recipeNutrition);
 
@@ -73,6 +73,9 @@ public class RecipeCreator_Page extends AppCompatActivity implements View.OnClic
         cancelRecipe = findViewById(R.id.button_cancelRecipe);
 
         Queue = Volley.newRequestQueue(this);
+
+        SharedPreferences prefs = getSharedPreferences("user_info", Context.MODE_PRIVATE);
+        user_id = prefs.getString("user_id", "");
 
         ActivityResultLauncher<String> imageResultLauncher = registerForActivityResult(
                 new ActivityResultContracts.GetContent(),
@@ -91,23 +94,23 @@ public class RecipeCreator_Page extends AppCompatActivity implements View.OnClic
                         if (result != null && result.getResultCode() == RESULT_OK) {
                             if (result.getData() != null) {
                                 Intent data = result.getData();
-                                String sData = data.getStringExtra("result");
+                                sData = data.getStringExtra("result");
 
                                 if(sData.isEmpty()){
                                     recipeIngredientsDisplay = "";
                                     recipeIngredients.clear();
                                 }
                                 else {
+                                    recipeIngredientsDisplay = "";
+                                    recipeIngredients.clear();
                                     Scanner scanner = new Scanner(sData);
                                     while(scanner.hasNextLine()){
                                         String nextIngredient = scanner.nextLine();
                                         recipeIngredients.add(nextIngredient);
                                     }
-                                    int count = 1;
-                                    recipeIngredientsDisplay = count + ". " + recipeIngredients.get(0) + "\n";
+                                    recipeIngredientsDisplay = recipeIngredients.get(0) + "\n";
                                     for(int i = 1; i < recipeIngredients.size(); i++) {
-                                        count++;
-                                        recipeStepsDisplay += count + ". " + recipeIngredients.get(i) + "\n";
+                                        recipeStepsDisplay += recipeIngredients.get(i) + "\n";
                                     }
                                 }
                                 addIngredients.setText(recipeIngredientsDisplay);
@@ -124,13 +127,16 @@ public class RecipeCreator_Page extends AppCompatActivity implements View.OnClic
                         if (result != null && result.getResultCode() == RESULT_OK) {
                             if (result.getData() != null) {
                                 Intent data = result.getData();
-                                String sData = data.getStringExtra("result");
+                                sData = data.getStringExtra("result");
 
                                 if(sData.isEmpty()){
                                     recipeStepsDisplay = "";
                                     recipeSteps.clear();
                                 }
                                 else {
+                                    recipeStepsDisplay = "";
+                                    recipeSteps.clear();
+
                                     Scanner scanner = new Scanner(sData);
                                     while(scanner.hasNextLine()){
                                         String nextStep = scanner.nextLine();
@@ -143,8 +149,8 @@ public class RecipeCreator_Page extends AppCompatActivity implements View.OnClic
                                         recipeStepsDisplay += count + ". " + recipeSteps.get(i) + "\n";
                                     }
                                 }
-                                addSteps.setText(recipeStepsDisplay);
                             }
+                            addSteps.setText(recipeStepsDisplay);
                         }
                     }
                 });
@@ -160,6 +166,7 @@ public class RecipeCreator_Page extends AppCompatActivity implements View.OnClic
             @Override
             public void onClick(View v) {
                 Intent addIngredients = new Intent(getApplicationContext(), AddIngredient_Page.class);
+                addIngredients.putExtra("ingredients", sData);
                 ingredientsActivityResultLauncher.launch(addIngredients);
             }
         });
@@ -168,6 +175,7 @@ public class RecipeCreator_Page extends AppCompatActivity implements View.OnClic
             @Override
             public void onClick(View v) {
                 Intent addSteps = new Intent(getApplicationContext(), AddSteps_Page.class);
+                addSteps.putExtra("steps", sData);
                 stepsActivityResultLauncher.launch(addSteps);
             }
         });
@@ -187,12 +195,6 @@ public class RecipeCreator_Page extends AppCompatActivity implements View.OnClic
                 if(TextUtils.isEmpty(rPreptime.getText())){
                     rPreptime.setError("Please add in recipe prep time!");
                 }
-                if(TextUtils.isEmpty(rPreptimeUnit.getText())){
-                    rPreptimeUnit.setError("Please add in unit of time!");
-                }
-                if(TextUtils.isEmpty(rCooktimeUnit.getText())){
-                    rCooktimeUnit.setError("Please add in unit of time!");
-                }
                 if(TextUtils.isEmpty(rCooktime.getText())){
                     rCooktime.setError("Please add in recipe cook time!");
                 }
@@ -209,9 +211,7 @@ public class RecipeCreator_Page extends AppCompatActivity implements View.OnClic
                         && !TextUtils.isEmpty(recipeSummary)
                         && !TextUtils.isEmpty(recipeDescription)
                         && !TextUtils.isEmpty(rPreptime.getText())
-                        && !TextUtils.isEmpty(rPreptimeUnit.getText())
                         && !TextUtils.isEmpty(rCooktime.getText())
-                        && !TextUtils.isEmpty(rCooktimeUnit.getText())
                         && !TextUtils.isEmpty(rServings.getText())
                         && !TextUtils.isEmpty(addIngredients.getText())
                         && !TextUtils.isEmpty(addSteps.getText())){
@@ -261,7 +261,7 @@ public class RecipeCreator_Page extends AppCompatActivity implements View.OnClic
             e.printStackTrace();
         }
 
-        JsonObjectRequest recipeRequest = new JsonObjectRequest(Request.Method.POST, URL_USER, recipe,
+        JsonObjectRequest recipeRequest = new JsonObjectRequest(Request.Method.POST, URL_USER + user_id + "/recipes/", recipe,
            new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {

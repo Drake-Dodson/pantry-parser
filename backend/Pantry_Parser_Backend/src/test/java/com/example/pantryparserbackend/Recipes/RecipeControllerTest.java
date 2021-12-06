@@ -137,32 +137,32 @@ public class RecipeControllerTest {
 		Mockito.verify(permissionService).canRecipe(anyString(), anyObject(), anyObject());
     }
 
-    @Test
-    void onRecipeCreate_badUnits_returnFailure() {
-        MockitoAnnotations.openMocks(this);
-
-        List<RecipeIngredientRequest> ingredientList = new ArrayList<>();
-        List<String> stepList = new ArrayList<>();
-        stepList.add("step 1");
-        stepList.add("step 2");
-        String ingredientName = "fried chicken";
-        ingredientList.add(new RecipeIngredientRequest(ingredientName, 5, "coops"));
-        RecipeRequest input = new RecipeRequest("name", 4, 8, 12, "good for you", "summary", "description", ingredientList, stepList);
-        int user_id = 1;
-        User mockUser = new User("pass", "emalil@lail.com");
-        mockUser.setCreated_recipes(new ArrayList<>());
-
-        when(userRepository.findById(user_id)).thenReturn(mockUser);
-        when(ingredientRepository.findByName(ingredientName)).thenReturn(new Ingredient(ingredientName));
-		when(ipService.getCurrentUser(mockRequest)).thenReturn(mockUser);
-		when(permissionService.canRecipe(anyString(), anyObject(), anyObject())).thenReturn(true);
-
-        String expected = MessageUtil.newResponseMessage(false, "one of your ingredients had an invalid unit");
-        String actual = recipeController.createRecipe(user_id, input, mockRequest);
-
-        assertEquals(expected, actual);
-		Mockito.verify(permissionService).canRecipe(anyString(), anyObject(), anyObject());
-    }
+//    @Test
+//    void onRecipeCreate_badUnits_returnFailure() {
+//        MockitoAnnotations.openMocks(this);
+//
+//        List<RecipeIngredientRequest> ingredientList = new ArrayList<>();
+//        List<String> stepList = new ArrayList<>();
+//        stepList.add("step 1");
+//        stepList.add("step 2");
+//        String ingredientName = "fried chicken";
+//        ingredientList.add(new RecipeIngredientRequest(ingredientName, 5, "coops"));
+//        RecipeRequest input = new RecipeRequest("name", 4, 8, 12, "good for you", "summary", "description", ingredientList, stepList);
+//        int user_id = 1;
+//        User mockUser = new User("pass", "emalil@lail.com");
+//        mockUser.setCreated_recipes(new ArrayList<>());
+//
+//        when(userRepository.findById(user_id)).thenReturn(mockUser);
+//        when(ingredientRepository.findByName(ingredientName)).thenReturn(new Ingredient(ingredientName));
+//		when(ipService.getCurrentUser(mockRequest)).thenReturn(mockUser);
+//		when(permissionService.canRecipe(anyString(), anyObject(), anyObject())).thenReturn(true);
+//
+//        String expected = MessageUtil.newResponseMessage(false, "one of your ingredients had an invalid unit");
+//        String actual = recipeController.createRecipe(user_id, input, mockRequest);
+//
+//        assertEquals(expected, actual);
+//		Mockito.verify(permissionService).canRecipe(anyString(), anyObject(), anyObject());
+//    }
 
     @Test
     void OnRecipeCreate_invalidUser_returnError() {
@@ -267,30 +267,30 @@ public class RecipeControllerTest {
 
         assertEquals(expected, actual);
     }
-    @Test
-    void onRecipeUpdate_badUnit_returnFailure() {
-        MockitoAnnotations.openMocks(this);
-
-        List<RecipeIngredientRequest> ingredientList = new ArrayList<>();
-        List<String> stepList = new ArrayList<>();
-        stepList.add("step 1");
-        stepList.add("step 2");
-        String ingredientName = "fried chicken";
-        ingredientList.add(new RecipeIngredientRequest(ingredientName, 5, "coops"));
-        int recipe_id = 1;
-        Recipe mockRecipe = new Recipe("name", 4, "summary", "description");
-        RecipeRequest mockInput = new RecipeRequest("name", 4, 8, 12, "good for you", "summary", "description", ingredientList, stepList);
-
-        when(ingredientRepository.findByName(ingredientName)).thenReturn(null);
-        when(recipeRepository.findById(recipe_id)).thenReturn(mockRecipe);
-		when(permissionService.canRecipe(anyString(), anyObject(), anyObject())).thenReturn(true);
-
-        String expected = MessageUtil.newResponseMessage(false, "one of your ingredients had an invalid unit");
-        String actual = recipeController.updateRecipe(recipe_id, mockInput, mockRequest);
-
-        assertEquals(expected, actual);
-		Mockito.verify(permissionService).canRecipe(anyString(), anyObject(), anyObject());
-    }
+//    @Test
+//    void onRecipeUpdate_badUnit_returnFailure() {
+//        MockitoAnnotations.openMocks(this);
+//
+//        List<RecipeIngredientRequest> ingredientList = new ArrayList<>();
+//        List<String> stepList = new ArrayList<>();
+//        stepList.add("step 1");
+//        stepList.add("step 2");
+//        String ingredientName = "fried chicken";
+//        ingredientList.add(new RecipeIngredientRequest(ingredientName, 5, "coops"));
+//        int recipe_id = 1;
+//        Recipe mockRecipe = new Recipe("name", 4, "summary", "description");
+//        RecipeRequest mockInput = new RecipeRequest("name", 4, 8, 12, "good for you", "summary", "description", ingredientList, stepList);
+//
+//        when(ingredientRepository.findByName(ingredientName)).thenReturn(null);
+//        when(recipeRepository.findById(recipe_id)).thenReturn(mockRecipe);
+//		when(permissionService.canRecipe(anyString(), anyObject(), anyObject())).thenReturn(true);
+//
+//        String expected = MessageUtil.newResponseMessage(false, "one of your ingredients had an invalid unit");
+//        String actual = recipeController.updateRecipe(recipe_id, mockInput, mockRequest);
+//
+//        assertEquals(expected, actual);
+//		Mockito.verify(permissionService).canRecipe(anyString(), anyObject(), anyObject());
+//    }
 
     @Test
     void onDeleteRecipe_goodRecipe_returnSuccess() {

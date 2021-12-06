@@ -1,5 +1,6 @@
 package com.example.pantry_parser.Pages;
 
+import android.content.Context;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.os.Handler;
@@ -136,7 +137,13 @@ public class Recipe_Page extends AppCompatActivity {
             favButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mWebSocketClient.send("favorite:" + recipe.getRecipeID());
+                    try {
+                        mWebSocketClient.send("favorite:" + recipe.getRecipeID());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        Toast.makeText(Recipe_Page.this, "cannot favorite as a guest", Toast.LENGTH_LONG).show();
+                    }
+
                 }
             });
 
@@ -149,9 +156,13 @@ public class Recipe_Page extends AppCompatActivity {
              * To test the clientside without the backend, simply connect to an echo server such as:
              *  "ws://echo.websocket.org"
              */
-            uri = new URI("ws://coms-309-032.cs.iastate.edu:8080/websocket/2"); // 10.0.2.2 = localhost
+            String user_id = getSharedPreferences("user_info", Context.MODE_PRIVATE).getString("user_id", "");
+            if(user_id == "") {
+                throw new NullPointerException("No user logged in");
+            }
+            uri = new URI("ws://coms-309-032.cs.iastate.edu:8080/websocket/" + user_id); // 10.0.2.2 = localhost
             // uri = new URI("ws://echo.websocket.org");
-        } catch (URISyntaxException e) {
+        } catch (URISyntaxException | NullPointerException e) {
             e.printStackTrace();
             return;
         }
@@ -168,7 +179,7 @@ public class Recipe_Page extends AppCompatActivity {
                 Log.i("Websocket", "Message Received");
                 new Handler(Looper.getMainLooper()).post(new Runnable() {
                     public void run() {
-                Toast.makeText(Recipe_Page.this, msg, Toast.LENGTH_LONG).show();
+                        Toast.makeText(Recipe_Page.this, msg, Toast.LENGTH_LONG).show();
                     }
                 });
             }
@@ -187,7 +198,11 @@ public class Recipe_Page extends AppCompatActivity {
     }
     @Override
     public void onBackPressed() {
-        mWebSocketClient.close();
+        String user_id = getSharedPreferences("user_info", Context.MODE_PRIVATE).getString("user_id", "");
+        if(user_id != "") {
+            mWebSocketClient.close();
+        }
+
         super.onBackPressed();
     }
 

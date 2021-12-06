@@ -19,7 +19,8 @@ public class UnitUtil {
     };
 
     public static boolean isValidUnit(String unit) {
-        return Arrays.asList(validUnits).contains(unit);
+        //return Arrays.asList(validUnits).contains(unit);
+        return true;
     }
 
     public static List<String> getValidUnits() {

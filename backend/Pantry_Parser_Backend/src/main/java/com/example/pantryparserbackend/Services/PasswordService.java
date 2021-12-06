@@ -64,7 +64,7 @@ public class PasswordService {
             if (otp.outOfDate()) {
                 otpRepo.delete(otp);
             } else if (otp.verify(password)){
-                otpRepo.delete(otp);
+                //otpRepo.delete(otp);
                 return true;
             }
         }

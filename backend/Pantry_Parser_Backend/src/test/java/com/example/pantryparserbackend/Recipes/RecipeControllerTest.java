@@ -325,4 +325,43 @@ public class RecipeControllerTest {
 
         assertEquals(expected, actual);
     }
+
+    @Test
+    void testVerifyRecipe_whenRecipeVerified_returnSuccess() {
+        MockitoAnnotations.openMocks(this);
+
+        Recipe mockRecipe = new Recipe("Yummy Lasagna", 12, "16 cheese lasagna", "Mamma Mia that's a spicy lasagna");
+        int recipe_id = 1;
+
+        when(recipeRepository.findById(recipe_id)).thenReturn(mockRecipe);
+        when(permissionService.canRecipe(anyString(), anyObject(), anyObject())).thenReturn(true);
+        when(recipeRepository.save(mockRecipe)).thenReturn(null);
+
+        String expected = MessageUtil.newResponseMessage(true, "successfully verified the recipe");;
+        String actual = recipeController.verifyRecipe(recipe_id, mockRequest);
+
+        assertTrue(mockRecipe.isChef_verified());
+        assertEquals(expected, actual);
+        verify(recipeRepository).save(mockRecipe);
+    }
+
+    @Test
+    void testUnverifyRecipe_whenRecipeVerified_returnSuccess() {
+        MockitoAnnotations.openMocks(this);
+
+        Recipe mockRecipe = new Recipe("Yummy Lasagna", 12, "16 cheese lasagna", "Mamma Mia that's a spicy lasagna");
+        mockRecipe.setChef_verified(true);
+        int recipe_id = 1;
+
+        when(recipeRepository.findById(recipe_id)).thenReturn(mockRecipe);
+        when(permissionService.canRecipe(anyString(), anyObject(), anyObject())).thenReturn(true);
+        when(recipeRepository.save(mockRecipe)).thenReturn(null);
+
+        String expected = MessageUtil.newResponseMessage(true, "successfully unverified the recipe");;
+        String actual = recipeController.unverifyRecipe(recipe_id, mockRequest);
+
+        assertFalse(mockRecipe.isChef_verified());
+        assertEquals(expected, actual);
+        verify(recipeRepository).save(mockRecipe);
+    }
 }

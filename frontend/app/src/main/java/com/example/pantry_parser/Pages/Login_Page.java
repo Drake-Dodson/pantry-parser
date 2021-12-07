@@ -18,6 +18,7 @@ import com.android.volley.Request;
 import com.example.pantry_parser.Network.FavoriteSocket;
 import com.example.pantry_parser.Network.RequestListener;
 import com.example.pantry_parser.Network.VolleyListener;
+import com.example.pantry_parser.Pages.Settings.PasswordReset_Page;
 import com.example.pantry_parser.R;
 
 import org.json.JSONException;
@@ -33,6 +34,7 @@ public class Login_Page extends AppCompatActivity implements View.OnClickListene
         private Button eLogin;
         private Button eGuest;
         private TextView eAttemptsInfo;
+        private TextView forgotPassword;
         private TextView eSignUp;
 
         private String adminUserName = "Admin";
@@ -58,6 +60,9 @@ public class Login_Page extends AppCompatActivity implements View.OnClickListene
             eLogin = findViewById(R.id.button_Login);
             eLogin.setOnClickListener(this);
             eAttemptsInfo = findViewById(R.id.text_Attempts);
+
+            forgotPassword = findViewById(R.id.text_ForgotPassword);
+            forgotPassword.setOnClickListener(this);
 
             eSignUp = findViewById(R.id.text_SignUp);
             eSignUp.setOnClickListener(this);
@@ -121,6 +126,8 @@ public class Login_Page extends AppCompatActivity implements View.OnClickListene
                     break;
                 case R.id.text_SignUp:
                     startActivity(intentSignUp);
+                case R.id.text_ForgotPassword:
+                    startActivity(new Intent(getApplicationContext(), PasswordReset_Page.class));
             }
         }
 

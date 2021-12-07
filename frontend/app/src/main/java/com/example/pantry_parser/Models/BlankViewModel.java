@@ -1,4 +1,4 @@
-package com.example.pantry_parser;
+package com.example.pantry_parser.Models;
 
 import androidx.lifecycle.ViewModel;
 

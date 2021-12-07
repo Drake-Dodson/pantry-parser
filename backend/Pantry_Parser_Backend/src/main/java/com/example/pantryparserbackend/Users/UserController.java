@@ -171,7 +171,7 @@ public class UserController {
         if(actual.authenticate(login.password)){
             try {
                 ipService.saveIP(actual, request);
-                return MessageUtil.newResponseMessage(true, "" + actual.getId());
+                return MessageUtil.newResponseMessage(true, "" + actual.getId() + ":" + actual.getRole());
             } catch (Exception ex) {
                 ex.printStackTrace();
                 return MessageUtil.newResponseMessage(false, "Error getting the IP");

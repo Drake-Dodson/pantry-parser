@@ -279,6 +279,7 @@ public class ListView extends AppCompatActivity implements RecyclerViewAdapter.O
         recipe.setSummary(JSONRecipe.getString("summary"));
         recipe.setAuthor(JSONRecipe.getString("creatorName"));
         recipe.setUserId(JSONRecipe.getInt("creatorId"));
+        recipe.setImagePath(JSONRecipe.getString("imagePath"));
         recipe.setChefVerified(JSONRecipe.getBoolean("chef_verified"));
         recipe.setRating((float) JSONRecipe.getDouble("rating"));
         ArrayList<String> ingredients = new ArrayList<>();

@@ -145,11 +145,12 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     private void populateItemRows(ItemViewHolder viewHolder, int position) {
         Recipe item = mItemList.get(position);
         viewHolder.recipeName.setText(item.getRecipeName());
-
         if(type != "i"){
             viewHolder.minutesToMake.setText(Integer.toString(item.getTimeToMake()));
             viewHolder.ratingBar.setRating((float) item.getRating());
-            Picasso.get().load("http://coms-309-032.cs.iastate.edu:8080/recipe/" + item.getRecipeID() + "/image").centerCrop().resize(600, 400).into(viewHolder.recipeImage);
+            if (item.getImagePath() != "null") {
+                Picasso.get().load("http://coms-309-032.cs.iastate.edu:8080/recipe/" + item.getRecipeID() + "/image").centerCrop().resize(600, 400).into(viewHolder.recipeImage);
+            }
             if (item.getChefVerified() == false){
                 viewHolder.chefVerified.setVisibility(View.INVISIBLE);
             }

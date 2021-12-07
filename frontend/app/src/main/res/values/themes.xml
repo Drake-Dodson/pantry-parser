@@ -26,10 +26,10 @@
         <item name="fullscreenTextColor">@color/black</item>
     </style>
 
-    <style name="RatingBar" parent="Theme.AppCompat">
-        <item name="colorControlNormal">@color/cardview_light_background</item>
-        <item name="colorControlActivated">@color/red</item>
-    </style>
+<!--    <style name="RatingBar" parent="Theme.AppCompat">-->
+<!--        <item name="colorControlNormal">@color/cardview_light_background</item>-->
+<!--        <item name="colorControlActivated">@color/red</item>-->
+<!--    </style>-->
 
     <style name="Theme.Pantry_Parser.NoActionBar">
         <item name="windowActionBar">false</item>

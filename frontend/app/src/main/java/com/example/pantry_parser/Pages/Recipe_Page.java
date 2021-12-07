@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -53,6 +54,7 @@ public class  Recipe_Page extends AppCompatActivity {
         private ImageView recipePic;
         private boolean hasUserFavorited;
         private RequestQueue queue;
+        private RatingBar recipeRating;
 
 
 
@@ -69,7 +71,7 @@ public class  Recipe_Page extends AppCompatActivity {
             recipe = (Recipe) getIntent().getSerializableExtra("Recipe");
             recipePic = findViewById(R.id.RecipeImage);
             if (recipe.getImagePath() != "null") {
-                Picasso.get().load("http://coms-309-032.cs.iastate.edu:8080/recipe/" + recipe.getRecipeID() + "/image").centerCrop().resize(600, 365).into(recipePic);
+                Picasso.get().load("http://coms-309-032.cs.iastate.edu:8080/recipe/" + recipe.getRecipeID() + "/image").centerCrop().resize(670, 365).into(recipePic);
             }
 
             hasUserFavorited = false;
@@ -80,6 +82,8 @@ public class  Recipe_Page extends AppCompatActivity {
 
             NameRecipe = findViewById(R.id.RecipeName);
             NameRecipe.setText(recipe.getRecipeName());
+            recipeRating = findViewById(R.id.Reciperating);
+            recipeRating.setRating((float)recipe.getRating());
             AuthorRecipe = findViewById(R.id.RecipeAuthor);
             AuthorRecipe.setText(recipe.getAuthor());
             scrollView = findViewById(R.id.RecipeScrollView);

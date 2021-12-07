@@ -44,6 +44,8 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 public class  Recipe_Page extends AppCompatActivity {
+        private static final String URL_USER = "http://coms-309-032.cs.iastate.edu:8080/user/";
+        String userId;
         private Recipe recipe;
         private TextView NameRecipe;
         private TextView AuthorRecipe;
@@ -71,6 +73,7 @@ public class  Recipe_Page extends AppCompatActivity {
      */
     @Override
         protected void onCreate(Bundle savedInstanceState) {
+
             FavoriteSocket.changeContext(this);
             queue = Volley.newRequestQueue(this);
             super.onCreate(savedInstanceState);
@@ -216,7 +219,8 @@ public class  Recipe_Page extends AppCompatActivity {
                 }
             });
 
-            chefVerified.setOnClickListener(new View.OnClickListener() {
+
+        chefVerified.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if(role.equals("admin") || role.equals("chef")){
@@ -231,7 +235,62 @@ public class  Recipe_Page extends AppCompatActivity {
                 }
             });
 
+        SharedPreferences prefs = getSharedPreferences("user_info", Context.MODE_PRIVATE);
+        userId = prefs.getString("user_id", "");
+        setupRating(userId);
         }
+
+    private void setupRating(String user_id) {
+        recipeRating = findViewById(R.id.Reciperating);
+        recipeRating.setRating((float) recipe.getRating());
+        recipeRating.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
+            @Override
+            public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
+                if(user_id == "") {
+                    Toast.makeText(Recipe_Page.this, "You can't rate as a guest", Toast.LENGTH_LONG).show();
+                } else {
+                    JSONObject JSONrating = new JSONObject();
+                    try {
+                        JSONrating.put("title", "");
+                        JSONrating.put("reviewBody", "");
+                        JSONrating.put("starNumber", rating);
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    JsonObjectRequest ratingRequest = new JsonObjectRequest(Request.Method.POST, URL_USER + user_id + "/recipe/" + recipe.getRecipeID() + "/review", JSONrating, new Response.Listener<JSONObject>() {
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            try {
+                                String success = response.getString("success");
+                                String message = response.getString("message");
+                                if (success.equals("true")) {
+                                    Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+                                } else {
+                                    Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                                e.printStackTrace();
+                                Toast.makeText(getApplicationContext(), e.toString(), Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    },
+                            new Response.ErrorListener() {
+                                @Override
+                                public void onErrorResponse(VolleyError error) {
+
+                                }
+                            });
+                    queue.add(ratingRequest);
+
+                }
+
+
+            }
+        });
+    }
+
 
     private void updateFaveButton() {
         if(hasUserFavorited) {

@@ -114,6 +114,9 @@ public class ChangePassword_Page extends AppCompatActivity {
         });
     }
 
+    /**
+     * Method that sends a request to the server to retrieve user information
+     */
     private void getUserInfo(){
         JsonObjectRequest infoRequest = new JsonObjectRequest(Request.Method.GET, URL + user_id, null,
                 new Response.Listener<JSONObject>() {
@@ -137,6 +140,9 @@ public class ChangePassword_Page extends AppCompatActivity {
         queue.add(infoRequest);
     }
 
+    /**
+     * Method to send request to server to obtain a one-time-password
+     */
     public void sendOTP(){
         JsonObjectRequest otpRequest = new JsonObjectRequest(Request.Method.GET, URL + user_id + "/password-change/", null,
                 new Response.Listener<JSONObject>() {
@@ -167,6 +173,9 @@ public class ChangePassword_Page extends AppCompatActivity {
         queue.add(otpRequest);
     }
 
+    /**
+     * Method that sends a request to server to change the user's password
+     */
     public void updatePassword(){
         JSONObject changeObj = new JSONObject();
         try{

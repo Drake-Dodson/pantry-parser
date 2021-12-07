@@ -109,6 +109,9 @@ public class PasswordReset_Page extends AppCompatActivity {
         });
     }
 
+    /**
+     * Method to send request to server to obtain a one-time-password
+     */
     public void sendOTP(){
         JsonObjectRequest otpRequest = new JsonObjectRequest(Request.Method.GET, URL + "email/" + user_email + "/password-reset/", null,
                 new Response.Listener<JSONObject>() {
@@ -139,6 +142,9 @@ public class PasswordReset_Page extends AppCompatActivity {
         queue.add(otpRequest);
     }
 
+    /**
+     * Method that sends a request to server to reset the user's password
+     */
     public void resetPassword(){
         JSONObject changeObj = new JSONObject();
         try{

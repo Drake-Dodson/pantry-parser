@@ -22,7 +22,6 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.pantry_parser.Network.FavoriteSocket;
 import com.example.pantry_parser.R;
-import com.example.pantry_parser.RecyclerView.ListView;
 import com.google.android.material.textfield.TextInputEditText;
 
 import org.json.JSONException;
@@ -89,6 +88,9 @@ public class ChangeEmail_Page extends AppCompatActivity {
         });
     }
 
+    /**
+     * Method that sends a request to retrieve user information
+     */
     private void getUserInfo(){
         JsonObjectRequest infoRequest = new JsonObjectRequest(Request.Method.GET, URL + user_id, null,
                 new Response.Listener<JSONObject>() {
@@ -113,6 +115,9 @@ public class ChangeEmail_Page extends AppCompatActivity {
         queue.add(infoRequest);
     }
 
+    /**
+     * Method that sends a request to update user's email address
+     */
     private void updateEmail() {
         String user_Email = idt_email.getText().toString().trim();
         String user_Name = username;

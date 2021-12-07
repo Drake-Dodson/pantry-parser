@@ -169,6 +169,9 @@ public class Settings_Page extends AppCompatActivity {
 
     }
 
+    /**
+     * Method to retrieve user info from server and display that information
+     */
     private void setUserInfo(){
         JsonObjectRequest infoRequest = new JsonObjectRequest(Request.Method.GET, URL + user_id, null, new Response.Listener<JSONObject>() {
             @Override

@@ -239,6 +239,9 @@ public class RecipeEditor_Page extends AppCompatActivity {
         });
     }
 
+    /**
+     * Method to retrieve current recipe info
+     */
     private void getRecipe(){
         JsonObjectRequest getRecipeReq = new JsonObjectRequest(Request.Method.GET, URL_RECIPE + recipe_id, null,
                 new Response.Listener<JSONObject>() {
@@ -297,6 +300,9 @@ public class RecipeEditor_Page extends AppCompatActivity {
         queue.add(getRecipeReq);
     }
 
+    /**
+     * Method to update recipe with current parameters
+     */
     public void updateRecipe(){
         recipeName = rName.getText().toString();
         recipeSummary = rSummary.getText().toString();
@@ -369,6 +375,9 @@ public class RecipeEditor_Page extends AppCompatActivity {
         queue.add(recipeRequest);
     }
 
+    /**
+     * Method to convert ArrayList to JSONArray
+     */
     public void convertArrayTOJSONArray(){
         ingredients = new JSONArray();
         try{

@@ -88,6 +88,9 @@ public class ChangeUsername_Page extends AppCompatActivity {
         });
     }
 
+    /**
+     * Method that sends a request to the server to retrieve user information
+     */
     private void getUserInfo(){
         JsonObjectRequest infoRequest = new JsonObjectRequest(Request.Method.GET, URL + user_id, null,
                 new Response.Listener<JSONObject>() {
@@ -112,6 +115,9 @@ public class ChangeUsername_Page extends AppCompatActivity {
         queue.add(infoRequest);
     }
 
+    /**
+     * Method that sends a request to server to change the user's username
+     */
     private void updateUsername() {
         String user_Email = email;
         String user_Name = idt_username.getText().toString().trim();

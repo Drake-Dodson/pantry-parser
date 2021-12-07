@@ -238,6 +238,9 @@ public class RecipeCreator_Page extends AppCompatActivity implements View.OnClic
 
     }
 
+    /**
+     * Method that creates a recipe and sends it to database
+     */
     public void createRecipe(){
         recipeName = rName.getText().toString();
         recipeSummary = rSummary.getText().toString();
@@ -310,6 +313,9 @@ public class RecipeCreator_Page extends AppCompatActivity implements View.OnClic
        Queue.add(recipeRequest);
     }
 
+    /**
+     * Method to convert ingredient ArrayList to JSONArray
+     */
     public void convertArrayTOJSONArray(){
         ingredients = new JSONArray();
         try{

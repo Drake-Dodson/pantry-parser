@@ -99,7 +99,7 @@ public class FavoriteSocket {
             for(String s : history) {
                 sendToUser(user, s);
             }
-            String message = user.getDisplayName() + "has just came online";
+            String message = user.getDisplayName() + " has just came online";
             broadcast(message);
         }
     }

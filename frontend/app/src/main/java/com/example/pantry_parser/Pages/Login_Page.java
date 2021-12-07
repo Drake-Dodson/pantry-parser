@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -172,7 +173,20 @@ public class Login_Page extends AppCompatActivity implements View.OnClickListene
                             counter = 5;
                             eAttemptsInfo.setText("No. of attempts remaining: " + counter);
                         } else{
-                            Toast.makeText(Login_Page.this, message, Toast.LENGTH_SHORT).show();
+                            counter--;
+                            eAttemptsInfo.setText("No. of attempts remaining: " + counter);
+                            if(counter == 0){
+                                eLogin.setEnabled(false);
+                                new Handler().postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        eLogin.setEnabled(true);
+                                    }
+                                }, 120000);
+                                Toast.makeText(Login_Page.this, "Too many attempts please try again in 2 minutes", Toast.LENGTH_SHORT).show();
+                            } else{
+                                Toast.makeText(Login_Page.this, message, Toast.LENGTH_SHORT).show();
+                            }
                         }
                     }
                     catch(JSONException jsonException){

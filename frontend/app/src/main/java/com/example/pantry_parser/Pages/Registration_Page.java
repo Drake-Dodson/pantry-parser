@@ -50,11 +50,6 @@ public class Registration_Page extends AppCompatActivity implements View.OnClick
         password = findViewById((R.id.textInput_password));
         confirmPassword = findViewById(R.id.textInput_cPassword);
 
-        sEmail = email.getText().toString().trim();
-        sUsername = username.getText().toString().trim();
-        sPassword = password.getText().toString().trim();
-        sConfirmPassword = confirmPassword.getText().toString().trim();
-
         registerButton = findViewById(R.id.button_register);
         alreadyRegbutton = findViewById(R.id.bt_AlreadyRegistered);
         back = findViewById(R.id.button_backRegistration);
@@ -73,15 +68,23 @@ public class Registration_Page extends AppCompatActivity implements View.OnClick
         Intent intentAlreadyReg = new Intent(getApplicationContext(), Login_Page.class);
         switch (view.getId()){
             case R.id.button_register:
-                if(isValidPassword(sPassword, sConfirmPassword)){
-                    if(!sEmail.isEmpty() && !sUsername.isEmpty()){
-                        Register();
+                sEmail = email.getText().toString().trim();
+                sUsername = username.getText().toString().trim();
+                sPassword = password.getText().toString().trim();
+                sConfirmPassword = confirmPassword.getText().toString().trim();
+                if(isValidPassword(sPassword)){
+                    if(sPassword.equals(sConfirmPassword)) {
+                        if (!sEmail.isEmpty() && !sUsername.isEmpty()) {
+                            Register();
+                        } else {
+                            Toast.makeText(getApplicationContext(), "Error: please make sure all fields are filled out and try again.", Toast.LENGTH_SHORT).show();
+                        }
                     } else{
-                        Toast.makeText(getApplicationContext(),"Error: please make sure all fields are filled out and try again.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(),"Error: please check your passwords and try again.", Toast.LENGTH_SHORT).show();
                     }
                 }
                 else{
-                    Toast.makeText(getApplicationContext(),"Error: please check your passwords and try again.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(),"Error: not a valid password.", Toast.LENGTH_SHORT).show();
                 }
                 break;
             case R.id.bt_AlreadyRegistered:

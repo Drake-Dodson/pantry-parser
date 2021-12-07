@@ -30,6 +30,7 @@ import com.example.pantry_parser.R;
 import com.example.pantry_parser.RecyclerView.IngredientListView;
 import com.example.pantry_parser.RecyclerView.ListView;
 import com.example.pantry_parser.Utilities.User;
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -187,6 +188,10 @@ public class Settings_Page extends AppCompatActivity {
                         editor.putString("username", username);
                         editor.commit();
                         editor.apply();
+                        String imagePath = response.getString("imagePath");
+                        if (imagePath != "null") {
+                            Picasso.get().load("http://coms-309-032.cs.iastate.edu:8080/user/" + user_id + "/image").centerCrop().resize(50, 50).into(profileImage);
+                        }
                     }catch (JSONException jsonException) {
                         jsonException.printStackTrace();
                     }

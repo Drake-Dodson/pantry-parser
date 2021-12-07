@@ -64,7 +64,7 @@ public class RecipeController {
     @ApiOperation(value = "Get all of the recipes in the database")
     @GetMapping(path = "/recipes")
     Page<Recipe> getAllRecipes(@RequestParam(defaultValue = "0") Integer pageNo, @RequestParam(defaultValue = "15") Integer perPage, @RequestParam(defaultValue = "") String query){
-        Pageable page = PageRequest.of(pageNo, perPage, Sort.by("rating"));
+        Pageable page = PageRequest.of(pageNo, perPage, Sort.by("rating").descending());
         return Objects.equals(query, "") ? recipeRepository.findAll(page) : recipeRepository.getAllBy(query, page);
     }
 
@@ -279,7 +279,7 @@ public class RecipeController {
     @ApiOperation(value = "Gets a list of ingredients and searches recipes based on that list")
     @PutMapping(path = "/pantry-parser")
     Page<Recipe> recipesByIngredients(@RequestParam(defaultValue = "0") Integer pageNo, @RequestParam(defaultValue = "15") Integer perPage, @RequestBody PantryParserRequest request){
-        Pageable page = PageRequest.of(pageNo, perPage, Sort.by("rating"));
+        Pageable page = PageRequest.of(pageNo, perPage, Sort.by("rating").descending());
         return recipeRepository.getByIngredients(request.ingredients, page);
     }
 
@@ -293,7 +293,7 @@ public class RecipeController {
     @ApiOperation(value = "Get all of the recipes that have been verified by chefs")
     @GetMapping(path = "/recipes/verified")
     Page<Recipe> getVerifiedRecipes(@RequestParam(defaultValue = "0") Integer pageNo, @RequestParam(defaultValue = "15") Integer perPage, @RequestParam(defaultValue = "") String query){
-        Pageable page = PageRequest.of(pageNo, perPage, Sort.by("rating"));
+        Pageable page = PageRequest.of(pageNo, perPage, Sort.by("rating").descending());
         return Objects.equals(query, "") ? recipeRepository.getChefVerified(page) : recipeRepository.getChefVerifiedSearch(query, page);
     }
 

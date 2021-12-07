@@ -195,7 +195,7 @@ public class UserController {
         if(u == null){
             return null;
         }
-        Pageable page = PageRequest.of(pageNo, perPage, Sort.by("rating"));
+        Pageable page = PageRequest.of(pageNo, perPage, Sort.by("rating").descending());
         return query.equals("") ? recipeRepository.getUserCreated(u, page) : recipeRepository.getUserCreatedSearch(u, query, page);
     }
 
@@ -211,7 +211,7 @@ public class UserController {
         if(u == null){
             return null;
         }
-        Pageable page = PageRequest.of(pageNo, perPage, Sort.by("rating"));
+        Pageable page = PageRequest.of(pageNo, perPage, Sort.by("rating").descending());
         return query.equals("") ? recipeRepository.getUserFavorites(user_id, page) : recipeRepository.getUserFavoritesSearch(user_id, query, page);
     }
 

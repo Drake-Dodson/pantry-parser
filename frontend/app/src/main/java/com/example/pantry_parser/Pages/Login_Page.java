@@ -109,6 +109,13 @@ public class Login_Page extends AppCompatActivity implements View.OnClickListene
                     }
                     break;
                 case R.id.bt_Guest:
+                    SharedPreferences prefs = getSharedPreferences("user_info", Context.MODE_PRIVATE);
+                    SharedPreferences.Editor editor = prefs.edit();
+                    editor.putString("user_id", "");
+                    editor.putString("email", "");
+                    editor.putBoolean("is_logged_in", false);
+                    editor.commit();
+                    editor.apply();
                     Toast.makeText(Login_Page.this, "logged in as Guest", Toast.LENGTH_SHORT).show();
                     startActivity(intentLogin);
                     break;

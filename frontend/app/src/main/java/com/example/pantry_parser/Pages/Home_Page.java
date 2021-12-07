@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.pantry_parser.Network.FavoriteSocket;
+import com.example.pantry_parser.Pages.Settings.Settings_Page;
 import com.example.pantry_parser.R;
 import com.example.pantry_parser.RecyclerView.IngredientListView;
 import com.example.pantry_parser.RecyclerView.ListView;

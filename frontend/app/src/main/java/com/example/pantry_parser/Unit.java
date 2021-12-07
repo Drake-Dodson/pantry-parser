@@ -1,6 +1,8 @@
 package com.example.pantry_parser;
 
 public enum Unit {
+
+    // Volume
     TEASPOON,
     TABLESPOON,
     FLUID_OUNCE,
@@ -9,9 +11,12 @@ public enum Unit {
     QUART,
     GALLON,
     MILLILETER,
-    LITER
-    ;
+    LITER,
 
+    // Weight
+    POUND,
+    OUNCE,
+    ;
 
     Unit() {
     }

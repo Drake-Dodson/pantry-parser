@@ -21,14 +21,16 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+
+import com.example.pantry_parser.Pages.RecipeCreator.RecipeCreator_Page;
 import com.example.pantry_parser.Network.FavoriteSocket;
+
 import com.example.pantry_parser.Pages.Recipe_Page;
-import com.example.pantry_parser.Pages.Settings.Settings_Page;
+
 import com.example.pantry_parser.R;
 import com.example.pantry_parser.Recipe;
 import com.example.pantry_parser.Utilities.URLs;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -155,7 +157,8 @@ public class ListView extends AppCompatActivity implements RecyclerViewAdapter.O
              */
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getApplicationContext(), Settings_Page.class);
+                Intent intent = new Intent(getApplicationContext(), RecipeCreator_Page.class);
+                startActivity(intent);
             }
         });
         newRecipe.hide();
@@ -168,6 +171,7 @@ public class ListView extends AppCompatActivity implements RecyclerViewAdapter.O
             case ("ALL_RECIPES"):
                 URL_TO_USE = URL_RECIPES;
                 origURL = URL_TO_USE;
+                newRecipe.show();
                 popData();
                 break;
 
@@ -178,7 +182,6 @@ public class ListView extends AppCompatActivity implements RecyclerViewAdapter.O
                 }
                 URL_TO_USE = URL_USER + user_id + "/recipes";
                 origURL = URL_TO_USE;
-                newRecipe.show();
                 popData();
                 break;
 

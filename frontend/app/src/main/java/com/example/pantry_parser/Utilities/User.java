@@ -2,12 +2,13 @@ package com.example.pantry_parser.Utilities;
 
 public class User {
     private int id;
-    private String name, email;
+    private String username, email, password;
 
-    public User(int id, String name, String email) {
+    public User(int id, String username, String email, String password) {
         this.id = id;
-        this.name = name;
+        this.username = username;
         this.email = email;
+        this.password = password;
     }
 
     public int getId() {
@@ -18,12 +19,12 @@ public class User {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getUsername() {
+        return username;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setName(String username) {
+        this.username = username;
     }
 
     public String getEmail() {
@@ -33,4 +34,13 @@ public class User {
     public void setEmail(String email) {
         this.email = email;
     }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(){
+        this.password = password;
+    }
+
 }

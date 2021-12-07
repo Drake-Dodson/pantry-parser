@@ -1,13 +1,11 @@
 package com.example.pantry_parser.Pages;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.Display;
 import android.view.View;
 import android.widget.Button;
@@ -27,21 +25,20 @@ import com.android.volley.toolbox.Volley;
 import com.example.pantry_parser.Network.FavoriteSocket;
 import com.example.pantry_parser.R;
 import com.example.pantry_parser.Recipe;
+import com.example.pantry_parser.Pages.RecipeCreator.RecipeEditor_Page;
 import com.google.android.material.tabs.TabLayout;
 
 import org.java_websocket.client.WebSocketClient;
-import org.java_websocket.handshake.ServerHandshake;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 
-public class Recipe_Page extends AppCompatActivity {
+public class  Recipe_Page extends AppCompatActivity {
         private Recipe recipe;
         private TextView NameRecipe;
         private TextView AuthorRecipe;
+        private TextView editRecipe;
         private TabLayout tabLayout;
         private ViewPager viewPager;
         private TextView details;
@@ -155,6 +152,21 @@ public class Recipe_Page extends AppCompatActivity {
                 }
                 ingredients.setText(ingConc);
             }
+
+            editRecipe = findViewById(R.id.EditRecipe);
+            editRecipe.setVisibility(View.INVISIBLE);
+            String username = getSharedPreferences("user_info", Context.MODE_PRIVATE).getString("username", "");
+            if(recipe.getAuthor().equals(username)){
+                editRecipe.setVisibility(View.VISIBLE);
+            }
+            editRecipe.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(getApplicationContext(), RecipeEditor_Page.class);
+                    intent.putExtra("recipe_id", recipe.getRecipeID());
+                    startActivity(intent);
+                }
+            });
 
             favButton = findViewById(R.id.FavButton);
             updateFaveButton();

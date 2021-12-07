@@ -18,6 +18,7 @@
         <entry key="..\:/Users/adang/Com S 309 2_do_8/2_do_8/frontend/app/src/main/res/drawable/circular_image_view.xml" value="0.37864583333333335" />
         <entry key="..\:/Users/adang/Com S 309 2_do_8/2_do_8/frontend/app/src/main/res/drawable/ic_baseline_email_24.xml" value="0.38229166666666664" />
         <entry key="..\:/Users/adang/Com S 309 2_do_8/2_do_8/frontend/app/src/main/res/drawable/ic_baseline_keyboard_arrow_right_24.xml" value="0.37864583333333335" />
+        <entry key="..\:/Users/adang/Com S 309 2_do_8/2_do_8/frontend/app/src/main/res/drawable/ic_edit.xml" value="0.37864583333333335" />
         <entry key="..\:/Users/adang/Com S 309 2_do_8/2_do_8/frontend/app/src/main/res/drawable/ic_person.xml" value="0.3645833333333333" />
         <entry key="..\:/Users/adang/Com S 309 2_do_8/2_do_8/frontend/app/src/main/res/drawable/profile_border.xml" value="0.37864583333333335" />
         <entry key="..\:/Users/adang/Com S 309 2_do_8/2_do_8/frontend/app/src/main/res/drawable/profile_image.xml" value="0.37864583333333335" />
@@ -30,10 +31,15 @@
         <entry key="..\:/Users/adang/Com S 309 2_do_8/2_do_8/frontend/app/src/main/res/layout/activity_my_recipes.xml" value="0.17831813576494426" />
         <entry key="..\:/Users/adang/Com S 309 2_do_8/2_do_8/frontend/app/src/main/res/layout/activity_pantry_parser.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/adang/Com S 309 2_do_8/2_do_8/frontend/app/src/main/res/layout/activity_recipe_creator.xml" value="0.33" />
+        <entry key="..\:/Users/adang/Com S 309 2_do_8/2_do_8/frontend/app/src/main/res/layout/activity_recipe_creator_page.xml" value="0.171875" />
+        <entry key="..\:/Users/adang/Com S 309 2_do_8/2_do_8/frontend/app/src/main/res/layout/activity_recipe_editor.xml" value="0.1828125" />
         <entry key="..\:/Users/adang/Com S 309 2_do_8/2_do_8/frontend/app/src/main/res/layout/activity_recipe_view.xml" value="0.31657608695652173" />
         <entry key="..\:/Users/adang/Com S 309 2_do_8/2_do_8/frontend/app/src/main/res/layout/activity_registration_page.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/adang/Com S 309 2_do_8/2_do_8/frontend/app/src/main/res/layout/activity_settings.xml" value="0.29846014492753625" />
+        <entry key="..\:/Users/adang/Com S 309 2_do_8/2_do_8/frontend/app/src/main/res/layout/activity_view_recipe.xml" value="0.33" />
+        <entry key="..\:/Users/adang/Com S 309 2_do_8/2_do_8/frontend/app/src/main/res/layout/ingredient_item_row.xml" value="0.3625" />
         <entry key="..\:/Users/adang/Com S 309 2_do_8/2_do_8/frontend/app/src/main/res/layout/item_loading.xml" value="0.36666666666666664" />
+        <entry key="..\:/Users/adang/Com S 309 2_do_8/2_do_8/frontend/app/src/main/res/layout/item_row.xml" value="0.3625" />
         <entry key="..\:/Users/adang/Com S 309 2_do_8/2_do_8/frontend/app/src/main/res/layout/toolbar.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/adang/Com S 309 2_do_8/2_do_8/frontend/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.3828125" />
         <entry key="..\:/Users/adang/Com S 309 2_do_8/2_do_8/frontend/app/src/main/res/xml/preferences.xml" value="0.23550724637681159" />

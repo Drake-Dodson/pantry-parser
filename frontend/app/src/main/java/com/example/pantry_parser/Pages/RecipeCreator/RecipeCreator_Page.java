@@ -271,6 +271,13 @@ public class RecipeCreator_Page extends AppCompatActivity implements View.OnClic
         System.out.println(recipeDescription);
         System.out.println(recipeNutrition);
         System.out.println(recipeServings);
+        for(int i = 0; i < ingredients.length(); i++){
+            try {
+                System.out.println(ingredients.get(i).toString());
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
         System.out.println(ingredients);
         System.out.println(steps);
 

@@ -12,7 +12,7 @@ public class PasswordValidation {
                         // Lower case and Upper case alphabet must occur at least once
                         + "(?=.*[a-z])(?=.*[A-Z])"
                         // Special character must occur at least once
-                        + "(?=.*[@#$%^&+=])"
+                        + "(?=.*[!@#$%^&+=])"
                         // No white spaces allowed and password must be between 8-20 characters
                         + "(?=\\S+$).{8,20}$";
 

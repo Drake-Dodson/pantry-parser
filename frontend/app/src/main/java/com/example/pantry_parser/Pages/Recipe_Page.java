@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Point;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.Display;
@@ -60,6 +61,7 @@ public class  Recipe_Page extends AppCompatActivity {
         private String role;
         private SharedPreferences chef;
         private String imageUrl;
+        private TextView chefVerified;
 
 
 
@@ -94,6 +96,10 @@ public class  Recipe_Page extends AppCompatActivity {
             }
 
             NameRecipe = findViewById(R.id.RecipeName);
+            chefVerified = findViewById(R.id.ChefVerified);
+            updateChefIcon();
+
+
             NameRecipe.setText(recipe.getRecipeName());
             AuthorRecipe = findViewById(R.id.RecipeAuthor);
             AuthorRecipe.setText(recipe.getAuthor());
@@ -198,11 +204,6 @@ public class  Recipe_Page extends AppCompatActivity {
             favButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
-                    if(role.equals("admin") || role.equals("chef")){
-                        verify(recipe.getRecipeID(), recipe.getChefVerified());
-                    }
-
                     if(FavoriteSocket.mWebSocketClient != null && FavoriteSocket.mWebSocketClient.isOpen()) {
                         if(!hasUserFavorited) {
                             FavoriteSocket.mWebSocketClient.send("favorite:" + recipe.getRecipeID());
@@ -215,6 +216,21 @@ public class  Recipe_Page extends AppCompatActivity {
                         updateFaveButton();
                     } else {
                         Toast.makeText(Recipe_Page.this, "cannot favorite as a guest", Toast.LENGTH_LONG).show();
+                    }
+                }
+            });
+
+            chefVerified.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(role.equals("admin") || role.equals("chef")){
+                        verify(recipe.getRecipeID(), recipe.getChefVerified());
+                    } else {
+                        if(recipe.getChefVerified()) {
+                            Toast.makeText(Recipe_Page.this, "This recipe has been verified by a chef to be of quality!", Toast.LENGTH_LONG).show();
+                        } else {
+                            Toast.makeText(Recipe_Page.this, "This recipe is from a user of the app", Toast.LENGTH_LONG).show();
+                        }
                     }
                 }
             });
@@ -259,6 +275,14 @@ public class  Recipe_Page extends AppCompatActivity {
         super.onBackPressed();
     }
 
+    public void updateChefIcon() {
+        if(recipe.getChefVerified()) {
+            chefVerified.setBackgroundResource(R.drawable.profile);
+        } else {
+            chefVerified.setBackgroundResource(R.drawable.ic_person);
+        }
+    }
+
     public void verify(String recipeId, Boolean verified){
         String urlVerified;
         if (verified == true){
@@ -278,6 +302,7 @@ public class  Recipe_Page extends AppCompatActivity {
                    if(success.equals("true")){
                        Toast.makeText(Recipe_Page.this, message, Toast.LENGTH_LONG).show();
                        recipe.setChefVerified(!verified);
+                       updateChefIcon();
                    }
                    else{
                        Toast.makeText(Recipe_Page.this, message, Toast.LENGTH_LONG).show();

@@ -36,12 +36,14 @@ public class IngredientListView extends AppCompatActivity implements RecyclerVie
     public ArrayList<String> selected = new ArrayList<>();
     boolean isLoading = false;
     String URL_INGREDIENTS = "http://coms-309-032.cs.iastate.edu:8080/ingredients";
-    String URL_TO_USE = URL_INGREDIENTS;
+    String URL_USERS = "http://coms-309-032.cs.iastate.edu:8080/users";
+    String URL_TO_USE;
     private RequestQueue queue;
     FloatingActionButton newRecipe;
     SearchView searchView;
     TextView textView;
     int pageNo;
+    String viewType;
 
     /**
      *Create listview activity and instantiate elements
@@ -52,7 +54,15 @@ public class IngredientListView extends AppCompatActivity implements RecyclerVie
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ingredient_list_view);
         String viewType = (String) getIntent().getSerializableExtra("SwitchView");
-
+        this.viewType = viewType;
+        switch(viewType) {
+            case "ADMIN":
+                URL_TO_USE = URL_USERS;
+                break;
+            case "INGREDIENTS":
+                URL_TO_USE = URL_INGREDIENTS;
+                break;
+        }
         try {
             initializeElements(viewType);
         } catch (JSONException e) {
@@ -156,7 +166,11 @@ public class IngredientListView extends AppCompatActivity implements RecyclerVie
                     }
                     while (!recipeArray.isNull(i) && i <=pageSize) {
                         try {
-                            dataset.add(new Recipe(getIngredient(i, recipeArray)));
+                            if(URL_TO_USE.contains(URL_USERS)) {
+                                dataset.add(new Recipe(getUser(i, recipeArray)));
+                            } else {
+                                dataset.add(new Recipe(getIngredient(i, recipeArray)));
+                            }
                             recyclerViewAdapter.notifyDataSetChanged();
                         } catch (JSONException e) {
                             Toast.makeText(IngredientListView.this, e.toString(), Toast.LENGTH_SHORT).show();
@@ -185,6 +199,12 @@ public class IngredientListView extends AppCompatActivity implements RecyclerVie
         return json.getString("name");
     }
 
+    @NonNull
+    private String getUser(int i, JSONArray array) throws JSONException {
+        JSONObject json = array.getJSONObject(i);
+        return json.getString("email") + " -- " + json.getString("role");
+    }
+
     /**
      * Initialize recyclerView adapter
      */
@@ -199,15 +219,19 @@ public class IngredientListView extends AppCompatActivity implements RecyclerVie
      */
     @Override
     public void onRecipeClick(int position) {
-        String ingredient = dataset.get(position).getRecipeName();
-        if(selected.contains(ingredient)) {
-            selected.remove(ingredient);
-        } else {
-            selected.add(ingredient);
-        }
+        if(URL_TO_USE.contains(URL_USERS)) {
 
-        textView.setText(selectedToString());
-        recyclerViewAdapter.notifyDataSetChanged();
+        } else {
+            String ingredient = dataset.get(position).getRecipeName();
+            if(selected.contains(ingredient)) {
+                selected.remove(ingredient);
+            } else {
+                selected.add(ingredient);
+            }
+
+            textView.setText(selectedToString());
+            recyclerViewAdapter.notifyDataSetChanged();
+        }
     }
 
     private String selectedToString(){
@@ -217,4 +241,8 @@ public class IngredientListView extends AppCompatActivity implements RecyclerVie
         }
         return q;
     }
+
+//    private String sendUserRequest(String role) {
+//
+//    }
 }

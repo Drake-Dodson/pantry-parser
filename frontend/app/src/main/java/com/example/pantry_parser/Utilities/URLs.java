@@ -17,8 +17,6 @@ public class URLs {
      * User login route
      */
     public static final String URL_LOGIN = DOMAIN + "/login/";
-    public static final String URL_USER = DOMAIN + "/user/";
-
     /*
      * Recipe route
      */

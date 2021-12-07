@@ -1,4 +1,4 @@
-package com.example.pantry_parser;
+package com.example.pantry_parser.Pages.RecipeCreator;
 
 import android.content.Context;
 import android.content.Intent;
@@ -27,8 +27,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.pantry_parser.Network.FavoriteSocket;
 import com.example.pantry_parser.Pages.Home_Page;
-import com.example.pantry_parser.Pages.RecipeCreator.AddIngredient_Page;
-import com.example.pantry_parser.Pages.RecipeCreator.AddSteps_Page;
+import com.example.pantry_parser.R;
 import com.example.pantry_parser.RecyclerView.ListView;
 
 import org.json.JSONArray;
@@ -59,12 +58,12 @@ public class RecipeEditor_Page extends AppCompatActivity {
 
     JSONArray ingredients;
 
-    private RequestQueue Queue;
+    private RequestQueue queue;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_recipe_creator_page);
+        setContentView(R.layout.activity_recipe_editor);
         FavoriteSocket.changeContext(this);
 
         rName = findViewById(R.id.editText_recipeName);
@@ -76,13 +75,15 @@ public class RecipeEditor_Page extends AppCompatActivity {
         rNutrition = findViewById(R.id.editText_recipeNutrition);
 
         rImage = findViewById(R.id.imageView_RecipeImage);
-        addIngredients = findViewById(R.id.textView_recipeIngredients);
-        addSteps = findViewById(R.id.textView_recipeSteps);
-        updateRecipe = findViewById(R.id.button_createRecipe);
+        addIngredients = findViewById(R.id.textView_recipeIngredientsEdit);
+        addSteps = findViewById(R.id.textView_recipeStepsEdit);
+        updateRecipe = findViewById(R.id.button_updateRecipe);
         cancelRecipe = findViewById(R.id.button_cancelRecipe);
 
-        Queue = Volley.newRequestQueue(this);
+        queue = Volley.newRequestQueue(this);
 
+        Bundle extras = getIntent().getExtras();
+        recipe_id = extras.getString("recipe_id");
         getRecipe();
 
         SharedPreferences prefs = getSharedPreferences("user_info", Context.MODE_PRIVATE);
@@ -239,18 +240,47 @@ public class RecipeEditor_Page extends AppCompatActivity {
     }
 
     private void getRecipe(){
-        JsonObjectRequest recipeRequest = new JsonObjectRequest(Request.Method.GET, URL_RECIPE + recipe_id, null,
+        JsonObjectRequest getRecipeReq = new JsonObjectRequest(Request.Method.GET, URL_RECIPE + recipe_id, null,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
                         try {
-                            rName.setText();
-                            rSummary =
-                            rDescription =
-                            rPrepTime =
-                            rCookTime =
-                            rServings =
-                            rNutrition =
+                            rName.setText(response.getString("name"));
+                            rSummary.setText(response.getString("summary"));
+                            rDescription.setText(response.getString("description"));
+                            rPrepTime.setText(response.getString("prep_time"));
+                            rCookTime.setText(response.getString("cook_time"));
+                            rServings.setText(response.getString("num_servings"));
+                            rNutrition.setText(response.getString("nutrition_facts"));
+
+                            JSONArray jsonIngredients = response.getJSONArray("ingredients");
+                            ArrayList<String> ingredients = new ArrayList<>();
+                            for(int i = 0; i < jsonIngredients.length(); i++){
+                                String iName = jsonIngredients.getJSONObject(i).getString("name");
+                                String iQuantity = String.valueOf(jsonIngredients.getJSONObject(i).getDouble("quantity"));
+                                String iUnit = jsonIngredients.getJSONObject(i).getString("unit");
+                                ingredients.add(iQuantity + " " + iUnit + " " + iName);
+                            }
+                            recipeIngredientsDisplay = "";
+                            for(int i = 0; i < ingredients.size(); i++){
+                                recipeIngredientsDisplay += ingredients.get(i) + "\n";
+                            }
+                            lData = ingredients;
+                            System.out.println(recipeIngredientsDisplay);
+                            addIngredients.setText(recipeIngredientsDisplay);
+
+                            JSONArray jsonSteps = response.getJSONArray("steps");
+                            ArrayList<String> steps = new ArrayList<>();
+                            for(int i = 0; i < jsonSteps.length(); i++){
+                                steps.add(jsonSteps.getJSONObject(i).getString("name"));
+                            }
+                            recipeStepsDisplay = "";
+                            for(int i = 0; i < steps.size(); i++){
+                                recipeStepsDisplay += steps.get(i) + "\n";
+                            }
+                            sData = recipeStepsDisplay;
+                            System.out.println(sData);
+                            addSteps.setText(sData);
 
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -264,6 +294,7 @@ public class RecipeEditor_Page extends AppCompatActivity {
 
             }
         });
+        queue.add(getRecipeReq);
     }
 
     public void updateRecipe(){
@@ -335,7 +366,7 @@ public class RecipeEditor_Page extends AppCompatActivity {
                         Toast.LENGTH_SHORT).show();
             }
         });
-        Queue.add(recipeRequest);
+        queue.add(recipeRequest);
     }
 
     public void convertArrayTOJSONArray(){
@@ -364,5 +395,9 @@ public class RecipeEditor_Page extends AppCompatActivity {
             e.printStackTrace();
             Toast.makeText(getApplicationContext(), "Error: " + e.toString(), Toast.LENGTH_SHORT).show();
         }
+    }
+
+    public void getIngredientsFromJSON(){
+
     }
 }

@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        tools:context=".Pages.RecipeCreator.RecipeCreator_Page">
+        tools:context=".Pages.RecipeCreator.RecipeEditor_Page">
 
         <Button
             android:id="@+id/button_cancelRecipe"
@@ -299,7 +299,7 @@
             app:layout_constraintTop_toBottomOf="@id/editText_recipeNutrition"/>
 
         <TextView
-            android:id="@+id/textView_recipeIngredients"
+            android:id="@+id/textView_recipeIngredientsEdit"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -326,10 +326,10 @@
             android:text="STEPS"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/textView_recipeIngredients" />
+            app:layout_constraintTop_toBottomOf="@id/textView_recipeIngredientsEdit" />
 
         <TextView
-            android:id="@+id/textView_recipeSteps"
+            android:id="@+id/textView_recipeStepsEdit"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -351,8 +351,8 @@
             android:layout_width="match_parent"
             android:layout_height="40dp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/textView_recipeSteps" />
-        />
+            app:layout_constraintTop_toBottomOf="@id/textView_recipeStepsEdit" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </ScrollView>

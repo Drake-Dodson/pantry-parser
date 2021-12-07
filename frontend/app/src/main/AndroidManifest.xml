@@ -22,7 +22,7 @@
             android:name=".Pages.Settings.ChangeUsername_Page"
             android:exported="true" />
         <activity
-            android:name=".RecipeEditor_Page"
+            android:name=".Pages.RecipeCreator.RecipeEditor_Page"
             android:exported="true" />
         <activity
             android:name=".Pages.RecipeCreator.AddSteps_Page"

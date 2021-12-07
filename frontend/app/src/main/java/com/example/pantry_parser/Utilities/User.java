@@ -3,10 +3,10 @@ package com.example.pantry_parser.Utilities;
 public class User {
     private int id;
     private String username, email, password;
-    public static String DESIGNATION_ADMIN = "admin";
-    public static String DESIGNATION_CHEF = "chef";
-    public static String DESIGNATION_MAIN = "main";
-    public static String[] ROLES = {
+    public static final String DESIGNATION_ADMIN = "admin";
+    public static final String DESIGNATION_CHEF = "chef";
+    public static final String DESIGNATION_MAIN = "main";
+    public static final String[] ROLES = {
             DESIGNATION_ADMIN,
             DESIGNATION_CHEF,
             DESIGNATION_MAIN

@@ -1,6 +1,8 @@
 package com.example.pantry_parser.RecyclerView;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.SearchView;
@@ -21,6 +23,7 @@ import com.android.volley.toolbox.Volley;
 import com.example.pantry_parser.R;
 import com.example.pantry_parser.Models.Recipe;
 import com.example.pantry_parser.Utilities.URLs;
+import com.example.pantry_parser.Utilities.User;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import org.json.JSONArray;
@@ -58,8 +61,13 @@ public class IngredientListView extends AppCompatActivity implements RecyclerVie
         switch(viewType) {
             case "ADMIN":
                 URL_TO_USE = URL_USERS;
+                String role = getSharedPreferences("user_info", Context.MODE_PRIVATE).getString("role", "").trim();
+                if(!role.toLowerCase().equals(User.DESIGNATION_ADMIN)) {
+                    Toast.makeText(this, "You are not an admin", Toast.LENGTH_LONG).show();
+                    finish();
+                }
                 break;
-            case "INGREDIENTS":
+            default:
                 URL_TO_USE = URL_INGREDIENTS;
                 break;
         }
@@ -167,7 +175,7 @@ public class IngredientListView extends AppCompatActivity implements RecyclerVie
                     while (!recipeArray.isNull(i) && i <=pageSize) {
                         try {
                             if(URL_TO_USE.contains(URL_USERS)) {
-                                dataset.add(new Recipe(getUser(i, recipeArray)));
+                                dataset.add(getUser(i, recipeArray));
                             } else {
                                 dataset.add(new Recipe(getIngredient(i, recipeArray)));
                             }
@@ -200,9 +208,11 @@ public class IngredientListView extends AppCompatActivity implements RecyclerVie
     }
 
     @NonNull
-    private String getUser(int i, JSONArray array) throws JSONException {
+    private Recipe getUser(int i, JSONArray array) throws JSONException {
         JSONObject json = array.getJSONObject(i);
-        return json.getString("email") + " -- " + json.getString("role");
+        Recipe user = new Recipe(json.getString("email") + " -- " + json.getString("role"));
+        user.setRecipeID(json.getString("id"));
+        return user;
     }
 
     /**
@@ -220,7 +230,15 @@ public class IngredientListView extends AppCompatActivity implements RecyclerVie
     @Override
     public void onRecipeClick(int position) {
         if(URL_TO_USE.contains(URL_USERS)) {
-
+            String idToChange = dataset.get(position).getRecipeID().trim();
+            String user_id = getSharedPreferences("user_info", Context.MODE_PRIVATE).getString("role", "").trim();
+            if(idToChange.equals(user_id)){
+                String user = dataset.get(position).getRecipeName();
+                String newRole = getNewRole(user);
+                sendUserRequest(newRole, idToChange);
+            } else {
+                Toast.makeText(this, "You cannot change your own role", Toast.LENGTH_LONG).show();
+            }
         } else {
             String ingredient = dataset.get(position).getRecipeName();
             if(selected.contains(ingredient)) {
@@ -242,7 +260,60 @@ public class IngredientListView extends AppCompatActivity implements RecyclerVie
         return q;
     }
 
-//    private String sendUserRequest(String role) {
-//
-//    }
+    private void sendUserRequest(String role, String user_id) {
+        String changeRoleURL = "http://coms-309-032.cs.iastate.edu:8080/user/" + user_id + "/assignrole/";
+        JSONObject json = new JSONObject();
+        try {
+            json.put("adminEmail", getSharedPreferences("user_info", Context.MODE_PRIVATE).getString("email", ""));
+            json.put("adminPassword", "password");
+            json.put("role", role);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        JsonObjectRequest roleRequest = new JsonObjectRequest(Request.Method.PATCH, changeRoleURL, json, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                try {
+                    String success = response.get("success").toString();
+                    String message = response.get("message").toString();
+                    if(success.equals("true")) {
+                        Toast.makeText(IngredientListView.this, message, Toast.LENGTH_LONG).show();
+                        dataset.clear();
+                        popData();
+                        recyclerViewAdapter.notifyDataSetChanged();
+                    } else {
+                        Toast.makeText(IngredientListView.this, message, Toast.LENGTH_LONG).show();
+                    }
+                } catch(JSONException ex) {
+                    ex.printStackTrace();
+                }
+
+            }
+        }, new Response.ErrorListener() {
+            /**
+             *Does not fill recipes if no data is returned from database
+             * @param error
+             */
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        });
+        queue.add(roleRequest);
+    }
+
+    private String getNewRole(String user) {
+        String[] chunks = user.split("--");
+        String currRole = chunks[1].trim();
+        switch (currRole.toLowerCase()) {
+            case User.DESIGNATION_ADMIN:
+                return User.DESIGNATION_MAIN;
+            case User.DESIGNATION_CHEF:
+                return User.DESIGNATION_ADMIN;
+            case User.DESIGNATION_MAIN:
+                return User.DESIGNATION_CHEF;
+            default:
+                return User.DESIGNATION_MAIN;
+        }
+    }
 }

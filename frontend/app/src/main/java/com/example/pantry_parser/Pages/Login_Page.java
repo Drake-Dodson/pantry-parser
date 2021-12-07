@@ -127,8 +127,10 @@ public class Login_Page extends AppCompatActivity implements View.OnClickListene
                     break;
                 case R.id.text_SignUp:
                     startActivity(intentSignUp);
+                    break;
                 case R.id.text_ForgotPassword:
                     startActivity(new Intent(getApplicationContext(), PasswordReset_Page.class));
+                    break;
             }
         }
 

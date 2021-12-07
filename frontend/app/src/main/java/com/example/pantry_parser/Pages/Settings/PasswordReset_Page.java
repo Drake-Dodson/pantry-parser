@@ -62,7 +62,7 @@ public class PasswordReset_Page extends AppCompatActivity {
         bt_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getApplicationContext(), Settings_Page.class));
+                startActivity(new Intent(getApplicationContext(), Login_Page.class));
             }
         });
 

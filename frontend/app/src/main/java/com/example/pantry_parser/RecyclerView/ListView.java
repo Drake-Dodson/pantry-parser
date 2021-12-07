@@ -276,7 +276,7 @@ public class ListView extends AppCompatActivity implements RecyclerViewAdapter.O
         Recipe recipe = new Recipe(JSONRecipe.getString("name"));
         recipe.setRecipeID(JSONRecipe.getString("id"));
         recipe.setTimeToMake(JSONRecipe.getInt("time"));
-        recipe.setSummary(JSONRecipe.getString("summary"));
+        recipe.setSummary(JSONRecipe.getString("description") + "\n\n" + JSONRecipe.getString("summary"));
         recipe.setAuthor(JSONRecipe.getString("creatorName"));
         recipe.setUserId(JSONRecipe.getInt("creatorId"));
         recipe.setImagePath(JSONRecipe.getString("imagePath"));
@@ -315,6 +315,7 @@ public class ListView extends AppCompatActivity implements RecyclerViewAdapter.O
         dataset.get(position);
         Intent intent = new Intent(this, Recipe_Page.class);
         intent.putExtra("Recipe", dataset.get(position));
+
         startActivity(intent);
     }
 

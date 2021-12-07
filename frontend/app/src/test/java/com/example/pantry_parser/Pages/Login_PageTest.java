@@ -1,9 +1,5 @@
 package com.example.pantry_parser.Pages;
 
-import static org.junit.Assert.*;
-
-import android.content.Context;
-
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;

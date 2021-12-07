@@ -98,7 +98,7 @@ public class Registration_Page extends AppCompatActivity implements View.OnClick
     /**
      * Creates a new user from inputted username, email, password, and confirms passwords match.
      */
-    private void Register() {
+    public void Register() {
         final String user_Name = username.getText().toString().trim();
         final String user_Email = email.getText().toString().trim();
         final String user_Password = password.getText().toString().trim();

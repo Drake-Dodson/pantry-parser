@@ -53,6 +53,8 @@ public class ListView extends AppCompatActivity implements RecyclerViewAdapter.O
     FloatingActionButton newRecipe;
     SearchView searchView;
     Switch toggle;
+    int pgNo;
+    int totalPages;
 
     /**
      *Create listview activity and instantiate elements
@@ -130,6 +132,7 @@ public class ListView extends AppCompatActivity implements RecyclerViewAdapter.O
             public boolean onQueryTextSubmit(String query) {
                 try {
                     dataset.clear();
+                    recyclerViewAdapter.notifyDataSetChanged();
                     URL_TO_USE = URLs.updatePaginatedQueryUrl(URL_TO_USE, "pageNo", "0");
                     if(URL_TO_USE.contains(URL_PARSER)) {
                         searchByIngredient(query);
@@ -210,17 +213,17 @@ public class ListView extends AppCompatActivity implements RecyclerViewAdapter.O
 
     private void getMoreData() {
         URL_TO_USE = URLs.getNextPaginatedQueryPageUrl(URL_TO_USE);
-
-        if(URL_TO_USE.contains(URL_PARSER)) {
-            try {
-                searchByIngredient(searchView.getQuery().toString());
-            } catch (JSONException e) {
-                e.printStackTrace();
+        if(pgNo < totalPages) {
+            if(URL_TO_USE.contains(URL_PARSER)) {
+                try {
+                    searchByIngredient(searchView.getQuery().toString());
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            } else {
+                popData();
             }
-        } else {
-            popData();
         }
-
         isLoading = false;
     }
 
@@ -238,6 +241,8 @@ public class ListView extends AppCompatActivity implements RecyclerViewAdapter.O
                     try {
                         recipeArray = response.getJSONArray("content");
                         pageSize = response.getInt("size");
+                        pgNo = response.getJSONObject("pageable").getInt("pageNumber");
+                        totalPages = response.getInt("totalPages");
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -339,6 +344,8 @@ public class ListView extends AppCompatActivity implements RecyclerViewAdapter.O
                     JSONArray recipeArray = null;
                     try {
                         recipeArray = response.getJSONArray("content");
+                        pgNo = response.getJSONObject("pageable").getInt("pageNumber");
+                        totalPages = response.getInt("totalPages");
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }

@@ -7,9 +7,11 @@ import android.graphics.Point;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.Display;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.HorizontalScrollView;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,6 +29,7 @@ import com.example.pantry_parser.R;
 import com.example.pantry_parser.Models.Recipe;
 import com.example.pantry_parser.Pages.RecipeCreator.RecipeEditor_Page;
 import com.google.android.material.tabs.TabLayout;
+import com.squareup.picasso.Picasso;
 
 import org.java_websocket.client.WebSocketClient;
 import org.json.JSONException;
@@ -47,8 +50,10 @@ public class  Recipe_Page extends AppCompatActivity {
         private HorizontalScrollView scrollView;
         private Button favButton;
         private WebSocketClient mWebSocketClient;
+        private ImageView recipePic;
         private boolean hasUserFavorited;
         private RequestQueue queue;
+
 
 
     /**
@@ -62,6 +67,11 @@ public class  Recipe_Page extends AppCompatActivity {
             super.onCreate(savedInstanceState);
             setContentView(R.layout.activity_view_recipe);
             recipe = (Recipe) getIntent().getSerializableExtra("Recipe");
+            recipePic = findViewById(R.id.RecipeImage);
+            if (recipe.getImagePath() != "null") {
+                Picasso.get().load("http://coms-309-032.cs.iastate.edu:8080/recipe/" + recipe.getRecipeID() + "/image").centerCrop().resize(600, 365).into(recipePic);
+            }
+
             hasUserFavorited = false;
 
             String user_id = getSharedPreferences("user_info", Context.MODE_PRIVATE).getString("user_id", "");

@@ -107,7 +107,7 @@ public class ImageController {
             return MessageUtil.newResponseMessage(false, "Accepted file types are .jpg .jpeg and .png");
         }
 
-        String fileDirectory = "/target/mainImageDirectory/users/" + user_id;
+        String fileDirectory = "/target/mainImageDirectory/user/" + user_id;
         String fileName ="User" + user_id + "Image.png";
         user.setImagePath(fileDirectory + fileName);
 

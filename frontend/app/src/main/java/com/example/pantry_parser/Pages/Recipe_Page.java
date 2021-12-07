@@ -14,6 +14,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -58,12 +59,11 @@ public class  Recipe_Page extends AppCompatActivity {
         private ImageView recipePic;
         private boolean hasUserFavorited;
         private RequestQueue queue;
+        private RatingBar recipeRating;
         private String role;
         private SharedPreferences chef;
         private String imageUrl;
         private TextView chefVerified;
-
-
 
     /**
      *Initiazes the recipe elements
@@ -78,13 +78,7 @@ public class  Recipe_Page extends AppCompatActivity {
             recipe = (Recipe) getIntent().getSerializableExtra("Recipe");
             imageUrl = (String) getIntent().getSerializableExtra("ImageURL");
             recipePic = findViewById(R.id.RecipeImage);
-            Picasso.get().load(recipe.getImageUrl()).centerCrop().resize(600, 400).into(recipePic);
-//            if (recipe.getImagePath() != "null") {
-//                Picasso.get().load("http://coms-309-032.cs.iastate.edu:8080/recipe/" + recipe.getRecipeID() + "/image").centerCrop().resize(600, 400).into(recipePic);
-//            } else {
-//                //gets a random image for those recipes that don't have one to make our app a little cooler looking
-//                Picasso.get().load("https://source.unsplash.com/random/600x400/?food").centerCrop().resize(600, 400).into(recipePic);
-//            }
+            Picasso.get().load(recipe.getImageUrl()).centerCrop().resize(670, 365).into(recipePic);
 
             hasUserFavorited = false;
 
@@ -101,6 +95,8 @@ public class  Recipe_Page extends AppCompatActivity {
 
 
             NameRecipe.setText(recipe.getRecipeName());
+            recipeRating = findViewById(R.id.Reciperating);
+            recipeRating.setRating((float)recipe.getRating());
             AuthorRecipe = findViewById(R.id.RecipeAuthor);
             AuthorRecipe.setText(recipe.getAuthor());
             scrollView = findViewById(R.id.RecipeScrollView);

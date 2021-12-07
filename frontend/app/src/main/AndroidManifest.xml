@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.pantry_parser" >
+    package="com.example.pantry_parser">
 
     <uses-permission android:name="android.permission.INTERNET" />
 
@@ -11,7 +11,16 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Pantry_Parser"
-        android:usesCleartextTraffic="true" >
+        android:usesCleartextTraffic="true">
+        <activity
+            android:name=".Pages.Settings.ChangePassword_Page"
+            android:exported="true" />
+        <activity
+            android:name=".Pages.Settings.ChangeEmail_Page"
+            android:exported="true" />
+        <activity
+            android:name=".Pages.Settings.ChangeUsername_Page"
+            android:exported="true" />
         <activity
             android:name=".Pages.Recipe_Page"
             android:exported="true" />
@@ -25,7 +34,7 @@
             android:name=".Pages.Registration_Page"
             android:exported="true" />
         <activity
-            android:name=".Pages.Settings_Page"
+            android:name=".Pages.Settings.Settings_Page"
             android:exported="true" />
         <activity
             android:name=".Pages.PantryParser_Page"
@@ -35,7 +44,7 @@
             android:exported="true" />
         <activity
             android:name=".Pages.Login_Page"
-            android:exported="true" >
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

@@ -246,41 +246,47 @@ public class  Recipe_Page extends AppCompatActivity {
         recipeRating.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
             @Override
             public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
-                JSONObject JSONrating = new JSONObject();
-                try {
-                    JSONrating.put("title", "");
-                    JSONrating.put("reviewBody", "");
-                    JSONrating.put("starNumber", rating);
+                if(user_id == "") {
+                    Toast.makeText(Recipe_Page.this, "You can't rate as a guest", Toast.LENGTH_LONG).show();
+                } else {
+                    JSONObject JSONrating = new JSONObject();
+                    try {
+                        JSONrating.put("title", "");
+                        JSONrating.put("reviewBody", "");
+                        JSONrating.put("starNumber", rating);
 
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                JsonObjectRequest ratingRequest = new JsonObjectRequest(Request.Method.POST, URL_USER + user_id + "/recipe/" + recipe.getRecipeID() + "/review", JSONrating, new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        try{
-                            String success = response.getString("success");
-                            String message = response.getString("message");
-                            if(success.equals("true")){
-                                Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
-                            }
-                            else{
-                                Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
-                            }
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                            e.printStackTrace();
-                            Toast.makeText(getApplicationContext(), e.toString(), Toast.LENGTH_SHORT).show();
-                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
                     }
-                },
-                        new Response.ErrorListener() {
-                            @Override
-                            public void onErrorResponse(VolleyError error) {
-
+                    JsonObjectRequest ratingRequest = new JsonObjectRequest(Request.Method.POST, URL_USER + user_id + "/recipe/" + recipe.getRecipeID() + "/review", JSONrating, new Response.Listener<JSONObject>() {
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            try {
+                                String success = response.getString("success");
+                                String message = response.getString("message");
+                                if (success.equals("true")) {
+                                    Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+                                } else {
+                                    Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                                e.printStackTrace();
+                                Toast.makeText(getApplicationContext(), e.toString(), Toast.LENGTH_SHORT).show();
                             }
-                        });
-                queue.add(ratingRequest);
+                        }
+                    },
+                            new Response.ErrorListener() {
+                                @Override
+                                public void onErrorResponse(VolleyError error) {
+
+                                }
+                            });
+                    queue.add(ratingRequest);
+
+                }
+
+
             }
         });
     }

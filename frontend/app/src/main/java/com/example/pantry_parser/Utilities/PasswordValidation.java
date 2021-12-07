@@ -5,16 +5,8 @@ import java.util.regex.Pattern;
 
 public class PasswordValidation {
 
-    public static boolean isValidPassword(String password, String confirmPassword) {
-        String regex =
-                // Digit between 0-9 must occur at least once
-                "^(?=.*[0-9])"
-                        // Lower case and Upper case alphabet must occur at least once
-                        + "(?=.*[a-z])(?=.*[A-Z])"
-                        // Special character must occur at least once
-                        + "(?=.*[!@#$%^&+=])"
-                        // No white spaces allowed and password must be between 8-20 characters
-                        + "(?=\\S+$).{8,20}$";
+    public static boolean isValidPassword(String password) {
+        String regex = "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$";
 
         // Compile the ReGex
         Pattern p = Pattern.compile(regex);
@@ -24,15 +16,12 @@ public class PasswordValidation {
         if(password == null){
             return false;
         }
-        if(!(password == confirmPassword)){
-            return false;
-        }
 
         // Pattern class contains matcher() method
         // to find matching between given password
         // and regular expression.
         Matcher m = p.matcher(password);
-
+        System.out.println(m.matches());
         return m.matches();
     }
 }

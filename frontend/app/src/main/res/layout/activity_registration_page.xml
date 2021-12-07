@@ -50,7 +50,7 @@
         android:layout_marginRight="50dp"
         android:layout_marginTop="10dp"
         android:gravity=""
-        android:text="Please fill out the fields below to \nregister your account. Password must \ninclude 1 number, 1 uppercase,\n1 special character and be between 8-20 characters"
+        android:text="Please fill out the fields below to \nregister your account. Password must \ninclude 1 number, and 1 uppercase character."
         android:textSize="18sp"
         app:layout_constraintTop_toBottomOf="@+id/welcome" />
 
@@ -124,7 +124,7 @@
         app:passwordToggleEnabled="true">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/textInput_cPassword"
+            android:id="@+id/textInput_password"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:ems="15"
@@ -146,7 +146,7 @@
         app:passwordToggleEnabled="true">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/textInput_password"
+            android:id="@+id/textInput_cPassword"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:ems="15"

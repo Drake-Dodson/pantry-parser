@@ -117,6 +117,7 @@ public class Login_Page extends AppCompatActivity implements View.OnClickListene
                     SharedPreferences prefs = getSharedPreferences("user_info", Context.MODE_PRIVATE);
                     SharedPreferences.Editor editor = prefs.edit();
                     editor.putString("user_id", "");
+                    editor.putString("role", "");
                     editor.putString("email", "");
                     editor.putBoolean("is_logged_in", false);
                     editor.commit();
@@ -155,7 +156,9 @@ public class Login_Page extends AppCompatActivity implements View.OnClickListene
                         if(message.equals("true")) {
                             SharedPreferences prefs = getSharedPreferences("user_info", Context.MODE_PRIVATE);
                             SharedPreferences.Editor editor = prefs.edit();
-                            editor.putString("user_id", user_id);
+                            String[] chunks = user_id.split(":");
+                            editor.putString("user_id", chunks[0]);
+                            editor.putString("role", chunks[1]);
                             editor.putString("email", email);
                             editor.putBoolean("is_logged_in", true);
                             editor.commit();

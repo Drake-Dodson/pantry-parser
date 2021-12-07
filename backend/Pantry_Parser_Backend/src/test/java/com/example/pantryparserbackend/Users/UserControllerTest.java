@@ -76,7 +76,7 @@ class UserControllerTest {
 
         when(userRepository.findByEmail(mockUser.getEmail())).thenReturn(mockUser);
 
-        String expected = MessageUtil.newResponseMessage(true, "" + mockUser.getId());
+        String expected = MessageUtil.newResponseMessage(true, "" + mockUser.getId() + ":" + mockUser.getRole());
         String actual = userController.login(mockLogin, mockRequest);
 
         assertEquals(expected, actual);

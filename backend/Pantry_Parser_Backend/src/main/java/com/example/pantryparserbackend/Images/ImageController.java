@@ -139,12 +139,12 @@ public class ImageController {
     @GetMapping(path = "/user/{user_id}/image", produces = MediaType.IMAGE_PNG_VALUE)
     public byte[] getUserProfileImage( @PathVariable int user_id, @RequestParam(defaultValue = "false") boolean compressed) throws IOException{
         String compressionString = compressed ? "_compressed" : "";
-        Path filePath = Paths.get("/target/mainImageDirectory/user/" + user_id + "/Recipe" + user_id + "Image" + compressionString + ".png");
+        Path filePath = Paths.get("/target/mainImageDirectory/user/" + user_id + "/User" + user_id + "Image" + compressionString + ".png");
 
         if(Files.notExists(filePath)){
             throw new IOException("Image does not exist");
         }
 
-        return Files.readAllBytes(Paths.get("/target/mainImageDirectory/user/" + user_id + "/Recipe" + user_id + "Image" + compressionString + ".png"));
+        return Files.readAllBytes(Paths.get("/target/mainImageDirectory/user/" + user_id + "/User" + user_id + "Image" + compressionString + ".png"));
     }
 }

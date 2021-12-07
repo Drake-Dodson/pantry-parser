@@ -23,7 +23,15 @@ public class Recipe implements Serializable {
     }
 
     private String imagePath;
+    private String imageUrl;
 
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String url) {
+        imageUrl = url;
+    }
     public int getUserId() {
         return UserId;
     }

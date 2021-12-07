@@ -2,8 +2,10 @@ package com.example.pantry_parser.Pages;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Point;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.Display;
@@ -25,13 +27,16 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.pantry_parser.Network.FavoriteSocket;
+import com.example.pantry_parser.Network.RequestListener;
 import com.example.pantry_parser.R;
 import com.example.pantry_parser.Models.Recipe;
 import com.example.pantry_parser.Pages.RecipeCreator.RecipeEditor_Page;
+import com.example.pantry_parser.RecyclerView.ListView;
 import com.google.android.material.tabs.TabLayout;
 import com.squareup.picasso.Picasso;
 
 import org.java_websocket.client.WebSocketClient;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -53,6 +58,10 @@ public class  Recipe_Page extends AppCompatActivity {
         private ImageView recipePic;
         private boolean hasUserFavorited;
         private RequestQueue queue;
+        private String role;
+        private SharedPreferences chef;
+        private String imageUrl;
+        private TextView chefVerified;
 
 
 
@@ -67,18 +76,30 @@ public class  Recipe_Page extends AppCompatActivity {
             super.onCreate(savedInstanceState);
             setContentView(R.layout.activity_view_recipe);
             recipe = (Recipe) getIntent().getSerializableExtra("Recipe");
+            imageUrl = (String) getIntent().getSerializableExtra("ImageURL");
             recipePic = findViewById(R.id.RecipeImage);
-            if (recipe.getImagePath() != "null") {
-                Picasso.get().load("http://coms-309-032.cs.iastate.edu:8080/recipe/" + recipe.getRecipeID() + "/image").centerCrop().resize(600, 365).into(recipePic);
-            }
+            Picasso.get().load(recipe.getImageUrl()).centerCrop().resize(600, 400).into(recipePic);
+//            if (recipe.getImagePath() != "null") {
+//                Picasso.get().load("http://coms-309-032.cs.iastate.edu:8080/recipe/" + recipe.getRecipeID() + "/image").centerCrop().resize(600, 400).into(recipePic);
+//            } else {
+//                //gets a random image for those recipes that don't have one to make our app a little cooler looking
+//                Picasso.get().load("https://source.unsplash.com/random/600x400/?food").centerCrop().resize(600, 400).into(recipePic);
+//            }
 
             hasUserFavorited = false;
 
+            role = getSharedPreferences("user_info", Context.MODE_PRIVATE).getString("role", "");
             String user_id = getSharedPreferences("user_info", Context.MODE_PRIVATE).getString("user_id", "");
-            String url = "http://coms-309-032.cs.iastate.edu:8080/user/" + user_id + "/favorited/" + recipe.getRecipeID();
-            getIsFavorited(url);
+            if(user_id != "") {
+                String url = "http://coms-309-032.cs.iastate.edu:8080/user/" + user_id + "/favorited/" + recipe.getRecipeID();
+                getIsFavorited(url);
+            }
 
             NameRecipe = findViewById(R.id.RecipeName);
+            chefVerified = findViewById(R.id.ChefVerified);
+            updateChefIcon();
+
+
             NameRecipe.setText(recipe.getRecipeName());
             AuthorRecipe = findViewById(R.id.RecipeAuthor);
             AuthorRecipe.setText(recipe.getAuthor());
@@ -183,10 +204,11 @@ public class  Recipe_Page extends AppCompatActivity {
             favButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(FavoriteSocket.mWebSocketClient.isOpen()) {
+                    if(FavoriteSocket.mWebSocketClient != null && FavoriteSocket.mWebSocketClient.isOpen()) {
                         if(!hasUserFavorited) {
                             FavoriteSocket.mWebSocketClient.send("favorite:" + recipe.getRecipeID());
                             hasUserFavorited = true;
+
                         } else {
                             FavoriteSocket.mWebSocketClient.send("unfavorite:" + recipe.getRecipeID());
                             hasUserFavorited = false;
@@ -194,6 +216,21 @@ public class  Recipe_Page extends AppCompatActivity {
                         updateFaveButton();
                     } else {
                         Toast.makeText(Recipe_Page.this, "cannot favorite as a guest", Toast.LENGTH_LONG).show();
+                    }
+                }
+            });
+
+            chefVerified.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(role.equals("admin") || role.equals("chef")){
+                        verify(recipe.getRecipeID(), recipe.getChefVerified());
+                    } else {
+                        if(recipe.getChefVerified()) {
+                            Toast.makeText(Recipe_Page.this, "This recipe has been verified by a chef to be of quality!", Toast.LENGTH_LONG).show();
+                        } else {
+                            Toast.makeText(Recipe_Page.this, "This recipe is from a user of the app", Toast.LENGTH_LONG).show();
+                        }
                     }
                 }
             });
@@ -238,4 +275,50 @@ public class  Recipe_Page extends AppCompatActivity {
         super.onBackPressed();
     }
 
+    public void updateChefIcon() {
+        if(recipe.getChefVerified()) {
+            chefVerified.setBackgroundResource(R.drawable.profile);
+        } else {
+            chefVerified.setBackgroundResource(R.drawable.ic_person);
+        }
+    }
+
+    public void verify(String recipeId, Boolean verified){
+        String urlVerified;
+        if (verified == true){
+            urlVerified = "unverify";
+        }
+       else{
+           urlVerified = "verify";
+        }
+        JsonObjectRequest verifyRequest = new JsonObjectRequest(Request.Method.GET, "http://coms-309-032.cs.iastate.edu:8080/recipe/" + recipeId + "/" + urlVerified, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+
+                try{
+                   String success = response.getString("success");
+                   String message = response.getString("message");
+
+                   if(success.equals("true")){
+                       Toast.makeText(Recipe_Page.this, message, Toast.LENGTH_LONG).show();
+                       recipe.setChefVerified(!verified);
+                       updateChefIcon();
+                   }
+                   else{
+                       Toast.makeText(Recipe_Page.this, message, Toast.LENGTH_LONG).show();
+                   }
+                }
+              catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                System.out.println(error);
+            }
+        });
+        queue.add(verifyRequest);
+
+    }
 }

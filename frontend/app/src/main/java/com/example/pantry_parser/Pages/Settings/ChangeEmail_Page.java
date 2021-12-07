@@ -91,7 +91,7 @@ public class ChangeEmail_Page extends AppCompatActivity {
     /**
      * Method that sends a request to retrieve user information
      */
-    private void getUserInfo(){
+    public void getUserInfo(){
         JsonObjectRequest infoRequest = new JsonObjectRequest(Request.Method.GET, URL + user_id, null,
                 new Response.Listener<JSONObject>() {
                     @Override

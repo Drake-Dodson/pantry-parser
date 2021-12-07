@@ -15,12 +15,17 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.android.volley.Request;
+import com.example.pantry_parser.Network.FavoriteSocket;
 import com.example.pantry_parser.Network.RequestListener;
 import com.example.pantry_parser.Network.VolleyListener;
+import com.example.pantry_parser.Pages.Settings.PasswordReset_Page;
 import com.example.pantry_parser.R;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.net.URI;
+import java.net.URISyntaxException;
 
 public class Login_Page extends AppCompatActivity implements View.OnClickListener{
 
@@ -29,6 +34,7 @@ public class Login_Page extends AppCompatActivity implements View.OnClickListene
         private Button eLogin;
         private Button eGuest;
         private TextView eAttemptsInfo;
+        private TextView forgotPassword;
         private TextView eSignUp;
 
         private String adminUserName = "Admin";
@@ -54,6 +60,9 @@ public class Login_Page extends AppCompatActivity implements View.OnClickListene
             eLogin = findViewById(R.id.button_Login);
             eLogin.setOnClickListener(this);
             eAttemptsInfo = findViewById(R.id.text_Attempts);
+
+            forgotPassword = findViewById(R.id.text_ForgotPassword);
+            forgotPassword.setOnClickListener(this);
 
             eSignUp = findViewById(R.id.text_SignUp);
             eSignUp.setOnClickListener(this);
@@ -105,11 +114,20 @@ public class Login_Page extends AppCompatActivity implements View.OnClickListene
                     }
                     break;
                 case R.id.bt_Guest:
+                    SharedPreferences prefs = getSharedPreferences("user_info", Context.MODE_PRIVATE);
+                    SharedPreferences.Editor editor = prefs.edit();
+                    editor.putString("user_id", "");
+                    editor.putString("email", "");
+                    editor.putBoolean("is_logged_in", false);
+                    editor.commit();
+                    editor.apply();
                     Toast.makeText(Login_Page.this, "logged in as Guest", Toast.LENGTH_SHORT).show();
                     startActivity(intentLogin);
                     break;
                 case R.id.text_SignUp:
                     startActivity(intentSignUp);
+                case R.id.text_ForgotPassword:
+                    startActivity(new Intent(getApplicationContext(), PasswordReset_Page.class));
             }
         }
 
@@ -142,6 +160,9 @@ public class Login_Page extends AppCompatActivity implements View.OnClickListene
                             editor.putBoolean("is_logged_in", true);
                             editor.commit();
                             editor.apply();
+
+                            connectWebSocket();
+
                             startActivity(intentLogin);
                             counter = 5;
                             eAttemptsInfo.setText("No. of attempts remaining: " + counter);
@@ -160,6 +181,7 @@ public class Login_Page extends AppCompatActivity implements View.OnClickListene
                  */
                 @Override
                 public void onFailure(String error) {
+                    System.out.println(error);
                     counter--;
                     Toast.makeText(Login_Page.this, "Incorrect Username or Password", Toast.LENGTH_SHORT).show();
                     eAttemptsInfo.setText("No. of attempts remaining: " + counter);
@@ -185,5 +207,24 @@ public class Login_Page extends AppCompatActivity implements View.OnClickListene
             }
             return false;
         }
+
+    private void connectWebSocket() {
+        URI uri;
+        try {
+
+            String user_id = getSharedPreferences("user_info", Context.MODE_PRIVATE).getString("user_id", "");
+            if(user_id == "") {
+                throw new NullPointerException("No user logged in");
+            }
+            uri = new URI("ws://coms-309-032.cs.iastate.edu:8080/websocket/" + user_id);
+
+            FavoriteSocket.connectFavoriteSocket(uri);
+            FavoriteSocket.changeContext(this);
+        } catch (URISyntaxException | NullPointerException e) {
+            e.printStackTrace();
+            return;
+        }
+
     }
+}
 

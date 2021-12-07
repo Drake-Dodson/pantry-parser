@@ -37,7 +37,7 @@
         app:layout_constraintVertical_bias="1.0" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/addRecipeButton"
+        android:id="@+id/createRecipe"
         android:layout_width="56dp"
         android:layout_height="56dp"
         android:clickable="true"

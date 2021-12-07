@@ -1,7 +1,5 @@
-package com.example.pantry_parser;
+package com.example.pantry_parser.Models;
 
-import android.graphics.drawable.Drawable;
-import android.media.Image;
 import android.widget.ImageView;
 
 import java.io.Serializable;

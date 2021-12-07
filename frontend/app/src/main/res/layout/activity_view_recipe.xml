@@ -33,14 +33,23 @@
 
             <TextView
                 android:id="@+id/RecipeName"
-                android:layout_width="wrap_content"
+                android:layout_width="261dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:layout_gravity="center"
+                android:layout_weight="1"
                 android:fontFamily="@font/robotobold"
-                android:textColor="@color/black"
                 android:text="Drake's Spicy Meatballs"
+                android:textColor="@color/black"
                 android:textSize="23dp" />
+
+            <TextView
+                android:id="@+id/EditRecipe"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="10dp"
+                android:background="@drawable/ic_edit"
+                />
 
             <Button
                 android:id="@+id/FavButton"

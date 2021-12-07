@@ -45,7 +45,8 @@ public class IngredientListView extends AppCompatActivity implements RecyclerVie
     FloatingActionButton newRecipe;
     SearchView searchView;
     TextView textView;
-    int pageNo;
+    int pgNo;
+    int totalPages;
     String viewType;
 
     /**
@@ -121,6 +122,7 @@ public class IngredientListView extends AppCompatActivity implements RecyclerVie
                     URL_TO_USE = URLs.updatePaginatedQueryUrl(URL_TO_USE, "query", query);
                     URL_TO_USE = URLs.updatePaginatedQueryUrl(URL_TO_USE, "pageNo", "0");
                     dataset.clear();
+                    recyclerViewAdapter.notifyDataSetChanged();
                     popData();
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -150,9 +152,11 @@ public class IngredientListView extends AppCompatActivity implements RecyclerVie
     }
 
     private void getMoreData() {
-        URL_TO_USE = URLs.getNextPaginatedQueryPageUrl(URL_TO_USE);
-        popData();
-        isLoading = false;
+        if(pgNo < totalPages) {
+            URL_TO_USE = URLs.getNextPaginatedQueryPageUrl(URL_TO_USE);
+            popData();
+            isLoading = false;
+        }
     }
 
     /**
@@ -169,6 +173,8 @@ public class IngredientListView extends AppCompatActivity implements RecyclerVie
                     try {
                         recipeArray = response.getJSONArray("content");
                         pageSize = response.getInt("size");
+                        pgNo = response.getJSONObject("pageable").getInt("pageNumber");
+                        totalPages = response.getInt("totalPages");
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -279,6 +285,7 @@ public class IngredientListView extends AppCompatActivity implements RecyclerVie
                     if(success.equals("true")) {
                         Toast.makeText(IngredientListView.this, message, Toast.LENGTH_LONG).show();
                         dataset.clear();
+                        recyclerViewAdapter.notifyDataSetChanged();
                         URL_TO_USE = URLs.updatePaginatedQueryUrl(URL_TO_USE, "pageNo", "0");
                         popData();
                         recyclerViewAdapter.notifyDataSetChanged();

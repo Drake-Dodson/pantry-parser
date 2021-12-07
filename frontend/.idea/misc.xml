@@ -4,44 +4,16 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="../../../../../../layout/custom_preview.xml" value="0.24322916666666666" />
-        <entry key="..\:/Code/2_do_8/frontend/app/src/main/res/layout/activity_home_page.xml" value="0.2536231884057971" />
-        <entry key="..\:/Code/2_do_8/frontend/app/src/main/res/layout/activity_ingredient_list_view.xml" value="0.30657894736842106" />
-        <entry key="..\:/Code/2_do_8/frontend/app/src/main/res/layout/activity_list_view.xml" value="0.20520833333333333" />
-        <entry key="..\:/Code/2_do_8/frontend/app/src/main/res/layout/activity_pantry_parser.xml" value="0.20520833333333333" />
-        <entry key="..\:/Code/2_do_8/frontend/app/src/main/res/layout/activity_view_recipe.xml" value="0.20677083333333332" />
-        <entry key="..\:/Code/2_do_8/frontend/app/src/main/res/layout/ingredient_item_row.xml" value="0.22" />
-        <entry key="..\:/Code/2_do_8/frontend/app/src/main/res/layout/item_row.xml" value="0.20520833333333333" />
         <entry key="..\:/Users/adang/Com S 309 2_do_8/2_do_8/frontend/app/src/main/res/drawable/border.xml" value="0.3828125" />
-        <entry key="..\:/Users/adang/Com S 309 2_do_8/2_do_8/frontend/app/src/main/res/drawable/button.xml" value="0.37864583333333335" />
-        <entry key="..\:/Users/adang/Com S 309 2_do_8/2_do_8/frontend/app/src/main/res/drawable/circle.xml" value="0.37864583333333335" />
-        <entry key="..\:/Users/adang/Com S 309 2_do_8/2_do_8/frontend/app/src/main/res/drawable/circle_border.xml" value="0.37864583333333335" />
-        <entry key="..\:/Users/adang/Com S 309 2_do_8/2_do_8/frontend/app/src/main/res/drawable/circular_image_view.xml" value="0.37864583333333335" />
-        <entry key="..\:/Users/adang/Com S 309 2_do_8/2_do_8/frontend/app/src/main/res/drawable/ic_baseline_email_24.xml" value="0.38229166666666664" />
-        <entry key="..\:/Users/adang/Com S 309 2_do_8/2_do_8/frontend/app/src/main/res/drawable/ic_baseline_keyboard_arrow_right_24.xml" value="0.37864583333333335" />
-        <entry key="..\:/Users/adang/Com S 309 2_do_8/2_do_8/frontend/app/src/main/res/drawable/ic_edit.xml" value="0.37864583333333335" />
-        <entry key="..\:/Users/adang/Com S 309 2_do_8/2_do_8/frontend/app/src/main/res/drawable/ic_person.xml" value="0.3645833333333333" />
-        <entry key="..\:/Users/adang/Com S 309 2_do_8/2_do_8/frontend/app/src/main/res/drawable/profile_border.xml" value="0.37864583333333335" />
-        <entry key="..\:/Users/adang/Com S 309 2_do_8/2_do_8/frontend/app/src/main/res/drawable/profile_image.xml" value="0.37864583333333335" />
-        <entry key="..\:/Users/adang/Com S 309 2_do_8/2_do_8/frontend/app/src/main/res/drawable/text_border.xml" value="0.38229166666666664" />
-        <entry key="..\:/Users/adang/Com S 309 2_do_8/2_do_8/frontend/app/src/main/res/layout/activity_change_email.xml" value="0.36666666666666664" />
-        <entry key="..\:/Users/adang/Com S 309 2_do_8/2_do_8/frontend/app/src/main/res/layout/activity_change_password.xml" value="0.25" />
-        <entry key="..\:/Users/adang/Com S 309 2_do_8/2_do_8/frontend/app/src/main/res/layout/activity_change_username.xml" value="0.33" />
         <entry key="..\:/Users/adang/Com S 309 2_do_8/2_do_8/frontend/app/src/main/res/layout/activity_home_page.xml" value="0.17831813576494426" />
         <entry key="..\:/Users/adang/Com S 309 2_do_8/2_do_8/frontend/app/src/main/res/layout/activity_list_view.xml" value="0.36666666666666664" />
-        <entry key="..\:/Users/adang/Com S 309 2_do_8/2_do_8/frontend/app/src/main/res/layout/activity_main.xml" value="0.33" />
         <entry key="..\:/Users/adang/Com S 309 2_do_8/2_do_8/frontend/app/src/main/res/layout/activity_my_recipes.xml" value="0.17831813576494426" />
         <entry key="..\:/Users/adang/Com S 309 2_do_8/2_do_8/frontend/app/src/main/res/layout/activity_pantry_parser.xml" value="0.36666666666666664" />
-        <entry key="..\:/Users/adang/Com S 309 2_do_8/2_do_8/frontend/app/src/main/res/layout/activity_password_reset.xml" value="0.3484375" />
         <entry key="..\:/Users/adang/Com S 309 2_do_8/2_do_8/frontend/app/src/main/res/layout/activity_recipe_creator.xml" value="0.33" />
-        <entry key="..\:/Users/adang/Com S 309 2_do_8/2_do_8/frontend/app/src/main/res/layout/activity_recipe_creator_page.xml" value="0.171875" />
-        <entry key="..\:/Users/adang/Com S 309 2_do_8/2_do_8/frontend/app/src/main/res/layout/activity_recipe_editor.xml" value="0.1828125" />
         <entry key="..\:/Users/adang/Com S 309 2_do_8/2_do_8/frontend/app/src/main/res/layout/activity_recipe_view.xml" value="0.31657608695652173" />
-        <entry key="..\:/Users/adang/Com S 309 2_do_8/2_do_8/frontend/app/src/main/res/layout/activity_registration_page.xml" value="0.33" />
+        <entry key="..\:/Users/adang/Com S 309 2_do_8/2_do_8/frontend/app/src/main/res/layout/activity_registration_page.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/adang/Com S 309 2_do_8/2_do_8/frontend/app/src/main/res/layout/activity_settings.xml" value="0.29846014492753625" />
-        <entry key="..\:/Users/adang/Com S 309 2_do_8/2_do_8/frontend/app/src/main/res/layout/activity_view_recipe.xml" value="0.33" />
-        <entry key="..\:/Users/adang/Com S 309 2_do_8/2_do_8/frontend/app/src/main/res/layout/ingredient_item_row.xml" value="0.3625" />
         <entry key="..\:/Users/adang/Com S 309 2_do_8/2_do_8/frontend/app/src/main/res/layout/item_loading.xml" value="0.36666666666666664" />
-        <entry key="..\:/Users/adang/Com S 309 2_do_8/2_do_8/frontend/app/src/main/res/layout/item_row.xml" value="0.3625" />
         <entry key="..\:/Users/adang/Com S 309 2_do_8/2_do_8/frontend/app/src/main/res/layout/toolbar.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/adang/Com S 309 2_do_8/2_do_8/frontend/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.3828125" />
         <entry key="..\:/Users/adang/Com S 309 2_do_8/2_do_8/frontend/app/src/main/res/xml/preferences.xml" value="0.23550724637681159" />
@@ -57,7 +29,8 @@
         <entry key="app/src/main/res/layout/activity_favorites.xml" value="0.23020833333333332" />
         <entry key="app/src/main/res/layout/activity_find_recipes.xml" value="0.20260416666666667" />
         <entry key="app/src/main/res/layout/activity_fullscreen.xml" value="0.3691123188405797" />
-        <entry key="app/src/main/res/layout/activity_home_page.xml" value="0.3319746376811594" />
+        <entry key="app/src/main/res/layout/activity_home2.xml" value="0.162109375" />
+        <entry key="app/src/main/res/layout/activity_home_page.xml" value="0.1353306120114011" />
         <entry key="app/src/main/res/layout/activity_home_page2.xml" value="0.23020833333333332" />
         <entry key="app/src/main/res/layout/activity_list_view.xml" value="0.41196581196581195" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.3736413043478261" />
@@ -66,15 +39,18 @@
         <entry key="app/src/main/res/layout/activity_recipe_view.xml" value="0.1" />
         <entry key="app/src/main/res/layout/activity_registration_page.xml" value="0.33695652173913043" />
         <entry key="app/src/main/res/layout/activity_settings.xml" value="0.23020833333333332" />
-        <entry key="app/src/main/res/layout/activity_view_recipe.xml" value="0.3029078571993317" />
+        <entry key="app/src/main/res/layout/activity_view_recipe.xml" value="0.365262944695544" />
         <entry key="app/src/main/res/layout/fragment_d_e_l_e_t_e.xml" value="0.4048913043478261" />
         <entry key="app/src/main/res/layout/fragment_details.xml" value="0.38958333333333334" />
         <entry key="app/src/main/res/layout/fragment_ingredients.xml" value="0.38958333333333334" />
         <entry key="app/src/main/res/layout/fragment_steps.xml" value="0.4036458333333333" />
+        <entry key="app/src/main/res/layout/homepage2.xml" value="0.17265625" />
         <entry key="app/src/main/res/layout/item_details.xml" value="0.3229166666666667" />
         <entry key="app/src/main/res/layout/item_loading.xml" value="0.3177083333333333" />
-        <entry key="app/src/main/res/layout/item_row.xml" value="0.4341422789447326" />
+        <entry key="app/src/main/res/layout/item_preview.xml" value="0.3259210030166009" />
+        <entry key="app/src/main/res/layout/item_row.xml" value="0.10140696063530026" />
         <entry key="app/src/main/res/layout/my_row.xml" value="0.40053009466334355" />
+        <entry key="app/src/main/res/layout/preview.xml" value="0.26990473213546795" />
       </map>
     </option>
   </component>

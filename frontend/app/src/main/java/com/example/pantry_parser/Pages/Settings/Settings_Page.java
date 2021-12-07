@@ -190,7 +190,7 @@ public class Settings_Page extends AppCompatActivity {
                         editor.apply();
                         String imagePath = response.getString("imagePath");
                         if (imagePath != "null") {
-                            Picasso.get().load("http://coms-309-032.cs.iastate.edu:8080/user/" + user_id + "/image").centerCrop().resize(50, 50).into(profileImage);
+                            Picasso.get().load("http://coms-309-032.cs.iastate.edu:8080/user/" + user_id + "/image").centerCrop().resize(400, 400).into(profileImage);
                         }
                     }catch (JSONException jsonException) {
                         jsonException.printStackTrace();

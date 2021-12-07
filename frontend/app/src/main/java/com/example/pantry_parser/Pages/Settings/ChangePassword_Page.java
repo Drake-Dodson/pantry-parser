@@ -57,7 +57,10 @@ public class ChangePassword_Page extends AppCompatActivity {
 
         SharedPreferences prefs = getSharedPreferences("user_info", Context.MODE_PRIVATE);
         user_id = prefs.getString("user_id", "");
-
+        if(!prefs.getBoolean("is_logged_in", false)) {
+            Toast.makeText(this, "You can't do that as a guest", Toast.LENGTH_LONG).show();
+            finish();
+        }
         getUserInfo();
 
         tv_otpSent.setVisibility(View.INVISIBLE);

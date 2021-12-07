@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
@@ -68,7 +69,12 @@ public class Settings_Page extends AppCompatActivity {
         SharedPreferences prefs = getSharedPreferences("user_info", Context.MODE_PRIVATE);
         user_id = prefs.getString("user_id", "");
 
-        setUserInfo();
+        if(!prefs.getBoolean("is_logged_in", false)) {
+            usernameDisplay.setText("Guest");
+            emailDisplay.setText("");
+        } else {
+            setUserInfo();
+        }
 
         ActivityResultLauncher<String> imageResultLauncher = registerForActivityResult(
                 new ActivityResultContracts.GetContent(),

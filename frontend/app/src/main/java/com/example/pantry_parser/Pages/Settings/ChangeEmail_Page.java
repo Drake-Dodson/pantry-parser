@@ -22,6 +22,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.pantry_parser.Network.FavoriteSocket;
 import com.example.pantry_parser.R;
+import com.example.pantry_parser.RecyclerView.ListView;
 import com.google.android.material.textfield.TextInputEditText;
 
 import org.json.JSONException;
@@ -54,7 +55,10 @@ public class ChangeEmail_Page extends AppCompatActivity {
 
         SharedPreferences prefs = getSharedPreferences("user_info", Context.MODE_PRIVATE);
         user_id = prefs.getString("user_id", "");
-
+        if(!prefs.getBoolean("is_logged_in", false)) {
+            Toast.makeText(this, "You can't do that as a guest", Toast.LENGTH_LONG).show();
+            finish();
+        }
         getUserInfo();
 
         bt_back.setOnClickListener(new View.OnClickListener() {

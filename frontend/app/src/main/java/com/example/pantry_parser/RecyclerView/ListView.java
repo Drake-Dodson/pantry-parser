@@ -162,6 +162,7 @@ public class ListView extends AppCompatActivity implements RecyclerViewAdapter.O
 
         SharedPreferences prefs = getSharedPreferences("user_info", Context.MODE_PRIVATE);
         String user_id = prefs.getString("user_id", "");
+        prefs.getBoolean("is_logged_in", false);
 
         switch (viewType){
             case ("ALL_RECIPES"):
@@ -171,6 +172,10 @@ public class ListView extends AppCompatActivity implements RecyclerViewAdapter.O
                 break;
 
             case ("MY_RECIPES"):
+                if(!prefs.getBoolean("is_logged_in", false)) {
+                    Toast.makeText(ListView.this, "You can't do that as a guest", Toast.LENGTH_LONG).show();
+                    finish();
+                }
                 URL_TO_USE = URL_USER + user_id + "/recipes";
                 origURL = URL_TO_USE;
                 newRecipe.show();
@@ -178,6 +183,10 @@ public class ListView extends AppCompatActivity implements RecyclerViewAdapter.O
                 break;
 
             case ("FAV_RECIPES"):
+                if(!prefs.getBoolean("is_logged_in", false)) {
+                    Toast.makeText(ListView.this, "You can't do that as a guest", Toast.LENGTH_LONG).show();
+                    finish();
+                }
                 URL_TO_USE = URL_FAV + user_id + "/favorites";
                 origURL = URL_TO_USE;
                 popData();

@@ -27,6 +27,7 @@ import com.example.pantry_parser.Network.FavoriteSocket;
 import com.example.pantry_parser.Pages.Home_Page;
 import com.example.pantry_parser.Pages.Login_Page;
 import com.example.pantry_parser.R;
+import com.example.pantry_parser.RecyclerView.IngredientListView;
 import com.example.pantry_parser.RecyclerView.ListView;
 import com.example.pantry_parser.Utilities.User;
 
@@ -160,7 +161,7 @@ public class Settings_Page extends AppCompatActivity {
         goAdminView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), ChangeEmail_Page.class);
+                Intent intent = new Intent(getApplicationContext(), IngredientListView.class);
                 intent.putExtra("SwitchView", "ADMIN");
                 startActivity(intent);
             }

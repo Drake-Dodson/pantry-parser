@@ -232,7 +232,7 @@ public class IngredientListView extends AppCompatActivity implements RecyclerVie
         if(URL_TO_USE.contains(URL_USERS)) {
             String idToChange = dataset.get(position).getRecipeID().trim();
             String user_id = getSharedPreferences("user_info", Context.MODE_PRIVATE).getString("role", "").trim();
-            if(idToChange.equals(user_id)){
+            if(!idToChange.equals(user_id)){
                 String user = dataset.get(position).getRecipeName();
                 String newRole = getNewRole(user);
                 sendUserRequest(newRole, idToChange);
@@ -265,7 +265,7 @@ public class IngredientListView extends AppCompatActivity implements RecyclerVie
         JSONObject json = new JSONObject();
         try {
             json.put("adminEmail", getSharedPreferences("user_info", Context.MODE_PRIVATE).getString("email", ""));
-            json.put("adminPassword", "password");
+            json.put("adminPassword", "poop");
             json.put("role", role);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -279,6 +279,7 @@ public class IngredientListView extends AppCompatActivity implements RecyclerVie
                     if(success.equals("true")) {
                         Toast.makeText(IngredientListView.this, message, Toast.LENGTH_LONG).show();
                         dataset.clear();
+                        URL_TO_USE = URLs.updatePaginatedQueryUrl(URL_TO_USE, "pageNo", "0");
                         popData();
                         recyclerViewAdapter.notifyDataSetChanged();
                     } else {

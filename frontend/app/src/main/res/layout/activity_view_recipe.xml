@@ -92,7 +92,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
                 android:layout_marginLeft="10dp"
-                android:isIndicator="true"
+                android:isIndicator="false"
                 android:numStars="0"
                 android:rating="5"
                 android:stepSize=".5"

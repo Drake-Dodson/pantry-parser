@@ -69,7 +69,7 @@ public class Home_Page extends AppCompatActivity implements View.OnClickListener
                 break;
             case R.id.bt_PantryParser:
                 Intent myRecipesIntent = new Intent(getApplicationContext(), IngredientListView.class);
-               // myRecipesIntent.putExtra("SwitchView", "MY_RECIPES");
+                myRecipesIntent.putExtra("SwitchView", "INGREDIENTS");
                 startActivity(myRecipesIntent);
                 break;
             case R.id.bt_Favorites:

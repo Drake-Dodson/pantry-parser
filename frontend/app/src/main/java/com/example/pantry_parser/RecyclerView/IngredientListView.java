@@ -1,6 +1,8 @@
 package com.example.pantry_parser.RecyclerView;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.SearchView;
@@ -21,6 +23,7 @@ import com.android.volley.toolbox.Volley;
 import com.example.pantry_parser.R;
 import com.example.pantry_parser.Models.Recipe;
 import com.example.pantry_parser.Utilities.URLs;
+import com.example.pantry_parser.Utilities.User;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import org.json.JSONArray;
@@ -36,12 +39,14 @@ public class IngredientListView extends AppCompatActivity implements RecyclerVie
     public ArrayList<String> selected = new ArrayList<>();
     boolean isLoading = false;
     String URL_INGREDIENTS = "http://coms-309-032.cs.iastate.edu:8080/ingredients";
-    String URL_TO_USE = URL_INGREDIENTS;
+    String URL_USERS = "http://coms-309-032.cs.iastate.edu:8080/users";
+    String URL_TO_USE;
     private RequestQueue queue;
     FloatingActionButton newRecipe;
     SearchView searchView;
     TextView textView;
     int pageNo;
+    String viewType;
 
     /**
      *Create listview activity and instantiate elements
@@ -52,7 +57,20 @@ public class IngredientListView extends AppCompatActivity implements RecyclerVie
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ingredient_list_view);
         String viewType = (String) getIntent().getSerializableExtra("SwitchView");
-
+        this.viewType = viewType;
+        switch(viewType) {
+            case "ADMIN":
+                URL_TO_USE = URL_USERS;
+                String role = getSharedPreferences("user_info", Context.MODE_PRIVATE).getString("role", "").trim();
+                if(!role.toLowerCase().equals(User.DESIGNATION_ADMIN)) {
+                    Toast.makeText(this, "You are not an admin", Toast.LENGTH_LONG).show();
+                    finish();
+                }
+                break;
+            default:
+                URL_TO_USE = URL_INGREDIENTS;
+                break;
+        }
         try {
             initializeElements(viewType);
         } catch (JSONException e) {
@@ -156,7 +174,11 @@ public class IngredientListView extends AppCompatActivity implements RecyclerVie
                     }
                     while (!recipeArray.isNull(i) && i <=pageSize) {
                         try {
-                            dataset.add(new Recipe(getIngredient(i, recipeArray)));
+                            if(URL_TO_USE.contains(URL_USERS)) {
+                                dataset.add(getUser(i, recipeArray));
+                            } else {
+                                dataset.add(new Recipe(getIngredient(i, recipeArray)));
+                            }
                             recyclerViewAdapter.notifyDataSetChanged();
                         } catch (JSONException e) {
                             Toast.makeText(IngredientListView.this, e.toString(), Toast.LENGTH_SHORT).show();
@@ -185,6 +207,14 @@ public class IngredientListView extends AppCompatActivity implements RecyclerVie
         return json.getString("name");
     }
 
+    @NonNull
+    private Recipe getUser(int i, JSONArray array) throws JSONException {
+        JSONObject json = array.getJSONObject(i);
+        Recipe user = new Recipe(json.getString("email") + " -- " + json.getString("role"));
+        user.setRecipeID(json.getString("id"));
+        return user;
+    }
+
     /**
      * Initialize recyclerView adapter
      */
@@ -199,15 +229,27 @@ public class IngredientListView extends AppCompatActivity implements RecyclerVie
      */
     @Override
     public void onRecipeClick(int position) {
-        String ingredient = dataset.get(position).getRecipeName();
-        if(selected.contains(ingredient)) {
-            selected.remove(ingredient);
+        if(URL_TO_USE.contains(URL_USERS)) {
+            String idToChange = dataset.get(position).getRecipeID().trim();
+            String user_id = getSharedPreferences("user_info", Context.MODE_PRIVATE).getString("role", "").trim();
+            if(!idToChange.equals(user_id)){
+                String user = dataset.get(position).getRecipeName();
+                String newRole = getNewRole(user);
+                sendUserRequest(newRole, idToChange);
+            } else {
+                Toast.makeText(this, "You cannot change your own role", Toast.LENGTH_LONG).show();
+            }
         } else {
-            selected.add(ingredient);
-        }
+            String ingredient = dataset.get(position).getRecipeName();
+            if(selected.contains(ingredient)) {
+                selected.remove(ingredient);
+            } else {
+                selected.add(ingredient);
+            }
 
-        textView.setText(selectedToString());
-        recyclerViewAdapter.notifyDataSetChanged();
+            textView.setText(selectedToString());
+            recyclerViewAdapter.notifyDataSetChanged();
+        }
     }
 
     private String selectedToString(){
@@ -216,5 +258,63 @@ public class IngredientListView extends AppCompatActivity implements RecyclerVie
             q += s + ",";
         }
         return q;
+    }
+
+    private void sendUserRequest(String role, String user_id) {
+        String changeRoleURL = "http://coms-309-032.cs.iastate.edu:8080/user/" + user_id + "/assignrole/";
+        JSONObject json = new JSONObject();
+        try {
+            json.put("adminEmail", getSharedPreferences("user_info", Context.MODE_PRIVATE).getString("email", ""));
+            json.put("adminPassword", "poop");
+            json.put("role", role);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        JsonObjectRequest roleRequest = new JsonObjectRequest(Request.Method.PATCH, changeRoleURL, json, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                try {
+                    String success = response.get("success").toString();
+                    String message = response.get("message").toString();
+                    if(success.equals("true")) {
+                        Toast.makeText(IngredientListView.this, message, Toast.LENGTH_LONG).show();
+                        dataset.clear();
+                        URL_TO_USE = URLs.updatePaginatedQueryUrl(URL_TO_USE, "pageNo", "0");
+                        popData();
+                        recyclerViewAdapter.notifyDataSetChanged();
+                    } else {
+                        Toast.makeText(IngredientListView.this, message, Toast.LENGTH_LONG).show();
+                    }
+                } catch(JSONException ex) {
+                    ex.printStackTrace();
+                }
+
+            }
+        }, new Response.ErrorListener() {
+            /**
+             *Does not fill recipes if no data is returned from database
+             * @param error
+             */
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        });
+        queue.add(roleRequest);
+    }
+
+    private String getNewRole(String user) {
+        String[] chunks = user.split("--");
+        String currRole = chunks[1].trim();
+        switch (currRole.toLowerCase()) {
+            case User.DESIGNATION_ADMIN:
+                return User.DESIGNATION_MAIN;
+            case User.DESIGNATION_CHEF:
+                return User.DESIGNATION_ADMIN;
+            case User.DESIGNATION_MAIN:
+                return User.DESIGNATION_CHEF;
+            default:
+                return User.DESIGNATION_MAIN;
+        }
     }
 }

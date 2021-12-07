@@ -27,17 +27,19 @@ import com.example.pantry_parser.Network.FavoriteSocket;
 import com.example.pantry_parser.Pages.Home_Page;
 import com.example.pantry_parser.Pages.Login_Page;
 import com.example.pantry_parser.R;
+import com.example.pantry_parser.RecyclerView.IngredientListView;
 import com.example.pantry_parser.RecyclerView.ListView;
+import com.example.pantry_parser.Utilities.User;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 public class Settings_Page extends AppCompatActivity {
 
-    TextView usernameDisplay, emailDisplay;
-    TextView changeUsername, changeEmail, changePassword, goMyRecipes;
+    TextView usernameDisplay, emailDisplay, line6;
+    TextView changeUsername, changeEmail, changePassword, goMyRecipes, goAdminView;
     Button back, logout;
-    ImageView profileImage;
+    ImageView profileImage, adminIcon, adminArrow;
 
     private String username, email, user_id;
     private static final String URL = URL_USER;
@@ -62,11 +64,27 @@ public class Settings_Page extends AppCompatActivity {
         back = findViewById(R.id.button_backSettings);
         logout = findViewById(R.id.button_Logout);
         profileImage = findViewById(R.id.imageView_profileImage);
+        line6 = findViewById(R.id.line6);
+        goAdminView = findViewById(R.id.TextView_goAdminView);
+        adminIcon = findViewById(R.id.adminViewIcon);
+        adminArrow = findViewById(R.id.adminViewArrow);
         FavoriteSocket.changeContext(this);
         queue = Volley.newRequestQueue(this);
 
         SharedPreferences prefs = getSharedPreferences("user_info", Context.MODE_PRIVATE);
         user_id = prefs.getString("user_id", "");
+
+        if(!prefs.getString("role", "").trim().toLowerCase().contains(User.DESIGNATION_ADMIN)){
+            line6.setVisibility(View.INVISIBLE);
+            goAdminView.setVisibility(View.INVISIBLE);
+            adminIcon.setVisibility(View.INVISIBLE);
+            adminArrow.setVisibility(View.INVISIBLE);
+        }else {
+            line6.setVisibility(View.VISIBLE);
+            goAdminView.setVisibility(View.VISIBLE);
+            adminIcon.setVisibility(View.VISIBLE);
+            adminArrow.setVisibility(View.VISIBLE);
+        }
 
         if(!prefs.getBoolean("is_logged_in", false)) {
             usernameDisplay.setText("Guest");
@@ -139,6 +157,16 @@ public class Settings_Page extends AppCompatActivity {
                 imageResultLauncher.launch("image/*");
             }
         });
+
+        goAdminView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), IngredientListView.class);
+                intent.putExtra("SwitchView", "ADMIN");
+                startActivity(intent);
+            }
+        });
+
     }
 
     private void setUserInfo(){

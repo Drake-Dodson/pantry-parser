@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.pantry_parser.R;
 import com.example.pantry_parser.Models.Recipe;
+import com.example.pantry_parser.Utilities.User;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -154,7 +155,21 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                 viewHolder.chefVerified.setVisibility(View.INVISIBLE);
             }
         } else {
-            if (((IngredientListView) mOnRecipeListener).selected.contains(item.getRecipeName())){
+            if(((IngredientListView) mOnRecipeListener).viewType.contains("ADMIN")){
+                String[] chunks = item.getRecipeName().split("--");
+                String currRole = chunks[1].trim().toLowerCase();
+                switch(currRole) {
+                    case User.DESIGNATION_ADMIN:
+                        viewHolder.recipeName.setTextColor(Color.RED);
+                        break;
+                    case User.DESIGNATION_CHEF:
+                        viewHolder.recipeName.setTextColor(Color.BLUE);
+                        break;
+                    default:
+                        viewHolder.recipeName.setTextColor(Color.BLACK);
+                        break;
+                }
+            } else if (((IngredientListView) mOnRecipeListener).selected.contains(item.getRecipeName())){
                 viewHolder.recipeName.setTextColor(Color.RED);
             }
         }

@@ -19,7 +19,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.pantry_parser.R;
-import com.example.pantry_parser.Recipe;
+import com.example.pantry_parser.Models.Recipe;
 import com.example.pantry_parser.Utilities.URLs;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 

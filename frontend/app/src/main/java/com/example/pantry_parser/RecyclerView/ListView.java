@@ -28,7 +28,7 @@ import com.example.pantry_parser.Network.FavoriteSocket;
 import com.example.pantry_parser.Pages.Recipe_Page;
 
 import com.example.pantry_parser.R;
-import com.example.pantry_parser.Recipe;
+import com.example.pantry_parser.Models.Recipe;
 import com.example.pantry_parser.Utilities.URLs;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 

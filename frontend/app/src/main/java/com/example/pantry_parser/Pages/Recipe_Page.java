@@ -24,7 +24,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.pantry_parser.Network.FavoriteSocket;
 import com.example.pantry_parser.R;
-import com.example.pantry_parser.Recipe;
+import com.example.pantry_parser.Models.Recipe;
 import com.example.pantry_parser.Pages.RecipeCreator.RecipeEditor_Page;
 import com.google.android.material.tabs.TabLayout;
 

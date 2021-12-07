@@ -13,6 +13,9 @@
         android:theme="@style/Theme.Pantry_Parser"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".Pages.Settings.PasswordReset_Page"
+            android:exported="true" />
+        <activity
             android:name=".Pages.Settings.ChangePassword_Page"
             android:exported="true" />
         <activity

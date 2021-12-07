@@ -6,7 +6,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
-import com.example.pantry_parser.AppController;
+import com.example.pantry_parser.Models.AppController;
 
 import org.json.JSONObject;
 

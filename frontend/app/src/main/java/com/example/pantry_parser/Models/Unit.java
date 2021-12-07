@@ -1,4 +1,4 @@
-package com.example.pantry_parser;
+package com.example.pantry_parser.Models;
 
 public enum Unit {
 

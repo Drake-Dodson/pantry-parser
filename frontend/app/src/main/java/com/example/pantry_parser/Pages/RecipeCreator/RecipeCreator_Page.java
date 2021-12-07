@@ -238,6 +238,9 @@ public class RecipeCreator_Page extends AppCompatActivity implements View.OnClic
 
     }
 
+    /**
+     * Method that creates a recipe and sends it to database
+     */
     public void createRecipe(){
         recipeName = rName.getText().toString();
         recipeSummary = rSummary.getText().toString();
@@ -264,13 +267,6 @@ public class RecipeCreator_Page extends AppCompatActivity implements View.OnClic
         } catch (JSONException e){
             e.printStackTrace();
         }
-        System.out.println(recipeName);
-        System.out.println(recipePrepTime);
-        System.out.println(recipeCookTime);
-        System.out.println(recipeSummary);
-        System.out.println(recipeDescription);
-        System.out.println(recipeNutrition);
-        System.out.println(recipeServings);
         for(int i = 0; i < ingredients.length(); i++){
             try {
                 System.out.println(ingredients.get(i).toString());
@@ -278,8 +274,6 @@ public class RecipeCreator_Page extends AppCompatActivity implements View.OnClic
                 e.printStackTrace();
             }
         }
-        System.out.println(ingredients);
-        System.out.println(steps);
 
         JsonObjectRequest recipeRequest = new JsonObjectRequest(Request.Method.POST, URL_USER + user_id + "/recipes/", recipe,
            new Response.Listener<JSONObject>() {
@@ -310,6 +304,9 @@ public class RecipeCreator_Page extends AppCompatActivity implements View.OnClic
        Queue.add(recipeRequest);
     }
 
+    /**
+     * Method to convert ingredient ArrayList to JSONArray
+     */
     public void convertArrayTOJSONArray(){
         ingredients = new JSONArray();
         try{

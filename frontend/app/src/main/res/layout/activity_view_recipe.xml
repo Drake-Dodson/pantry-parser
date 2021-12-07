@@ -6,210 +6,205 @@
     android:layout_height="match_parent"
     tools:context=".Pages.Recipe_Page">
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
+
+        <ImageView
+            android:id="@+id/RecipeImage"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight=".75"
+            android:background="@color/black"
+            android:cropToPadding="true" />
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight=".15"
+            android:paddingRight="5dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/RecipeName"
+                android:layout_width="261dp"
+                android:layout_marginLeft="10dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:fontFamily="@font/robotobold"
+                android:text="Drake's Spicy Meatballs"
+                android:textColor="@color/black"
+                android:textSize="23dp" />
+
+            <TextView
+                android:id="@+id/EditRecipe"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="10dp"
+                android:background="@drawable/ic_edit"
+                />
+
+            <Button
+                android:id="@+id/FavButton"
+                android:layout_width="65dp"
+                android:layout_height="34dp"
+                android:backgroundTint="@color/light_blue"
+                android:layout_gravity="center"
+                android:background="@drawable/searchbar"
+                android:fontFamily="@font/robotobold"
+                android:text="Favorite" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight=".15"
+            android:gravity="center"
             android:orientation="vertical">
 
-
-            <ImageView
-                android:id="@+id/RecipeImage"
+            <TextView
+                android:id="@+id/RecipeAuthor"
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight=".75"
-                android:background="@drawable/cookies"
-                android:cropToPadding="true" />
+                android:layout_height="wrap_content"
+                android:layout_gravity="top"
+                android:layout_marginLeft="10dp"
+                android:fontFamily="@font/robotomedium"
+                android:text="By Drake Dodson" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight=".15"
-                android:orientation="horizontal"
-                android:paddingRight="5dp">
-
-                <TextView
-                    android:id="@+id/RecipeName"
-                    android:layout_width="261dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginLeft="5dp"
-                    android:layout_weight="1"
-                    android:fontFamily="@font/robotobold"
-                    android:text="Drake's Spicy Meatballs"
-                    android:textColor="@color/black"
-                    android:textSize="23dp" />
-
-                <TextView
-                    android:id="@+id/EditRecipe"
-                    android:layout_width="25dp"
-                    android:layout_height="25dp"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginRight="10dp"
-                    android:background="@drawable/ic_edit" />
-
-                <Button
-                    android:id="@+id/FavButton"
-                    android:layout_width="65dp"
-                    android:layout_height="34dp"
-                    android:layout_gravity="center"
-                    android:background="@drawable/searchbar"
-                    android:backgroundTint="@color/light_blue"
-                    android:fontFamily="@font/robotobold"
-                    android:text="Favorite"
-                    tools:ignore="TouchTargetSizeCheck" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="300dp"
-                android:layout_height="0dp"
-                android:layout_weight=".15"
-                android:gravity="center"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/RecipeAuthor"
-                    android:layout_width="200dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="top"
-                    android:layout_marginLeft="5dp"
-                    android:fontFamily="@font/robotomedium"
-                    android:text="By Drake Dodson" />
-
-                <RatingBar
-                    android:id="@+id/Reciperating"
-                    style="@style/Widget.AppCompat.RatingBar.Small"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="bottom"
-                    android:layout_marginLeft="5dp"
-                    android:isIndicator="true"
-                    android:numStars="0"
-                    android:rating="5"
-                    android:stepSize=".5"
-                    android:theme="@style/RatingBar" />
-
-
-            </LinearLayout>
-
-            <com.google.android.material.tabs.TabLayout
-                android:id="@+id/tablayout"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight=".15">
-
-                <com.google.android.material.tabs.TabItem
-                    android:id="@+id/DetailsTab"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Details" />
-
-                <com.google.android.material.tabs.TabItem
-                    android:id="@+id/IngredientsTab"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Ingredients" />
-
-                <com.google.android.material.tabs.TabItem
-                    android:id="@+id/StepsTab"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Steps" />
-            </com.google.android.material.tabs.TabLayout>
-
-            <HorizontalScrollView
-                android:id="@+id/RecipeScrollView"
+            <RatingBar
+                android:id="@+id/Reciperating"
                 android:layout_width="wrap_content"
-                android:layout_height="0dp"
-                android:layout_weight="1">
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:layout_marginLeft="10dp"
+                android:isIndicator="true"
+                android:numStars="0"
+                android:rating="5"
+                android:stepSize=".5"
+                style="@style/Widget.AppCompat.RatingBar.Small"
+                android:theme="@style/RatingBar" />
+        </LinearLayout>
 
-                <LinearLayout
-                    android:id="@+id/RecipeTabs"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal">
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tablayout"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight=".15">
+
+            <com.google.android.material.tabs.TabItem
+                android:id="@+id/DetailsTab"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Details" />
+
+            <com.google.android.material.tabs.TabItem
+                android:id="@+id/IngredientsTab"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Ingredients" />
+
+            <com.google.android.material.tabs.TabItem
+                android:id="@+id/StepsTab"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Steps" />
+        </com.google.android.material.tabs.TabLayout>
+
+        <HorizontalScrollView
+            android:id="@+id/RecipeScrollView"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+
+            <LinearLayout
+                android:id="@+id/RecipeTabs"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
 
 
-                    <ScrollView
-                        android:id="@+id/DetailsScrollView"
+                <ScrollView
+                    android:id="@+id/DetailsScrollView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent">
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical" >
 
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:id="@+id/DetailsText"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:fontFamily="@font/robotoregular"
-                                android:paddingLeft="10dp"
-                                android:paddingRight="10dp"
-                                android:text="Details"
-                                android:textColor="@color/black"
-                                android:textSize="20sp" />
-                        </LinearLayout>
-                    </ScrollView>
-
-                    <ScrollView
-                        android:id="@+id/IngredientsScrollView"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent">
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:id="@+id/IngredientsText"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:fontFamily="@font/robotoregular"
-                                android:lineSpacingExtra="10dp"
-                                android:paddingLeft="10dp"
-                                android:paddingRight="10dp"
-                                android:text="Ingredients"
-                                android:textColor="@color/black"
-                                android:textSize="20sp" />
-                        </LinearLayout>
-                    </ScrollView>
-
-                    <ScrollView
-                        android:id="@+id/StepsScrollView"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent">
-
-                        <LinearLayout
+                        <TextView
+                            android:id="@+id/DetailsText"
+                            android:fontFamily="@font/robotoregular"
+                            android:textColor="@color/black"
+                            android:textSize="20sp"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:orientation="vertical">
+                            android:paddingLeft="10dp"
+                            android:paddingRight="10dp"
+                            android:text="Details" />
+                    </LinearLayout>
+                </ScrollView>
 
-                            <TextView
-                                android:id="@+id/StepsText"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:fontFamily="@font/robotoregular"
-                                android:lineSpacingExtra="10dp"
-                                android:paddingLeft="10dp"
-                                android:paddingRight="10dp"
-                                android:text="Steps"
-                                android:textColor="@color/black"
-                                android:textSize="20sp" />
-                        </LinearLayout>
-                    </ScrollView>
-                </LinearLayout>
+                <ScrollView
+                    android:id="@+id/IngredientsScrollView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
 
-            </HorizontalScrollView>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical" >
+
+                        <TextView
+                            android:id="@+id/IngredientsText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/robotoregular"
+                            android:textSize="20sp"
+                            android:textColor="@color/black"
+                            android:lineSpacingExtra="10dp"
+                            android:paddingLeft="10dp"
+                            android:paddingRight="10dp"
+                            android:text="Ingredients" />
+                    </LinearLayout>
+                </ScrollView>
+
+                <ScrollView
+                    android:id="@+id/StepsScrollView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical" >
+
+                        <TextView
+                            android:id="@+id/StepsText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/black"
+                            android:fontFamily="@font/robotoregular"
+                            android:textSize="20sp"
+                            android:lineSpacingExtra="10dp"
+                            android:paddingLeft="10dp"
+                            android:paddingRight="10dp"
+                            android:text="Steps" />
+                    </LinearLayout>
+                </ScrollView>
+            </LinearLayout>
+
+        </HorizontalScrollView>
 
 
-        </LinearLayout>
-    </RelativeLayout>
-
+    </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

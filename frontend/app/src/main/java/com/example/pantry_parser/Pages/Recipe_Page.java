@@ -8,9 +8,11 @@ import android.graphics.Point;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.Display;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.HorizontalScrollView;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,6 +32,7 @@ import com.example.pantry_parser.Models.Recipe;
 import com.example.pantry_parser.Pages.RecipeCreator.RecipeEditor_Page;
 import com.example.pantry_parser.RecyclerView.ListView;
 import com.google.android.material.tabs.TabLayout;
+import com.squareup.picasso.Picasso;
 
 import org.java_websocket.client.WebSocketClient;
 import org.json.JSONArray;
@@ -51,10 +54,13 @@ public class  Recipe_Page extends AppCompatActivity {
         private HorizontalScrollView scrollView;
         private Button favButton;
         private WebSocketClient mWebSocketClient;
+        private ImageView recipePic;
         private boolean hasUserFavorited;
         private RequestQueue queue;
         private String role;
         private SharedPreferences chef;
+        private String imageUrl;
+
 
 
     /**
@@ -68,12 +74,24 @@ public class  Recipe_Page extends AppCompatActivity {
             super.onCreate(savedInstanceState);
             setContentView(R.layout.activity_view_recipe);
             recipe = (Recipe) getIntent().getSerializableExtra("Recipe");
+            imageUrl = (String) getIntent().getSerializableExtra("ImageURL");
+            recipePic = findViewById(R.id.RecipeImage);
+            Picasso.get().load(recipe.getImageUrl()).centerCrop().resize(600, 400).into(recipePic);
+//            if (recipe.getImagePath() != "null") {
+//                Picasso.get().load("http://coms-309-032.cs.iastate.edu:8080/recipe/" + recipe.getRecipeID() + "/image").centerCrop().resize(600, 400).into(recipePic);
+//            } else {
+//                //gets a random image for those recipes that don't have one to make our app a little cooler looking
+//                Picasso.get().load("https://source.unsplash.com/random/600x400/?food").centerCrop().resize(600, 400).into(recipePic);
+//            }
+
             hasUserFavorited = false;
 
             role = getSharedPreferences("user_info", Context.MODE_PRIVATE).getString("role", "");
             String user_id = getSharedPreferences("user_info", Context.MODE_PRIVATE).getString("user_id", "");
-            String url = "http://coms-309-032.cs.iastate.edu:8080/user/" + user_id + "/favorited/" + recipe.getRecipeID();
-            getIsFavorited(url);
+            if(user_id != "") {
+                String url = "http://coms-309-032.cs.iastate.edu:8080/user/" + user_id + "/favorited/" + recipe.getRecipeID();
+                getIsFavorited(url);
+            }
 
             NameRecipe = findViewById(R.id.RecipeName);
             NameRecipe.setText(recipe.getRecipeName());
@@ -185,7 +203,7 @@ public class  Recipe_Page extends AppCompatActivity {
                         verify(recipe.getRecipeID(), recipe.getChefVerified());
                     }
 
-                    if(FavoriteSocket.mWebSocketClient.isOpen()) {
+                    if(FavoriteSocket.mWebSocketClient != null && FavoriteSocket.mWebSocketClient.isOpen()) {
                         if(!hasUserFavorited) {
                             FavoriteSocket.mWebSocketClient.send("favorite:" + recipe.getRecipeID());
                             hasUserFavorited = true;

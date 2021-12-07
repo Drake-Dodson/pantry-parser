@@ -12,8 +12,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.pantry_parser.R;
 import com.example.pantry_parser.Models.Recipe;
+import com.example.pantry_parser.Utilities.User;
 import com.squareup.picasso.Picasso;
 
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.List;
 
 
@@ -144,20 +148,63 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     private void populateItemRows(ItemViewHolder viewHolder, int position) {
         Recipe item = mItemList.get(position);
         viewHolder.recipeName.setText(item.getRecipeName());
-
         if(type != "i"){
             viewHolder.minutesToMake.setText(Integer.toString(item.getTimeToMake()));
             viewHolder.ratingBar.setRating((float) item.getRating());
-            Picasso.get().load("http://coms-309-032.cs.iastate.edu:8080/recipe/" + item.getRecipeID() + "/image").centerCrop().resize(600, 400).into(viewHolder.recipeImage);
+            String url = "";
+
+            if (item.getImagePath() != "null") {
+                url = "http://coms-309-032.cs.iastate.edu:8080/recipe/" + item.getRecipeID() + "/image";
+            } else {
+                //gets a random image for those recipes that don't have one to make our app a little cooler looking
+                //String url = getRandomImageURL();
+                url = "https://source.unsplash.com/random/600x400/?food";
+            }
+            item.setImageUrl(url);
+            Picasso.get().load(url).centerCrop().resize(600, 400).into(viewHolder.recipeImage);
             if (item.getChefVerified() == false){
                 viewHolder.chefVerified.setVisibility(View.INVISIBLE);
             }
         } else {
-            if (((IngredientListView) mOnRecipeListener).selected.contains(item.getRecipeName())){
+            if(((IngredientListView) mOnRecipeListener).viewType.contains("ADMIN")){
+                String[] chunks = item.getRecipeName().split("--");
+                String currRole = chunks[1].trim().toLowerCase();
+                switch(currRole) {
+                    case User.DESIGNATION_ADMIN:
+                        viewHolder.recipeName.setTextColor(Color.RED);
+                        break;
+                    case User.DESIGNATION_CHEF:
+                        viewHolder.recipeName.setTextColor(Color.BLUE);
+                        break;
+                    default:
+                        viewHolder.recipeName.setTextColor(Color.BLACK);
+                        break;
+                }
+            } else if (((IngredientListView) mOnRecipeListener).selected.contains(item.getRecipeName())){
                 viewHolder.recipeName.setTextColor(Color.RED);
             }
         }
     }
+
+    private String getRandomImageURL() {
+        HttpURLConnection con = null;
+        try {
+            con = (HttpURLConnection)(new URL( "https://source.unsplash.com/random/600x400/?food").openConnection());
+            con.setInstanceFollowRedirects( false );
+            con.connect();
+            int responseCode = con.getResponseCode();
+            System.out.println( responseCode );
+            String location = con.getHeaderField( "Location" );
+            System.out.println( location );
+            return location;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        //if getting a random image doesn't work, force this image instead
+        return "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?crop=entropy&cs=tinysrgb&fit=crop&fm=jpg&h=400&ixid=MnwxfDB8MXxyYW5kb218MHx8Zm9vZHx8fHx8fDE2Mzg5MTAzMTY&ixlib=rb-1.2.1&q=80&utm_campaign=api-credit&utm_medium=referral&utm_source=unsplash_source&w=600";
+    }
+
+
 
     public interface OnRecipeListener{
         /**

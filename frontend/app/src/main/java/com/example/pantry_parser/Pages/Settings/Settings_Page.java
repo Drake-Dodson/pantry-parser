@@ -11,7 +11,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
@@ -125,8 +124,8 @@ public class Settings_Page extends AppCompatActivity {
         logout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                SharedPreferences pref = getSharedPreferences("user_info", Context.MODE_PRIVATE);
-                SharedPreferences.Editor editor = pref.edit();
+                SharedPreferences prefs = getSharedPreferences("user_info", Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = prefs.edit();
                 editor.clear();
                 editor.commit();
                 editor.apply();
@@ -152,6 +151,11 @@ public class Settings_Page extends AppCompatActivity {
                         username =response.getString("displayName");
                         usernameDisplay.setText(username);
                         emailDisplay.setText(email);
+                        SharedPreferences prefs = getSharedPreferences("user_info", Context.MODE_PRIVATE);
+                        SharedPreferences.Editor editor = prefs.edit();
+                        editor.putString("username", username);
+                        editor.commit();
+                        editor.apply();
                     }catch (JSONException jsonException) {
                         jsonException.printStackTrace();
                     }

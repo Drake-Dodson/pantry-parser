@@ -1,10 +1,26 @@
 package com.example.pantry_parser.Utilities;
 
 public class URLs {
+    /*
+     * Base url
+     */
     private static final String DOMAIN = "http://coms-309-032.cs.iastate.edu:8080";
-    public static final String URL_REGISTER = DOMAIN + "/user/";
-    public static final String URL_LOGIN = DOMAIN + "/login/";
+    /*
+     * Register route
+     */
+    public static final String URL_REGISTER = DOMAIN + "/users/";
+    /*
+     * User route
+     */
     public static final String URL_USER = DOMAIN + "/user/";
+    /*
+     * User login route
+     */
+    public static final String URL_LOGIN = DOMAIN + "/login/";
+    /*
+     * Recipe route
+     */
+    public static final String URL_RECIPE = DOMAIN + "/recipe/";
 
     public static String paginatedQueryURLComposer(String base, String query, int pageNo, int perPage) {
         return base + "?query=" + query + "&pageNo=" + pageNo + "&perPage=" + perPage;
